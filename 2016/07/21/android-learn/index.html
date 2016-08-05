@@ -1,0 +1,1249 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,知识点," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="Android知识体系
+
+最近整理的Android知识体系，如有不足欢迎补充。此处将收集好的博客、分析文章等等。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android开发知识点汇总">
+<meta property="og:url" content="http://yoursite.com/2016/07/21/android-learn/index.html">
+<meta property="og:site_name" content="lowett">
+<meta property="og:description" content="Android知识体系
+
+最近整理的Android知识体系，如有不足欢迎补充。此处将收集好的博客、分析文章等等。">
+<meta property="og:updated_time" content="2016-07-22T01:26:39.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android开发知识点汇总">
+<meta name="twitter:description" content="Android知识体系
+
+最近整理的Android知识体系，如有不足欢迎补充。此处将收集好的博客、分析文章等等。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"right","display":"always"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 6307181688250172000,
+      author: '博主大人'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/07/21/android-learn/"/>
+
+  <title> Android开发知识点汇总 | lowett </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?dfd5b4385bacdae9367cc56f5736d3fa";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">lowett</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Android开发知识点汇总
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-07-21T10:24:02+08:00" content="2016-07-21">
+              2016-07-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/07/21/android-learn/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/21/android-learn/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/07/21/android-learn/" class="leancloud_visitors" data-flag-title="Android开发知识点汇总">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>Android知识体系</strong></p>
+<blockquote>
+<p>最近整理的Android知识体系，如有不足欢迎补充。此处将收集好的博客、分析文章等等。</p>
+</blockquote>
+<a id="more"></a>
+<h3 id="基础组件"><a href="#基础组件" class="headerlink" title="基础组件"></a>基础组件</h3><ul>
+<li>Context<ul>
+<li><a href="http://blog.csdn.net/qinjuning/article/details/7310620" target="_blank" rel="external">结构继承关系</a></li>
+<li><a href="http://blog.csdn.net/lmj623565791/article/details/40481055" target="_blank" rel="external">使用场景</a></li>
+<li>注意事项</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>Application</p>
+<ul>
+<li>生命周期</li>
+<li>全局变量？</li>
+<li>PackageManager</li>
+</ul>
+</li>
+<li><p>Activity</p>
+<ul>
+<li>Activity生命周期</li>
+<li>Activity启动模式</li>
+<li>Stack与Task</li>
+<li>ActivityManager</li>
+</ul>
+</li>
+<li>Service<ul>
+<li>Service创建方式（2种）</li>
+<li>IntentService</li>
+<li>ServiceManager</li>
+</ul>
+</li>
+<li>ContentProvider<ul>
+<li>联系人Demo</li>
+</ul>
+</li>
+<li>BroadcastReceiver<ul>
+<li>注册方式、区别</li>
+<li>LocalBroadcast</li>
+</ul>
+</li>
+<li>Fragment<ul>
+<li>生命周期</li>
+<li>Fragment的管理和事务处理</li>
+<li>创建方式</li>
+<li>与Activity通信</li>
+</ul>
+</li>
+<li>Intent<ul>
+<li>基础概念</li>
+<li>过滤匹配方式</li>
+</ul>
+</li>
+<li>Loader<ul>
+<li>CursorLoader</li>
+<li>AsyncTAskLoader</li>
+</ul>
+</li>
+<li>Window<ul>
+<li>WindowManager</li>
+<li>与Activity、View关系</li>
+</ul>
+</li>
+</ul>
+<h3 id="View视图"><a href="#View视图" class="headerlink" title="View视图"></a>View视图</h3><ul>
+<li>视图控件<ul>
+<li>基础布局<ul>
+<li>LinearLayout</li>
+<li>RelativeLayout</li>
+<li>FrameLayout</li>
+<li>TableLayout（继承自LinearLayout）</li>
+<li>AbsoluteLayout（已被标注过时）</li>
+</ul>
+</li>
+<li>常用控件<ul>
+<li>TextView</li>
+<li>Button</li>
+<li>ImageView</li>
+<li>ListView</li>
+<li>…</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>视图的工作原理<ul>
+<li>layout/measure/draw</li>
+<li>VSYNC/DisplayList…</li>
+<li>hwui</li>
+</ul>
+</li>
+<li>事件体系、传递机制<ul>
+<li>拦截/分发/处理</li>
+<li>滑动冲突解决</li>
+</ul>
+</li>
+<li>自定义视图<ul>
+<li>继承、组合</li>
+<li>Paint、Canvas使用</li>
+</ul>
+</li>
+</ul>
+<h3 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h3><ul>
+<li>Resource<ul>
+<li>assets</li>
+<li>raw</li>
+<li>res<ul>
+<li>Theme应用与管理</li>
+<li>layout</li>
+<li>anim</li>
+<li>values</li>
+<li>…</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>R文件相关</li>
+<li>Drawable</li>
+<li>mipmap</li>
+</ul>
+<h3 id="交互相关"><a href="#交互相关" class="headerlink" title="交互相关"></a>交互相关</h3><ul>
+<li>通知</li>
+<li>设备唤醒</li>
+<li>导航Toolbar</li>
+<li>系统UI<ul>
+<li>屏幕布局方式</li>
+<li>statubar</li>
+</ul>
+</li>
+<li>MaterialDesign</li>
+</ul>
+<h3 id="进程与线程"><a href="#进程与线程" class="headerlink" title="进程与线程"></a>进程与线程</h3><ul>
+<li>进程通信<ul>
+<li>基本概念</li>
+<li>通信方式<ul>
+<li>Binder</li>
+<li>Messager</li>
+<li>文件共享</li>
+<li>ContentProvider</li>
+<li>AIDL</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>消息机制<ul>
+<li>Handler、Looper、Message</li>
+<li>ThreadLocal</li>
+</ul>
+</li>
+<li>并发<ul>
+<li>线程、线程池</li>
+<li>线程管理Executor</li>
+<li>工具类<ul>
+<li>Exectors</li>
+<li>Exechanger</li>
+<li>…</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="数据持久化"><a href="#数据持久化" class="headerlink" title="数据持久化"></a>数据持久化</h3><ul>
+<li>SQLite</li>
+<li>SharePerference</li>
+<li>序列化</li>
+<li>Android文件系统<ul>
+<li>内部存储</li>
+<li>外部存储</li>
+<li>不同系统版本变化</li>
+</ul>
+</li>
+</ul>
+<h3 id="多媒体"><a href="#多媒体" class="headerlink" title="多媒体"></a>多媒体</h3><ul>
+<li>视频<ul>
+<li>VideoPlayer</li>
+</ul>
+</li>
+<li>音频<ul>
+<li>播放</li>
+<li>录音</li>
+</ul>
+</li>
+<li>拍照<ul>
+<li>拍照</li>
+<li>录像</li>
+</ul>
+</li>
+</ul>
+<h3 id="网络"><a href="#网络" class="headerlink" title="网络"></a>网络</h3><ul>
+<li>网络基础知识HTTP、HTTPS</li>
+<li>网络操作<ul>
+<li>网络连接<ul>
+<li>Http</li>
+<li>Socket</li>
+</ul>
+</li>
+<li>网络状态变化</li>
+</ul>
+</li>
+<li>传输优化<ul>
+<li>GZip</li>
+<li>缓存</li>
+<li>预取</li>
+</ul>
+</li>
+</ul>
+<h3 id="图像、特效动画"><a href="#图像、特效动画" class="headerlink" title="图像、特效动画"></a>图像、特效动画</h3><ul>
+<li>图片<ul>
+<li>Bitmap<ul>
+<li>加载</li>
+<li>优化</li>
+</ul>
+</li>
+<li>ImageLoader实现原理、三级缓存</li>
+<li>.9.png</li>
+<li>OpenGl ES渲染</li>
+</ul>
+</li>
+<li>gif加载</li>
+<li>动画<ul>
+<li>Tween</li>
+<li>帧动画</li>
+<li>属性动画</li>
+<li>转场动画</li>
+</ul>
+</li>
+</ul>
+<h3 id="适配"><a href="#适配" class="headerlink" title="适配"></a>适配</h3><ul>
+<li>屏幕适配<ul>
+<li>兼容屏幕大小</li>
+<li>兼容屏幕密度</li>
+<li>响应式UI</li>
+</ul>
+</li>
+<li>系统版本适配</li>
+<li>Room适配</li>
+<li>语言、国际化</li>
+<li>指令集相关</li>
+<li>辅助功能<ul>
+<li>Accessibility</li>
+</ul>
+</li>
+</ul>
+<h3 id="JNI与NDK"><a href="#JNI与NDK" class="headerlink" title="JNI与NDK"></a>JNI与NDK</h3><ul>
+<li>so文件</li>
+<li>本地方法实现</li>
+<li>NDK调试</li>
+<li>SWIG</li>
+<li>Bionic</li>
+<li>原生实现<ul>
+<li>原生线程</li>
+<li>原生图形</li>
+<li>原生音频</li>
+</ul>
+</li>
+</ul>
+<h3 id="性能优化"><a href="#性能优化" class="headerlink" title="性能优化"></a>性能优化</h3><ul>
+<li>性能<ul>
+<li>布局优化<ul>
+<li>减少层级</li>
+<li>merge标签</li>
+<li>inclue标签</li>
+<li>按需延迟加载</li>
+</ul>
+</li>
+<li>列表优化<ul>
+<li>视图复用</li>
+<li>ViewHolder的使用</li>
+<li>滑动优化</li>
+</ul>
+</li>
+<li>绘图优化 Paint</li>
+<li>线程优化、线程池、线程缓存</li>
+</ul>
+</li>
+<li>电量<ul>
+<li>电量管理、充电状态、Doze省电模式、Standby模式</li>
+<li>Battery Historian</li>
+<li><a href="http://hukai.me/android-performance-battery/" target="_blank" rel="external">可参考</a></li>
+</ul>
+</li>
+<li>内存管理<ul>
+<li>内存泄露</li>
+<li>LowMemoryKiller</li>
+<li>dump命令查看引用数量</li>
+<li>MemoryFile</li>
+<li>Ashmem</li>
+<li><a href="http://hukai.me/android-performance-memory/" target="_blank" rel="external">可参考</a></li>
+</ul>
+</li>
+<li>工具<ul>
+<li>MAT</li>
+<li>AndroidLint</li>
+<li>Systrace</li>
+<li><a href="http://blog.jobbole.com/78995/" target="_blank" rel="external">TraceView</a></li>
+<li><a href="https://github.com/square/leakcanary" target="_blank" rel="external">LeakCanary</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="开发规范"><a href="#开发规范" class="headerlink" title="开发规范"></a>开发规范</h3><ul>
+<li><a href="http://blog.csdn.net/vipzjyno1/article/details/23542617" target="_blank" rel="external">编码规范</a></li>
+<li>代码质量<ul>
+<li>分析工具<ul>
+<li>CheckStyle</li>
+<li>Findbugs</li>
+<li>pmd</li>
+</ul>
+</li>
+<li>编码审核</li>
+<li>安全编码策略</li>
+</ul>
+</li>
+</ul>
+<h3 id="应用安全"><a href="#应用安全" class="headerlink" title="应用安全"></a>应用安全</h3><ul>
+<li><a href="http://proguard.sourceforge.net/index.html#manual/troubleshooting.html" target="_blank" rel="external">代码混淆</a></li>
+<li>网络传输安全Https。<a href="http://limboy.me/tech/2011/02/19/https-workflow.html" target="_blank" rel="external">图解HTTPS</a>、<a href="https://developer.android.com/training/articles/security-ssl.html" target="_blank" rel="external">Google官方</a></li>
+<li>数据加密<ul>
+<li>MD5</li>
+<li>AES/DES</li>
+<li>Base64</li>
+<li>RSA</li>
+<li><a href="http://www.ruanyifeng.com/blog/2011/08/what_is_a_digital_signature.html" target="_blank" rel="external">关于加密算法的知识</a></li>
+</ul>
+</li>
+<li>逆向工程<ul>
+<li>反编译、apktool</li>
+<li>apk安全<ul>
+<li>dex动态加载</li>
+<li>完整性校验</li>
+<li>加壳技术</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>数据库加密</li>
+<li>设备权限管理</li>
+</ul>
+<h3 id="混合编程"><a href="#混合编程" class="headerlink" title="混合编程"></a>混合编程</h3><ul>
+<li>Java与js通信</li>
+<li>PhoneGap</li>
+<li>ReactNative</li>
+<li>WebKit相关</li>
+</ul>
+<h3 id="编译与构建"><a href="#编译与构建" class="headerlink" title="编译与构建"></a>编译与构建</h3><ul>
+<li>Gradle<ul>
+<li>基础知识</li>
+<li>Groovy</li>
+<li>manifest merger</li>
+<li>定制构建过程</li>
+<li>Gradle插件开发</li>
+</ul>
+</li>
+<li>apk<ul>
+<li>编译过程</li>
+<li>签名</li>
+</ul>
+</li>
+<li>注解知识</li>
+</ul>
+<h3 id="Android相关"><a href="#Android相关" class="headerlink" title="Android相关"></a>Android相关</h3><ul>
+<li>AndroidManifest</li>
+<li>权限管理，6.0</li>
+<li>启动过程</li>
+<li>数据共享</li>
+<li>虚拟机<ul>
+<li>JVM</li>
+<li>Dalvik</li>
+<li>ART</li>
+</ul>
+</li>
+<li>硬件<ul>
+<li>GSM、3G</li>
+<li>蓝牙</li>
+<li>GPS</li>
+<li>感应器、陀螺仪…</li>
+</ul>
+</li>
+</ul>
+<h3 id="开发相关"><a href="#开发相关" class="headerlink" title="开发相关"></a>开发相关</h3><ul>
+<li>版本控制<ul>
+<li>Git<ul>
+<li>使用</li>
+<li>gitflow</li>
+<li>github</li>
+</ul>
+</li>
+<li>svn</li>
+</ul>
+</li>
+<li>项目管理<ul>
+<li>没有接触过</li>
+</ul>
+</li>
+<li>IDE<ul>
+<li>Android Studio</li>
+<li>Eclipse（过时了）</li>
+</ul>
+</li>
+<li>adb相关</li>
+<li>Gradle</li>
+</ul>
+<h3 id="架构与设计"><a href="#架构与设计" class="headerlink" title="架构与设计"></a>架构与设计</h3><ul>
+<li>分层模式<ul>
+<li>MVC</li>
+<li>MVP</li>
+<li>MVVM</li>
+</ul>
+</li>
+<li>设计模式<ul>
+<li>常用设计模式<ul>
+<li>单例模式</li>
+<li>工厂模式</li>
+<li>…</li>
+</ul>
+</li>
+<li>实践、源码提现</li>
+</ul>
+</li>
+<li>应用架构设计<ul>
+<li>模块化/组件化</li>
+<li>架构设计</li>
+<li>databinding</li>
+<li>clean Architecture</li>
+<li>Flux应用架构</li>
+</ul>
+</li>
+</ul>
+<h3 id="第三方库"><a href="#第三方库" class="headerlink" title="第三方库"></a>第三方库</h3><ul>
+<li>图片<ul>
+<li>Fresco</li>
+<li>Gilde</li>
+<li>Picasso</li>
+<li>ImageLoader</li>
+</ul>
+</li>
+<li>网络<ul>
+<li>Okhttp</li>
+<li>Volley</li>
+<li>HttpUrlConnection</li>
+</ul>
+</li>
+<li>Gson、Jackson</li>
+<li>Dagger2</li>
+<li>ButterKnife</li>
+<li>Orm<ul>
+<li>GreenDao</li>
+<li>OrmLite</li>
+</ul>
+</li>
+<li>…</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag">#Android</a>
+          
+            <a href="/tags/知识点/" rel="tag">#知识点</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/20/parcelable/" rel="next" title="Parcelable的使用介绍">
+                <i class="fa fa-chevron-left"></i> Parcelable的使用介绍
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/07/22/as-keymap/" rel="prev" title="Android Studio最全快捷键以及演示">
+                Android Studio最全快捷键以及演示 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/07/21/android-learn/"
+           data-title="Android开发知识点汇总" data-url="http://yoursite.com/2016/07/21/android-learn/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="lowett" />
+          <p class="site-author-name" itemprop="name">lowett</p>
+          <p class="site-description motion-element" itemprop="description">雁过无痕，但我确实飞过</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#基础组件"><span class="nav-number">1.</span> <span class="nav-text">基础组件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#View视图"><span class="nav-number">2.</span> <span class="nav-text">View视图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#资源"><span class="nav-number">3.</span> <span class="nav-text">资源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#交互相关"><span class="nav-number">4.</span> <span class="nav-text">交互相关</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程与线程"><span class="nav-number">5.</span> <span class="nav-text">进程与线程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据持久化"><span class="nav-number">6.</span> <span class="nav-text">数据持久化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多媒体"><span class="nav-number">7.</span> <span class="nav-text">多媒体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网络"><span class="nav-number">8.</span> <span class="nav-text">网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#图像、特效动画"><span class="nav-number">9.</span> <span class="nav-text">图像、特效动画</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#适配"><span class="nav-number">10.</span> <span class="nav-text">适配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JNI与NDK"><span class="nav-number">11.</span> <span class="nav-text">JNI与NDK</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#性能优化"><span class="nav-number">12.</span> <span class="nav-text">性能优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开发规范"><span class="nav-number">13.</span> <span class="nav-text">开发规范</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#应用安全"><span class="nav-number">14.</span> <span class="nav-text">应用安全</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#混合编程"><span class="nav-number">15.</span> <span class="nav-text">混合编程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译与构建"><span class="nav-number">16.</span> <span class="nav-text">编译与构建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Android相关"><span class="nav-number">17.</span> <span class="nav-text">Android相关</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开发相关"><span class="nav-number">18.</span> <span class="nav-text">开发相关</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#架构与设计"><span class="nav-number">19.</span> <span class="nav-text">架构与设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第三方库"><span class="nav-number">20.</span> <span class="nav-text">第三方库</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lowett</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"lowett"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("RyOzCscbKiTRuucMD4x8Ce8e-gzGzoHsz", "gNdVnwMrki5jBmRzaQijk5G3");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+</body>
+</html>

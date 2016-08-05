@@ -1,0 +1,1672 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,Fragment," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="上一篇我们简单的分析了一下Fragment的一些基本知识点，（文章链接），对Fragment有了一个基本的认识，接下来我们就从源码的角度来分析Fragment到底是如何工作的。
+
+1、相关类Android中Fragment的实现相对来说还是比较简单的，涉及到的类并不是很多：
+
+Fragment
+FragmentTransaction
+FragmentManager
+
+2、Fragment对于Fr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="对Fragment的一些思考(二)源码剖析">
+<meta property="og:url" content="http://yoursite.com/2016/07/19/fragment-2/index.html">
+<meta property="og:site_name" content="lowett">
+<meta property="og:description" content="上一篇我们简单的分析了一下Fragment的一些基本知识点，（文章链接），对Fragment有了一个基本的认识，接下来我们就从源码的角度来分析Fragment到底是如何工作的。
+
+1、相关类Android中Fragment的实现相对来说还是比较简单的，涉及到的类并不是很多：
+
+Fragment
+FragmentTransaction
+FragmentManager
+
+2、Fragment对于Fr">
+<meta property="og:updated_time" content="2016-07-22T00:25:19.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="对Fragment的一些思考(二)源码剖析">
+<meta name="twitter:description" content="上一篇我们简单的分析了一下Fragment的一些基本知识点，（文章链接），对Fragment有了一个基本的认识，接下来我们就从源码的角度来分析Fragment到底是如何工作的。
+
+1、相关类Android中Fragment的实现相对来说还是比较简单的，涉及到的类并不是很多：
+
+Fragment
+FragmentTransaction
+FragmentManager
+
+2、Fragment对于Fr">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"right","display":"always"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 6307181688250172000,
+      author: '博主大人'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/07/19/fragment-2/"/>
+
+  <title> 对Fragment的一些思考(二)源码剖析 | lowett </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?dfd5b4385bacdae9367cc56f5736d3fa";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">lowett</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                对Fragment的一些思考(二)源码剖析
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-07-19T09:45:43+08:00" content="2016-07-19">
+              2016-07-19
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android/Fragment/" itemprop="url" rel="index">
+                    <span itemprop="name">Fragment</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/07/19/fragment-2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/19/fragment-2/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/07/19/fragment-2/" class="leancloud_visitors" data-flag-title="对Fragment的一些思考(二)源码剖析">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>上一篇我们简单的分析了一下Fragment的一些基本知识点，（<a href="http://fvaryu.github.io/2016/07/18/fragment/" target="_blank" rel="external">文章链接</a>），对Fragment有了一个基本的认识，接下来我们就从源码的角度来分析Fragment到底是如何工作的。</p>
+</blockquote>
+<h3 id="1、相关类"><a href="#1、相关类" class="headerlink" title="1、相关类"></a>1、相关类</h3><p>Android中Fragment的实现相对来说还是比较简单的，涉及到的类并不是很多：</p>
+<ul>
+<li><a href="https://developer.android.com/reference/android/app/Fragment.html" target="_blank" rel="external">Fragment</a></li>
+<li><a href="https://developer.android.com/reference/android/app/FragmentTransaction.html" target="_blank" rel="external">FragmentTransaction</a></li>
+<li><a href="https://developer.android.com/reference/android/app/FragmentManager.html" target="_blank" rel="external">FragmentManager</a></li>
+</ul>
+<h3 id="2、Fragment"><a href="#2、Fragment" class="headerlink" title="2、Fragment"></a>2、Fragment</h3><p>对于Fragment的分析，上篇已经说的很明白，这里不再赘述，如果还不是很清楚可以返回阅读。</p>
+<h3 id="3、FragmentTransaction"><a href="#3、FragmentTransaction" class="headerlink" title="3、FragmentTransaction"></a>3、FragmentTransaction</h3><p>查看官方文档可知道FragmentTransaction是一个抽象类，那么他的实现类是什么呢，是BackStackRecord，这也是真正的操作对象。<br>另外，他封装了一系列对Fragment的操作，并一次性执行这些操作。比如add()/remove()等等。</p>
+<pre><code>// 方法的定义
+public abstract class FragmentTransaction {
+    // 略...
+    public abstract FragmentTransaction add(Fragment fragment, String tag);
+    public abstract FragmentTransaction remove(Fragment fragment);
+    // 略...
+}
+
+//  BackStackRecord 实现
+    FragmentManager.BackStackEntry, Runnable {
+    final class BackStackRecord extends FragmentTransaction implements
+        FragmentManager.BackStackEntry, Runnable {
+        // 其他相关，略...
+        public FragmentTransaction add(Fragment fragment, String tag) {
+            doAddOp(0, fragment, tag, OP_ADD);
+        return this;
+
+        private void doAddOp(int containerViewId, Fragment fragment, String tag, int opcmd) {
+            // 略...
+        }
+}
+</code></pre><h3 id="4、FragmentManager"><a href="#4、FragmentManager" class="headerlink" title="4、FragmentManager"></a>4、FragmentManager</h3><p>FragmentTransaction更多的是操作Fragment本身，而FragmentManager更像一个管家，要和外部Activity打交道的组件。其中他就提供了和Activity打交道的相关API。FragmentManager同样是抽象的，实现类是FragmentManagerImp。</p>
+<pre><code>public abstract class FragmentManager {
+
+     public abstract Fragment findFragmentByTag(String tag); // 查找
+     public abstract void popBackStack(); // 出栈
+    ...
+}
+
+
+final class FragmentManagerImpl extends FragmentManager implements LayoutInflaterFactory {
+    // 其他相关，略...
+    // 查找某个Fragment的代码实现
+     public Fragment findFragmentByTag(String tag) {
+        if (mAdded != null &amp;&amp; tag != null) {
+            // First look through added fragments.
+            for (int i=mAdded.size()-1; i&gt;=0; i--) {
+                Fragment f = mAdded.get(i);
+                if (f != null &amp;&amp; tag.equals(f.mTag)) {
+                    return f;
+                }
+            }
+        }
+        if (mActive != null &amp;&amp; tag != null) {
+            // Now for any known fragment.
+            for (int i=mActive.size()-1; i&gt;=0; i--) {
+                Fragment f = mActive.get(i);
+                if (f != null &amp;&amp; tag.equals(f.mTag)) {
+                    return f;
+                }
+            }
+        }
+        return null;
+    }
+    // 其他相关，略...
+}
+</code></pre><h3 id="5、具体分析"><a href="#5、具体分析" class="headerlink" title="5、具体分析"></a>5、具体分析</h3><p>上面我也大概讲了一下Fragment相关的一下管理API，接下来就具体分析他们是如何工作的。</p>
+<h4 id="5-1、得到FragmentManager"><a href="#5-1、得到FragmentManager" class="headerlink" title="5.1、得到FragmentManager"></a>5.1、得到FragmentManager</h4><p>当我们要添加一个Fragment的时候首先是继承自Activity的到FragmentManager，</p>
+<pre><code>public FragmentManager getFragmentManager() {
+    return mFragments.getFragmentManager();
+}
+</code></pre><p>继续查看下去最终的到的启示是FragmentManagerImpl。</p>
+<h4 id="5-2、开启一个事务"><a href="#5-2、开启一个事务" class="headerlink" title="5.2、开启一个事务"></a>5.2、开启一个事务</h4><p>这里的事务不同于数据库的事务，没有回滚的概念，更像是一个管理者。得到事务管理实际上是得到一个实现类BackStackRecord。</p>
+<pre><code> @Override
+public FragmentTransaction beginTransaction() {
+    return new BackStackRecord(this);
+}
+
+ // 关联起FragmentManager
+ public BackStackRecord(FragmentManagerImpl manager) {
+    mManager = manager;
+}
+</code></pre><p>通过这个实现类我们就可以添加、移除、显示、隐藏等操作Fragment。</p>
+<h4 id="5-3、具体实现"><a href="#5-3、具体实现" class="headerlink" title="5.3、具体实现"></a>5.3、具体实现</h4><pre><code>// OP操作封装了，双链表实现
+void addOp(Op op) {
+    // 双向链表插入操作
+    if (mHead == null) {
+        mHead = mTail = op;
+    } else {
+        op.prev = mTail;
+        mTail.next = op;
+        mTail = op;
+    }
+    // 记录一些动画信息
+    op.enterAnim = mEnterAnim;
+    op.exitAnim = mExitAnim;
+    op.popEnterAnim = mPopEnterAnim;
+    op.popExitAnim = mPopExitAnim;
+    mNumOp++;
+}
+
+// 添加
+public FragmentTransaction add(Fragment fragment, String tag) {
+    doAddOp(0, fragment, tag, OP_ADD);
+    return this;
+}
+
+public FragmentTransaction add(int containerViewId, Fragment fragment) {
+    doAddOp(containerViewId, fragment, null, OP_ADD);
+    return this;
+}
+
+public FragmentTransaction add(int containerViewId, Fragment fragment, String tag) {
+    doAddOp(containerViewId, fragment, tag, OP_ADD);
+    return this;
+}
+
+private void doAddOp(int containerViewId, Fragment fragment, String tag, int opcmd) {
+    fragment.mFragmentManager = mManager;
+
+    if (tag != null) {
+        if (fragment.mTag != null &amp;&amp; !tag.equals(fragment.mTag)) {
+            throw new IllegalStateException(&quot;Can&apos;t change tag of fragment &quot;
+                    + fragment + &quot;: was &quot; + fragment.mTag
+                    + &quot; now &quot; + tag);
+        }
+        // 记录这些信息到fragment对象上
+        fragment.mTag = tag;
+    }
+
+    if (containerViewId != 0) {
+        if (fragment.mFragmentId != 0 &amp;&amp; fragment.mFragmentId != containerViewId) {
+            throw new IllegalStateException(&quot;Can&apos;t change container ID of fragment &quot;
+                    + fragment + &quot;: was &quot; + fragment.mFragmentId
+                    + &quot; now &quot; + containerViewId);
+        }
+        // 记录这些信息到fragment对象上
+        fragment.mContainerId = fragment.mFragmentId = containerViewId;
+    }
+
+    Op op = new Op();
+    op.cmd = opcmd;
+    op.fragment = fragment;
+    addOp(op);
+}
+
+public FragmentTransaction replace(int containerViewId, Fragment fragment) {
+    return replace(containerViewId, fragment, null);
+}
+
+public FragmentTransaction replace(int containerViewId, Fragment fragment, String tag) {
+    if (containerViewId == 0) {
+        throw new IllegalArgumentException(&quot;Must use non-zero containerViewId&quot;);
+    }
+
+    doAddOp(containerViewId, fragment, tag, OP_REPLACE);
+    return this;
+}
+
+public FragmentTransaction remove(Fragment fragment) {
+    Op op = new Op();
+    op.cmd = OP_REMOVE;
+    op.fragment = fragment;
+    addOp(op);
+
+    return this;
+}
+
+public FragmentTransaction hide(Fragment fragment) {
+    Op op = new Op();
+    op.cmd = OP_HIDE;
+    op.fragment = fragment;
+    addOp(op);
+
+    return this;
+}
+
+public FragmentTransaction show(Fragment fragment) {
+    Op op = new Op();
+    op.cmd = OP_SHOW;
+    op.fragment = fragment;
+    addOp(op);
+
+    return this;
+}
+
+public FragmentTransaction detach(Fragment fragment) {
+    Op op = new Op();
+    op.cmd = OP_DETACH;
+    op.fragment = fragment;
+    addOp(op);
+
+    return this;
+}
+
+public FragmentTransaction attach(Fragment fragment) {
+    Op op = new Op();
+    op.cmd = OP_ATTACH;
+    op.fragment = fragment;
+    addOp(op);
+
+    return this;
+}
+
+public FragmentTransaction setCustomAnimations(int enter, int exit) {
+    return setCustomAnimations(enter, exit, 0, 0);
+}
+
+public FragmentTransaction setCustomAnimations(int enter, int exit,
+        int popEnter, int popExit) {
+    mEnterAnim = enter;
+    mExitAnim = exit;
+    mPopEnterAnim = popEnter;
+    mPopExitAnim = popExit;
+    return this;
+}
+
+public FragmentTransaction setTransition(int transition) {
+    mTransition = transition;
+    return this;
+}
+
+@Override
+public FragmentTransaction addSharedElement(View sharedElement, String name) {
+    String transitionName = sharedElement.getTransitionName();
+    if (transitionName == null) {
+        throw new IllegalArgumentException(&quot;Unique transitionNames are required for all&quot; +
+                &quot; sharedElements&quot;);
+    }
+    if (mSharedElementSourceNames == null) {
+        mSharedElementSourceNames = new ArrayList&lt;String&gt;();
+        mSharedElementTargetNames = new ArrayList&lt;String&gt;();
+    }
+    mSharedElementSourceNames.add(transitionName);
+    mSharedElementTargetNames.add(name);
+    return this;
+}
+
+public FragmentTransaction setTransitionStyle(int styleRes) {
+    mTransitionStyle = styleRes;
+    return this;
+}
+
+public FragmentTransaction addToBackStack(String name) {
+    if (!mAllowAddToBackStack) {
+        throw new IllegalStateException(
+                &quot;This FragmentTransaction is not allowed to be added to the back stack.&quot;);
+    }
+    mAddToBackStack = true;
+    mName = name;
+    return this;
+}
+</code></pre><p>从这些源码我们不难看出，各种不同操作方法内部实际上只是个不同cmd的Op对象，通过双向链表链起来了而已，至于为什么要是双向的呢，单链表不行吗？那是因为Fragment在Activity层面维护了一个回退栈，即如果你调用了FragmentTransaction.addToBackStack(null);这样的代码，那么当你按下back键的时候不是直接结束当前Activity，而是先从Fragment栈里尝试pop出来栈顶的Fragment。它不仅要向前进，还得支持向后退。</p>
+<p>接下来，就是commit了，源码如下：</p>
+<pre><code>public int commit() {
+    return commitInternal(false);
+}
+
+public int commitAllowingStateLoss() {
+    return commitInternal(true);
+}
+
+int commitInternal(boolean allowStateLoss) {
+    if (mCommitted) {
+        throw new IllegalStateException(&quot;commit already called&quot;);
+    }
+    if (FragmentManagerImpl.DEBUG) {
+        Log.v(TAG, &quot;Commit: &quot; + this);
+        LogWriter logw = new LogWriter(Log.VERBOSE, TAG);
+        PrintWriter pw = new FastPrintWriter(logw, false, 1024);
+        dump(&quot;  &quot;, null, pw, null);
+        pw.flush();
+    }
+    mCommitted = true;
+    if (mAddToBackStack) {
+        mIndex = mManager.allocBackStackIndex(this);
+    } else {
+        mIndex = -1;
+    }
+    mManager.enqueueAction(this, allowStateLoss);
+    return mIndex;
+}
+
+    // FragmentManagerImpl#enqueueAction方法
+    /**
+     * Adds an action to the queue of pending actions.
+     *
+     * @param action the action to add
+     * @param allowStateLoss whether to allow loss of state information
+     * @throws IllegalStateException if the activity has been destroyed
+     */
+    public void enqueueAction(Runnable action, boolean allowStateLoss) {
+        if (!allowStateLoss) {
+            checkStateLoss();
+        }
+        synchronized (this) {
+            if (mDestroyed || mHost == null) {
+                throw new IllegalStateException(&quot;Activity has been destroyed&quot;);
+            }
+            if (mPendingActions == null) {
+                mPendingActions = new ArrayList&lt;Runnable&gt;();
+            }
+            mPendingActions.add(action);
+            if (mPendingActions.size() == 1) {
+                mHost.getHandler().removeCallbacks(mExecCommit);
+                mHost.getHandler().post(mExecCommit);
+            }
+        }
+    }
+</code></pre><p>commit方法并不是立即执行提交任务的，而是入队了一个action（通过mPendingActions.add(action);），系统会在下次event loop到来时执行它。</p>
+<pre><code>// FragmentManagerImpl的其他方法,略...
+Runnable mExecCommit = new Runnable() {
+        @Override
+        public void run() {
+            execPendingActions();
+        }
+    };
+
+/**
+ * Only call from main thread!
+ */
+public boolean execPendingActions() {
+    if (mExecutingActions) {
+        throw new IllegalStateException(&quot;Recursive entry to executePendingTransactions&quot;);
+    }
+
+    if (Looper.myLooper() != mHost.getHandler().getLooper()) {
+        throw new IllegalStateException(&quot;Must be called from main thread of process&quot;);
+    }
+
+    boolean didSomething = false;
+
+    while (true) {
+        int numActions;
+
+        synchronized (this) {
+            if (mPendingActions == null || mPendingActions.size() == 0) {
+                break;
+            }
+
+            numActions = mPendingActions.size();
+            if (mTmpActions == null || mTmpActions.length &lt; numActions) {
+                mTmpActions = new Runnable[numActions];
+            }
+            mPendingActions.toArray(mTmpActions);
+            mPendingActions.clear();
+            mHost.getHandler().removeCallbacks(mExecCommit);
+        }
+
+        mExecutingActions = true;
+        for (int i=0; i&lt;numActions; i++) {
+            mTmpActions[i].run();
+            mTmpActions[i] = null;
+        }
+        mExecutingActions = false;
+        didSomething = true;
+    }
+
+    if (mHavePendingDeferredStart) {
+        boolean loadersRunning = false;
+        for (int i=0; i&lt;mActive.size(); i++) {
+            Fragment f = mActive.get(i);
+            if (f != null &amp;&amp; f.mLoaderManager != null) {
+                loadersRunning |= f.mLoaderManager.hasRunningLoaders();
+            }
+        }
+        if (!loadersRunning) {
+            mHavePendingDeferredStart = false;
+            startPendingDeferredFragments();
+        }
+    }
+    return didSomething;
+}
+</code></pre><p>正在执行的是在BackStackRecord#run中，因为BackStackRecord实现了Runnable接口。</p>
+<pre><code>public void run() {
+    if (FragmentManagerImpl.DEBUG) Log.v(TAG, &quot;Run: &quot; + this);
+
+    if (mAddToBackStack) {
+        if (mIndex &lt; 0) {
+            throw new IllegalStateException(&quot;addToBackStack() called after commit()&quot;);
+        }
+    }
+
+    bumpBackStackNesting(1);
+
+    TransitionState state = null;
+    SparseArray&lt;Fragment&gt; firstOutFragments = null;
+    SparseArray&lt;Fragment&gt; lastInFragments = null;
+    if (SUPPORTS_TRANSITIONS) {
+        firstOutFragments = new SparseArray&lt;Fragment&gt;();
+        lastInFragments = new SparseArray&lt;Fragment&gt;();
+
+        calculateFragments(firstOutFragments, lastInFragments);
+
+        state = beginTransition(firstOutFragments, lastInFragments, false);
+    }
+
+    int transitionStyle = state != null ? 0 : mTransitionStyle;
+    int transition = state != null ? 0 : mTransition;
+    Op op = mHead;
+    while (op != null) {
+        int enterAnim = state != null ? 0 : op.enterAnim;
+        int exitAnim = state != null ? 0 : op.exitAnim;
+        switch (op.cmd) {
+            case OP_ADD: {
+                Fragment f = op.fragment;
+                f.mNextAnim = enterAnim;
+                mManager.addFragment(f, false);
+            } break;
+            case OP_REPLACE: {
+                Fragment f = op.fragment;
+                int containerId = f.mContainerId;
+                if (mManager.mAdded != null) {
+                    for (int i = mManager.mAdded.size() - 1; i &gt;= 0; i--) {
+                        Fragment old = mManager.mAdded.get(i);
+                        if (FragmentManagerImpl.DEBUG) Log.v(TAG,
+                                &quot;OP_REPLACE: adding=&quot; + f + &quot; old=&quot; + old);
+                        if (old.mContainerId == containerId) {
+                            if (old == f) {
+                                op.fragment = f = null;
+                            } else {
+                                if (op.removed == null) {
+                                    op.removed = new ArrayList&lt;Fragment&gt;();
+                                }
+                                op.removed.add(old);
+                                old.mNextAnim = exitAnim;
+                                if (mAddToBackStack) {
+                                    old.mBackStackNesting += 1;
+                                    if (FragmentManagerImpl.DEBUG) Log.v(TAG, &quot;Bump nesting of &quot;
+                                            + old + &quot; to &quot; + old.mBackStackNesting);
+                                }
+                                // 先移除
+                                mManager.removeFragment(old, transition, transitionStyle);
+                            }
+                        }
+                    }
+                }
+                if (f != null) {
+                    f.mNextAnim = enterAnim;
+                    mManager.addFragment(f, false); // 在添加
+                }
+            } break;
+            case OP_REMOVE: {
+                Fragment f = op.fragment;
+                f.mNextAnim = exitAnim;
+                mManager.removeFragment(f, transition, transitionStyle);
+            } break;
+            case OP_HIDE: {
+                Fragment f = op.fragment;
+                f.mNextAnim = exitAnim;
+                mManager.hideFragment(f, transition, transitionStyle);
+            } break;
+            case OP_SHOW: {
+                Fragment f = op.fragment;
+                f.mNextAnim = enterAnim;
+                mManager.showFragment(f, transition, transitionStyle);
+            } break;
+            case OP_DETACH: {
+                Fragment f = op.fragment;
+                f.mNextAnim = exitAnim;
+                mManager.detachFragment(f, transition, transitionStyle);
+            } break;
+            case OP_ATTACH: {
+                Fragment f = op.fragment;
+                f.mNextAnim = enterAnim;
+                mManager.attachFragment(f, transition, transitionStyle);
+            } break;
+            default: {
+                throw new IllegalArgumentException(&quot;Unknown cmd: &quot; + op.cmd);
+            }
+        }
+
+        op = op.next;
+    }
+
+    mManager.moveToState(mManager.mCurState, transition, transitionStyle, true);
+
+    if (mAddToBackStack) {
+        mManager.addBackStackState(this);
+    }
+}
+</code></pre><p>这里是个while循环，遍历Op双向链表，根据不同的cmd类型来执行不同的操作，比如OP_SHOW，即show();值得我们注意的是OP_REPLACE 操作，实际上是add()和remove()的合体。<br>当具体的操作类型执行完后，会有这样一条代码，</p>
+<pre><code>mManager.moveToState(mManager.mCurState, transition, transitionStyle, true);
+</code></pre><p>他又是干嘛的呢，从字面不难看出，是记录Fragment状态的，源码实现，</p>
+<pre><code>void moveToState(int newState, int transit, int transitStyle, boolean always) {
+    if (mHost == null &amp;&amp; newState != Fragment.INITIALIZING) {
+        throw new IllegalStateException(&quot;No host&quot;);
+    }
+
+    if (!always &amp;&amp; mCurState == newState) {
+        return;
+    }
+
+    mCurState = newState;
+    if (mActive != null) {
+        boolean loadersRunning = false;
+        for (int i=0; i&lt;mActive.size(); i++) {
+            Fragment f = mActive.get(i);
+            if (f != null) {
+                // 这里操作
+                moveToState(f, newState, transit, transitStyle, false);
+                if (f.mLoaderManager != null) {
+                    loadersRunning |= f.mLoaderManager.hasRunningLoaders();
+                }
+            }
+        }
+
+        if (!loadersRunning) {
+            startPendingDeferredFragments();
+        }
+
+        if (mNeedMenuInvalidate &amp;&amp; mHost != null &amp;&amp; mCurState == Fragment.RESUMED) {
+            mHost.onSupportInvalidateOptionsMenu();
+            mNeedMenuInvalidate = false;
+        }
+    }
+}
+
+// moveToState的实现
+void moveToState(Fragment f, int newState, int transit, int transitionStyle,
+        boolean keepActive) {
+    // Fragments that are not currently added will sit in the onCreate() state.
+    if ((!f.mAdded || f.mDetached) &amp;&amp; newState &gt; Fragment.CREATED) {
+        newState = Fragment.CREATED;
+    }
+    if (f.mRemoving &amp;&amp; newState &gt; f.mState) {
+        // While removing a fragment, we can&apos;t change it to a higher state.
+        newState = f.mState;
+    }
+    // Defer start if requested; don&apos;t allow it to move to STARTED or higher
+    // if it&apos;s not already started.
+    if (f.mDeferStart &amp;&amp; f.mState &lt; Fragment.STARTED &amp;&amp; newState &gt; Fragment.STOPPED) {
+        newState = Fragment.STOPPED;
+    }
+    if (f.mState &lt; newState) {
+        // For fragments that are created from a layout, when restoring from
+        // state we don&apos;t want to allow them to be created until they are
+        // being reloaded from the layout.
+        if (f.mFromLayout &amp;&amp; !f.mInLayout) {
+            return;
+        }  
+        if (f.mAnimatingAway != null) {
+            // The fragment is currently being animated...  but!  Now we
+            // want to move our state back up.  Give up on waiting for the
+            // animation, move to whatever the final state should be once
+            // the animation is done, and then we can proceed from there.
+            f.mAnimatingAway = null;
+            moveToState(f, f.mStateAfterAnimating, 0, 0, true);
+        }
+        switch (f.mState) {
+            case Fragment.INITIALIZING:
+                if (DEBUG) Log.v(TAG, &quot;moveto CREATED: &quot; + f);
+                if (f.mSavedFragmentState != null) {
+                    f.mSavedFragmentState.setClassLoader(mHost.getContext().getClassLoader());
+                    f.mSavedViewState = f.mSavedFragmentState.getSparseParcelableArray(
+                            FragmentManagerImpl.VIEW_STATE_TAG);
+                    f.mTarget = getFragment(f.mSavedFragmentState,
+                            FragmentManagerImpl.TARGET_STATE_TAG);
+                    if (f.mTarget != null) {
+                        f.mTargetRequestCode = f.mSavedFragmentState.getInt(
+                                FragmentManagerImpl.TARGET_REQUEST_CODE_STATE_TAG, 0);
+                    }
+                    f.mUserVisibleHint = f.mSavedFragmentState.getBoolean(
+                            FragmentManagerImpl.USER_VISIBLE_HINT_TAG, true);
+                    if (!f.mUserVisibleHint) {
+                        f.mDeferStart = true;
+                        if (newState &gt; Fragment.STOPPED) {
+                            newState = Fragment.STOPPED;
+                        }
+                    }
+                }
+                f.mHost = mHost;
+                f.mParentFragment = mParent;
+                f.mFragmentManager = mParent != null
+                        ? mParent.mChildFragmentManager : mHost.getFragmentManagerImpl();
+                f.mCalled = false;
+                f.onAttach(mHost.getContext());
+                if (!f.mCalled) {
+                    throw new SuperNotCalledException(&quot;Fragment &quot; + f
+                            + &quot; did not call through to super.onAttach()&quot;);
+                }
+                if (f.mParentFragment == null) {
+                    mHost.onAttachFragment(f);
+                }
+
+                if (!f.mRetaining) {
+                    f.performCreate(f.mSavedFragmentState);
+                }
+                f.mRetaining = false;
+                if (f.mFromLayout) {
+                    // For fragments that are part of the content view
+                    // layout, we need to instantiate the view immediately
+                    // and the inflater will take care of adding it.
+                    f.mView = f.performCreateView(f.getLayoutInflater(
+                            f.mSavedFragmentState), null, f.mSavedFragmentState);
+                    if (f.mView != null) {
+                        f.mInnerView = f.mView;
+                        if (Build.VERSION.SDK_INT &gt;= 11) {
+                            ViewCompat.setSaveFromParentEnabled(f.mView, false);
+                        } else {
+                            f.mView = NoSaveStateFrameLayout.wrap(f.mView);
+                        }
+                        if (f.mHidden) f.mView.setVisibility(View.GONE);
+                        f.onViewCreated(f.mView, f.mSavedFragmentState);
+                    } else {
+                        f.mInnerView = null;
+                    }
+                }
+            case Fragment.CREATED:
+                if (newState &gt; Fragment.CREATED) {
+                    if (DEBUG) Log.v(TAG, &quot;moveto ACTIVITY_CREATED: &quot; + f);
+                    if (!f.mFromLayout) {
+                        ViewGroup container = null;
+                        if (f.mContainerId != 0) {
+                            container = (ViewGroup)mContainer.onFindViewById(f.mContainerId);
+                            if (container == null &amp;&amp; !f.mRestored) {
+                                throwException(new IllegalArgumentException(
+                                        &quot;No view found for id 0x&quot;
+                                        + Integer.toHexString(f.mContainerId) + &quot; (&quot;
+                                        + f.getResources().getResourceName(f.mContainerId)
+                                        + &quot;) for fragment &quot; + f));
+                            }
+                        }
+                        f.mContainer = container;
+                        f.mView = f.performCreateView(f.getLayoutInflater(
+                                f.mSavedFragmentState), container, f.mSavedFragmentState);
+                        if (f.mView != null) {
+                            f.mInnerView = f.mView;
+                            if (Build.VERSION.SDK_INT &gt;= 11) {
+                                ViewCompat.setSaveFromParentEnabled(f.mView, false);
+                            } else {
+                                f.mView = NoSaveStateFrameLayout.wrap(f.mView);
+                            }
+                            if (container != null) {
+                                Animation anim = loadAnimation(f, transit, true,
+                                        transitionStyle);
+                                if (anim != null) {
+                                    setHWLayerAnimListenerIfAlpha(f.mView, anim);
+                                    f.mView.startAnimation(anim);
+                                }
+                                container.addView(f.mView);
+                            }
+                            if (f.mHidden) f.mView.setVisibility(View.GONE);
+                            f.onViewCreated(f.mView, f.mSavedFragmentState);
+                        } else {
+                            f.mInnerView = null;
+                        }
+                    }
+
+                    f.performActivityCreated(f.mSavedFragmentState);
+                    if (f.mView != null) {
+                        f.restoreViewState(f.mSavedFragmentState);
+                    }
+                    f.mSavedFragmentState = null;
+                }
+            case Fragment.ACTIVITY_CREATED:
+            case Fragment.STOPPED:
+                if (newState &gt; Fragment.STOPPED) {
+                    if (DEBUG) Log.v(TAG, &quot;moveto STARTED: &quot; + f);
+                    f.performStart();
+                }
+            case Fragment.STARTED:
+                if (newState &gt; Fragment.STARTED) {
+                    if (DEBUG) Log.v(TAG, &quot;moveto RESUMED: &quot; + f);
+                    f.performResume();
+                    f.mSavedFragmentState = null;
+                    f.mSavedViewState = null;
+                }
+        }
+    } else if (f.mState &gt; newState) {
+        switch (f.mState) {
+            case Fragment.RESUMED:
+                if (newState &lt; Fragment.RESUMED) {
+                    if (DEBUG) Log.v(TAG, &quot;movefrom RESUMED: &quot; + f);
+                    f.performPause();
+                }
+            case Fragment.STARTED:
+                if (newState &lt; Fragment.STARTED) {
+                    if (DEBUG) Log.v(TAG, &quot;movefrom STARTED: &quot; + f);
+                    f.performStop();
+                }
+            case Fragment.STOPPED:
+                if (newState &lt; Fragment.STOPPED) {
+                    if (DEBUG) Log.v(TAG, &quot;movefrom STOPPED: &quot; + f);
+                    f.performReallyStop();
+                }
+            case Fragment.ACTIVITY_CREATED:
+                if (newState &lt; Fragment.ACTIVITY_CREATED) {
+                    if (DEBUG) Log.v(TAG, &quot;movefrom ACTIVITY_CREATED: &quot; + f);
+                    if (f.mView != null) {
+                        // Need to save the current view state if not
+                        // done already.
+                        if (mHost.onShouldSaveFragmentState(f) &amp;&amp; f.mSavedViewState == null) {
+                            saveFragmentViewState(f);
+                        }
+                    }
+                    f.performDestroyView();
+                    if (f.mView != null &amp;&amp; f.mContainer != null) {
+                        Animation anim = null;
+                        if (mCurState &gt; Fragment.INITIALIZING &amp;&amp; !mDestroyed) {
+                            anim = loadAnimation(f, transit, false,
+                                    transitionStyle);
+                        }
+                        if (anim != null) {
+                            final Fragment fragment = f;
+                            f.mAnimatingAway = f.mView;
+                            f.mStateAfterAnimating = newState;
+                            final View viewToAnimate = f.mView;
+                            anim.setAnimationListener(new AnimateOnHWLayerIfNeededListener(
+                                    viewToAnimate, anim) {
+                                @Override
+                                public void onAnimationEnd(Animation animation) {
+                                    super.onAnimationEnd(animation);
+                                    if (fragment.mAnimatingAway != null) {
+                                        fragment.mAnimatingAway = null;
+                                        moveToState(fragment, fragment.mStateAfterAnimating,
+                                                0, 0, false);
+                                    }
+                                }
+                            });
+                            f.mView.startAnimation(anim);
+                        }
+                        f.mContainer.removeView(f.mView);
+                    }
+                    f.mContainer = null;
+                    f.mView = null;
+                    f.mInnerView = null;
+                }
+            case Fragment.CREATED:
+                if (newState &lt; Fragment.CREATED) {
+                    if (mDestroyed) {
+                        if (f.mAnimatingAway != null) {
+                            // The fragment&apos;s containing activity is
+                            // being destroyed, but this fragment is
+                            // currently animating away.  Stop the
+                            // animation right now -- it is not needed,
+                            // and we can&apos;t wait any more on destroying
+                            // the fragment.
+                            View v = f.mAnimatingAway;
+                            f.mAnimatingAway = null;
+                            v.clearAnimation();
+                        }
+                    }
+                    if (f.mAnimatingAway != null) {
+                        // We are waiting for the fragment&apos;s view to finish
+                        // animating away.  Just make a note of the state
+                        // the fragment now should move to once the animation
+                        // is done.
+                        f.mStateAfterAnimating = newState;
+                        newState = Fragment.CREATED;
+                    } else {
+                        if (DEBUG) Log.v(TAG, &quot;movefrom CREATED: &quot; + f);
+                        if (!f.mRetaining) {
+                            f.performDestroy();
+                        } else {
+                            f.mState = Fragment.INITIALIZING;
+                        }
+
+                        f.mCalled = false;
+                        f.onDetach();
+                        if (!f.mCalled) {
+                            throw new SuperNotCalledException(&quot;Fragment &quot; + f
+                                    + &quot; did not call through to super.onDetach()&quot;);
+                        }
+                        if (!keepActive) {
+                            if (!f.mRetaining) {
+                                makeInactive(f);
+                            } else {
+                                f.mHost = null;
+                                f.mParentFragment = null;
+                                f.mFragmentManager = null;
+                                f.mChildFragmentManager = null;
+                            }
+                        }
+                    }
+                }
+        }
+    }
+
+    if (f.mState != newState) {
+        Log.w(TAG, &quot;moveToState: Fragment state for &quot; + f + &quot; not updated inline; &quot;
+                + &quot;expected state &quot; + newState + &quot; found &quot; + f.mState);
+        f.mState = newState;
+    }
+}
+</code></pre><p>查看这个方法，你有没有发现什么，对，和Fragment的什么周期对应，所以这里的状态，即是Fragment的什么周期函数，比如onCreate、onCreateView等等。<br>到这里你应该明白了，Fragment的实现思路了吧，相对于其他组件，比如Activity它还是比较容易理解的。</p>
+<h3 id="6、总结"><a href="#6、总结" class="headerlink" title="6、总结"></a>6、总结</h3><ul>
+<li><p>show/hideFragment只是改变Fragment根View的visibility，如果用动画会有个动画效果，还有就是只有本身是hidden的fragment，调用show才起作用，否则没用的，fragment.onHiddenChanged会被触发；其次不会有生命周期callback触发，当然了这些操作的前提是已经被add了的fragment；</p>
+</li>
+<li><p>addFragment的时候，不管加不加入回退栈都一样，经历的生命周期如下：onAttach、onCreate、onCreateView、onActivityCreate、onStart、onResume；</p>
+</li>
+<li><p>removeFragment的时候，经历的生命周期如下：onPause、onStop、onDestroyView，如果不加回退栈还会继续走<br>onDestroy、onDetach；remove的时候不仅从mAdded中移除fragment，也从mActive中移除了；</p>
+</li>
+</ul>
+<ul>
+<li><p>FragmentManagerImpl中关键字段申明<br>attach/detachFragment的前提都是已经add了的fragment，其生命周期回调不受回退栈影响。attach的时候onCreateView、onActivityCreate、onStart、onResume会被调用；detach的时候onPause、onStop、onDestroyView会被调用，onDestroy、onDetach不会被调用；对应的fragment只是从mAdded中移除了；</p>
+</li>
+<li><p>remove、detachFragment的时候，当FragmentManagerImpl.makeInactive()被调用的话，fragment就变成了一个空壳，里面绝大部分字段都会被置空，注意只是系统内部自己管理的字段，假如你在自己的fragment子类中引入了新的字段，当你重用这些类的对象时要自己处理这种情况（即系统不会reset你自己造的字段），代码如下：</p>
+<pre><code>void makeInactive(Fragment f) {
+    if (f.mIndex &lt; 0) {
+        return;
+    }
+
+    if (DEBUG) Log.v(TAG, &quot;Freeing fragment index &quot; + f);
+    mActive.set(f.mIndex, null);
+    if (mAvailIndices == null) {
+        mAvailIndices = new ArrayList&lt;Integer&gt;();
+    }
+    mAvailIndices.add(f.mIndex);
+    mHost.inactivateFragment(f.mWho);
+    f.initState();
+}
+
+// Fragment.initState方法
+/**
+ * Called by the fragment manager once this fragment has been removed,
+ * so that we don&apos;t have any left-over state if the application decides
+ * to re-use the instance.  This only clears state that the framework
+ * internally manages, not things the application sets.
+ */
+void initState() {
+    mIndex = -1;
+    mWho = null;
+    mAdded = false;
+    mRemoving = false;
+    mResumed = false;
+    mFromLayout = false;
+    mInLayout = false;
+    mRestored = false;
+    mBackStackNesting = 0;
+    mFragmentManager = null;
+    mChildFragmentManager = null;
+    mHost = null;
+    mFragmentId = 0;
+    mContainerId = 0;
+    mTag = null;
+    mHidden = false;
+    mDetached = false;
+    mRetaining = false;
+    mLoaderManager = null;
+    mLoadersStarted = false;
+    mCheckedForLoaderManager = false;
+}
+</code></pre></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag">#Android</a>
+          
+            <a href="/tags/Fragment/" rel="tag">#Fragment</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/18/fragment/" rel="next" title="对Fragment的一些思考(一)">
+                <i class="fa fa-chevron-left"></i> 对Fragment的一些思考(一)
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/07/20/parcelable/" rel="prev" title="Parcelable的使用介绍">
+                Parcelable的使用介绍 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/07/19/fragment-2/"
+           data-title="对Fragment的一些思考(二)源码剖析" data-url="http://yoursite.com/2016/07/19/fragment-2/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="lowett" />
+          <p class="site-author-name" itemprop="name">lowett</p>
+          <p class="site-description motion-element" itemprop="description">雁过无痕，但我确实飞过</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、相关类"><span class="nav-number">1.</span> <span class="nav-text">1、相关类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、Fragment"><span class="nav-number">2.</span> <span class="nav-text">2、Fragment</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、FragmentTransaction"><span class="nav-number">3.</span> <span class="nav-text">3、FragmentTransaction</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、FragmentManager"><span class="nav-number">4.</span> <span class="nav-text">4、FragmentManager</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5、具体分析"><span class="nav-number">5.</span> <span class="nav-text">5、具体分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1、得到FragmentManager"><span class="nav-number">5.1.</span> <span class="nav-text">5.1、得到FragmentManager</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-2、开启一个事务"><span class="nav-number">5.2.</span> <span class="nav-text">5.2、开启一个事务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-3、具体实现"><span class="nav-number">5.3.</span> <span class="nav-text">5.3、具体实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6、总结"><span class="nav-number">6.</span> <span class="nav-text">6、总结</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lowett</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"lowett"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("RyOzCscbKiTRuucMD4x8Ce8e-gzGzoHsz", "gNdVnwMrki5jBmRzaQijk5G3");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+</body>
+</html>

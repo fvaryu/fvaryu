@@ -1,0 +1,807 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,感想,面试," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="最近公司新项目启动需要招人，有幸本人负责安卓技术这一块，因为本人也是菜鸟，哈哈
+陆陆续续公司来了一些面试者，但是到目前为止还没有一个合适，不是说他们的技术不过关，而是里面参杂着形形色色的问题。下面说说自己的一点想法。如果说的不对的地方还请谅解，谢谢。
+一、做一点准备工作作为一个应聘的去参加面试前势必要对公司有些了解，既然决定去面试就说明自己认可或者能够满足自己的需求现状，那去之前是否应该多少了解一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android`s，面试不过也许真的是你不够努力">
+<meta property="og:url" content="http://yoursite.com/2016/07/13/first/index.html">
+<meta property="og:site_name" content="lowett">
+<meta property="og:description" content="最近公司新项目启动需要招人，有幸本人负责安卓技术这一块，因为本人也是菜鸟，哈哈
+陆陆续续公司来了一些面试者，但是到目前为止还没有一个合适，不是说他们的技术不过关，而是里面参杂着形形色色的问题。下面说说自己的一点想法。如果说的不对的地方还请谅解，谢谢。
+一、做一点准备工作作为一个应聘的去参加面试前势必要对公司有些了解，既然决定去面试就说明自己认可或者能够满足自己的需求现状，那去之前是否应该多少了解一">
+<meta property="og:updated_time" content="2016-07-15T14:00:38.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android`s，面试不过也许真的是你不够努力">
+<meta name="twitter:description" content="最近公司新项目启动需要招人，有幸本人负责安卓技术这一块，因为本人也是菜鸟，哈哈
+陆陆续续公司来了一些面试者，但是到目前为止还没有一个合适，不是说他们的技术不过关，而是里面参杂着形形色色的问题。下面说说自己的一点想法。如果说的不对的地方还请谅解，谢谢。
+一、做一点准备工作作为一个应聘的去参加面试前势必要对公司有些了解，既然决定去面试就说明自己认可或者能够满足自己的需求现状，那去之前是否应该多少了解一">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"right","display":"always"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 6307181688250172000,
+      author: '博主大人'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/07/13/first/"/>
+
+  <title> Android`s，面试不过也许真的是你不够努力 | lowett </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?dfd5b4385bacdae9367cc56f5736d3fa";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">lowett</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Android`s，面试不过也许真的是你不够努力
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-07-13T21:15:45+08:00" content="2016-07-13">
+              2016-07-13
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/面试/" itemprop="url" rel="index">
+                    <span itemprop="name">面试</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/07/13/first/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/13/first/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/07/13/first/" class="leancloud_visitors" data-flag-title="Android`s，面试不过也许真的是你不够努力">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近公司新项目启动需要招人，有幸本人负责安卓技术这一块，因为本人也是菜鸟，哈哈</p>
+<p>陆陆续续公司来了一些面试者，但是到目前为止还没有一个合适，不是说他们的技术不过关，而是里面参杂着形形色色的问题。下面说说自己的一点想法。<br>如果说的不对的地方还请谅解，谢谢。</p>
+<h3 id="一、做一点准备工作"><a href="#一、做一点准备工作" class="headerlink" title="一、做一点准备工作"></a>一、做一点准备工作</h3><p>作为一个应聘的去参加面试前势必要对公司有些了解，既然决定去面试就说明自己认可或者能够满足自己的需求现状，那去之前是否应该多少了解一点公司的情况，不然不就是浪费大家的时间了吗。我面试的人中大部分对公司是做什么的完全不知道，简历也是海投的，更有甚者公司名字都不知道，那你还面试个啥呢。</p>
+<h3 id="二、合理的薪资要求"><a href="#二、合理的薪资要求" class="headerlink" title="二、合理的薪资要求"></a>二、合理的薪资要求</h3><p>高薪大家都喜欢，但是是不是应该务实一点呢。收到的简历中薪资要求都是异常的高，只有一个姑娘－－硕士研究生，薪资要求比较合理的，根据自己的能力合理的定位，之所以最终没有要她，是我觉得她应该去大一点公司做研发比较合适，我们只是一个简单的App，她的能力以及职业发展方向不能够和公司对应起来，对她对公司都是一种损失，而其他的面试者基本是瞎要，不能给自己一个合理的评估。刚出道做了，哦，不对，是参与了一个项目之后就多少K多少K，而技术呢，一塌糊涂。有人会说了时我要求太高了，在这里要说明一下，我问的全都是基础，因为我们也不是招很厉害的高级工程师，能够满足基本的业务需求就行。</p>
+<h3 id="三、提升自己的技术能力"><a href="#三、提升自己的技术能力" class="headerlink" title="三、提升自己的技术能力"></a>三、提升自己的技术能力</h3><p>面试的过程中发现，多数应聘者都是停留在会使用api的层面，稍稍深的一些实现都没有去看看，对，是看看，研究那就更是寥寥无几了。比如有一个应聘者说Okhttp精通，然后我就问Okhttp支持SDPY吗，问：SDPY是啥，没听过，令我汗颜，SDPY可是OKHttp的一大特点，这都不知道还精通个啥，更别说底层一点的实现了。对于大多数的app开发者来说，所有的东西都精通确实是没有必要，但是自己用的技术是否应该了解清楚一点呢，不然怎么能在开发中轻车熟路呢，怎么吸取经验提升技术呢？</p>
+<h3 id="四、不卑不亢展示自信的自己"><a href="#四、不卑不亢展示自信的自己" class="headerlink" title="四、不卑不亢展示自信的自己"></a>四、不卑不亢展示自信的自己</h3><p>我不知道是我长的太凶还是怎么的，有一位应聘者，面试中声音都在颤抖，紧张的不行，而且还是有一定开发经验的。面试中我基本是保持一种交流的心态，而不是一个考官的姿态，基本上是根据应聘者提供的项目经历问问团队情况，充当的角色担任的职责以及项目中使用到的技术。所以平日开发中还是要对用到的做一个深层次的了解才行，只有这样才能充满自信展示自己，面试官不可能通过短短的几十分钟，清楚的了解你的所有情况，只有展示真实的自我，把用到说出来就行了。有些偏的东西即使回答不出了，那在面试官看来也是可以理解的，说白了没有哪一个面试官能够掌握所有技术。</p>
+<h3 id="五、努力吧，少年"><a href="#五、努力吧，少年" class="headerlink" title="五、努力吧，少年"></a>五、努力吧，少年</h3><p>安卓开发的局限还是比较大的，发展空间也比较窄，所以呢要么转行，要么做深，而现在混日子的一抓一大把，能力的提升不会随着工作年限的增长而增加，当你的能力跟不上工作年限的时候势必会被淘汰，当你拿着有4、5年工作经验的简历，在面试中连一个基本技术点答不上来的时候是否会惭愧，是否会脸红？</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">附：我一般会问到的问题</span><br><span class="line"><span class="number">1</span>、Activity</span><br><span class="line">－onStart() onResume()区别</span><br><span class="line">－四种启动模式</span><br><span class="line"><span class="number">2</span>、Fragment</span><br><span class="line">－是什么</span><br><span class="line"><span class="number">3</span>、View</span><br><span class="line">－绘制流程</span><br><span class="line"><span class="number">4</span>、事件传递机制</span><br><span class="line"><span class="number">5</span>、消息机制</span><br><span class="line">－Handler</span><br><span class="line"><span class="number">6</span>、数据存储</span><br><span class="line"><span class="number">7</span>、第三方库</span><br><span class="line">－特点，为什么会选择</span><br><span class="line">－源码实现</span><br><span class="line"><span class="number">8</span>、项目用到的技术</span><br></pre></td></tr></table></figure>
+<p>这些对一个普通的开发者都是日常，会用到的东西，或者是间接会接触到，如果连这都不能很好的说个一二三，还有什么可谈的呢？Android`s加油吧！</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag">#Android</a>
+          
+            <a href="/tags/感想/" rel="tag">#感想</a>
+          
+            <a href="/tags/面试/" rel="tag">#面试</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/12/think-1/" rel="next" title="聪明的人都在思考奔跑，平庸的人还在呻吟">
+                <i class="fa fa-chevron-left"></i> 聪明的人都在思考奔跑，平庸的人还在呻吟
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/07/14/think-2/" rel="prev" title="当我年少">
+                当我年少 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/07/13/first/"
+           data-title="Android`s，面试不过也许真的是你不够努力" data-url="http://yoursite.com/2016/07/13/first/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="lowett" />
+          <p class="site-author-name" itemprop="name">lowett</p>
+          <p class="site-description motion-element" itemprop="description">雁过无痕，但我确实飞过</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、做一点准备工作"><span class="nav-number">1.</span> <span class="nav-text">一、做一点准备工作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、合理的薪资要求"><span class="nav-number">2.</span> <span class="nav-text">二、合理的薪资要求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、提升自己的技术能力"><span class="nav-number">3.</span> <span class="nav-text">三、提升自己的技术能力</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四、不卑不亢展示自信的自己"><span class="nav-number">4.</span> <span class="nav-text">四、不卑不亢展示自信的自己</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#五、努力吧，少年"><span class="nav-number">5.</span> <span class="nav-text">五、努力吧，少年</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lowett</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"lowett"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("RyOzCscbKiTRuucMD4x8Ce8e-gzGzoHsz", "gNdVnwMrki5jBmRzaQijk5G3");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+</body>
+</html>
