@@ -1,0 +1,979 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,SharedPreferences," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="说在前面：SharedPreferences是Android中几种重要的存储数据的方式，Android开发不会没有人从来没有使用过，但是却很好人会关注它是怎么实现的，确实SharedPreferences实现起来比较简单，本质是基于文件存储，格式是XML形势的，本篇文章并没有太深的技术，但绝对是不可缺少的知识。
+
+概述SharedPreferences可以通过Context获取到，它是一个接口，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="聊聊SharedPreferences（源码层）">
+<meta property="og:url" content="http://yoursite.com/2016/08/22/sharedPreferences/index.html">
+<meta property="og:site_name" content="lowett">
+<meta property="og:description" content="说在前面：SharedPreferences是Android中几种重要的存储数据的方式，Android开发不会没有人从来没有使用过，但是却很好人会关注它是怎么实现的，确实SharedPreferences实现起来比较简单，本质是基于文件存储，格式是XML形势的，本篇文章并没有太深的技术，但绝对是不可缺少的知识。
+
+概述SharedPreferences可以通过Context获取到，它是一个接口，">
+<meta property="og:updated_time" content="2016-08-24T12:14:01.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="聊聊SharedPreferences（源码层）">
+<meta name="twitter:description" content="说在前面：SharedPreferences是Android中几种重要的存储数据的方式，Android开发不会没有人从来没有使用过，但是却很好人会关注它是怎么实现的，确实SharedPreferences实现起来比较简单，本质是基于文件存储，格式是XML形势的，本篇文章并没有太深的技术，但绝对是不可缺少的知识。
+
+概述SharedPreferences可以通过Context获取到，它是一个接口，">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"right","display":"always"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 6307181688250172000,
+      author: '博主大人'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/08/22/sharedPreferences/"/>
+
+  <title> 聊聊SharedPreferences（源码层） | lowett </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?dfd5b4385bacdae9367cc56f5736d3fa";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">lowett</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                聊聊SharedPreferences（源码层）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-08-22T17:18:56+08:00" content="2016-08-22">
+              2016-08-22
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/08/22/sharedPreferences/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/22/sharedPreferences/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/08/22/sharedPreferences/" class="leancloud_visitors" data-flag-title="聊聊SharedPreferences（源码层）">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>说在前面：SharedPreferences是Android中几种重要的存储数据的方式，Android开发不会没有人从来没有使用过，但是却很好人会关注它是怎么实现的，确实SharedPreferences实现起来比较简单，本质是基于文件存储，格式是XML形势的，本篇文章并没有太深的技术，但绝对是不可缺少的知识。</p>
+</blockquote>
+<h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>SharedPreferences可以通过Context获取到，它是一个接口，实现在frameworks\base\core\java\android\app\SharedPreferencesImpl.java</p>
+<p>源码也仅仅只有630行，相对于庞大的Android源码，小很多。但是你真的了解它吗？</p>
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><ul>
+<li>1、不同的Activity里面Context.getSharedPreferences()获取的SharedPreferences相同吗？</li>
+<li>2、支持并发吗？</li>
+<li>3、SharedPreferences.putXXX()直接保存了吗？</li>
+<li>……</li>
+</ul>
+<p>针对上面的问题，我们一点点来分析。</p>
+<h3 id="获得SharedPreferences"><a href="#获得SharedPreferences" class="headerlink" title="获得SharedPreferences"></a>获得SharedPreferences</h3><p>我们获得SharedPreferences是通过Context.getSharedPreferences(),源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> SharedPreferences <span class="title">getSharedPreferences</span><span class="params">(String name, <span class="keyword">int</span> mode)</span> </span>&#123;</span><br><span class="line">  SharedPreferencesImpl sp;</span><br><span class="line">  <span class="keyword">synchronized</span> (ContextImpl.class) &#123;</span><br><span class="line">    <span class="comment">// 静态的 全局唯一，缓存得到的SharedPreferences，key是app包名</span></span><br><span class="line">    <span class="keyword">if</span> (sSharedPrefs == <span class="keyword">null</span>) &#123;</span><br><span class="line">      	sSharedPrefs = <span class="keyword">new</span> ArrayMap&lt;String, ArrayMap&lt;String, SharedPreferencesImpl&gt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 通过每一个app的包名缓存不同的SharedPreferences，key是文件名</span></span><br><span class="line">    <span class="comment">// 这里就明白前面提到的第一个问题了，一个文件对应一个SharedPreferences</span></span><br><span class="line">    <span class="keyword">final</span> String packageName = getPackageName();</span><br><span class="line">    ArrayMap&lt;String, SharedPreferencesImpl&gt; packagePrefs = sSharedPrefs.get(packageName);</span><br><span class="line">    <span class="keyword">if</span> (packagePrefs == <span class="keyword">null</span>) &#123;</span><br><span class="line">      packagePrefs = <span class="keyword">new</span> ArrayMap&lt;String, SharedPreferencesImpl&gt;();</span><br><span class="line">      sSharedPrefs.put(packageName, packagePrefs);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 略...</span></span><br><span class="line">    <span class="comment">// 如果以创建过，直接从缓存中获取返回</span></span><br><span class="line">    sp = packagePrefs.get(name);</span><br><span class="line">    <span class="keyword">if</span> (sp == <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="comment">// 如果没有创建一个 文件名为data/data/packege/shared_prefs/xxx.xml</span></span><br><span class="line">      File prefsFile = getSharedPrefsFile(name); </span><br><span class="line">      sp = <span class="keyword">new</span> SharedPreferencesImpl(prefsFile, mode); <span class="comment">// 创建实例对象</span></span><br><span class="line">      packagePrefs.put(name, sp); <span class="comment">// 放到缓存中</span></span><br><span class="line">      <span class="keyword">return</span> sp;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"><span class="comment">// 略...</span></span><br><span class="line">  <span class="keyword">return</span> sp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="创建SharedPreferences"><a href="#创建SharedPreferences" class="headerlink" title="创建SharedPreferences"></a>创建SharedPreferences</h3><p>SharedPreferences的创建很简单，我们先看看构造方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// 仅有一个</span><br><span class="line">SharedPreferencesImpl(File file, int mode) &#123;</span><br><span class="line">  mFile = file;</span><br><span class="line">  mBackupFile = makeBackupFile(file); // 创建备份</span><br><span class="line">  mMode = mode;</span><br><span class="line">  mLoaded = false;</span><br><span class="line">  mMap = null; // 存放键值对的map</span><br><span class="line">  startLoadFromDisk();  // 从本地load出来</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从构造函数我们不难看出，SharedPreferences实际是以Map（HashMap）存储数据，创建的时候就从本地文件中读取数据到内存中，所以，<strong>不能存储太多的数据</strong> ，否则内存会爆掉的哦。</p>
+<h3 id="读取本地文件中的数据"><a href="#读取本地文件中的数据" class="headerlink" title="读取本地文件中的数据"></a>读取本地文件中的数据</h3><p>当实例化的时候就会触发，一个读取本地已存储的数据，</p>
+<pre><code> private void loadFromDiskLocked() {
+ // 读取过就不在读取
+ if (mLoaded) {
+        return;
+    }
+    //...
+
+    Map map = null;
+    StructStat stat = null;
+    try {
+        // 存储文件状态
+        stat = Os.stat(mFile.getPath());
+        if (mFile.canRead()) {
+            BufferedInputStream str = null;
+            try {
+                str = new BufferedInputStream(
+                        new FileInputStream(mFile), 16*1024);
+                // 格式为xml，解析xml得到map
+                map = XmlUtils.readMapXml(str);
+            } catch (XmlPullParserException e) {
+                Log.w(TAG, &quot;getSharedPreferences&quot;, e);
+            } catch (FileNotFoundException e) {
+                Log.w(TAG, &quot;getSharedPreferences&quot;, e);
+            } catch (IOException e) {
+                Log.w(TAG, &quot;getSharedPreferences&quot;, e);
+            } finally {
+                IoUtils.closeQuietly(str);
+            }
+        }
+    } catch (ErrnoException e) {
+    }
+    // 加载过后更改状态，如果没有创建一个HashMap
+    mLoaded = true;
+    if (map != null) {
+        mMap = map;
+        mStatTimestamp = stat.st_mtime;
+        mStatSize = stat.st_size;
+    } else {
+        mMap = new HashMap&lt;String, Object&gt;();
+    }
+    notifyAll();
+}
+</code></pre><h3 id="获得存储的数据"><a href="#获得存储的数据" class="headerlink" title="获得存储的数据"></a>获得存储的数据</h3><p>得到数据通常是getXXX(),实际很简单，就是存map中取数据。</p>
+<pre><code>// 已getString()为例，其他一样
+@Nullable
+public String getString(String key, @Nullable String defValue) {
+    // 同步哦
+    synchronized (this) {
+        // 确保，已从文件中读取过数据
+        awaitLoadedLocked();
+        // 从map中的得到数据
+        String v = (String)mMap.get(key);
+        return v != null ? v : defValue;
+    }
+}
+</code></pre><h3 id="保存数据"><a href="#保存数据" class="headerlink" title="保存数据"></a>保存数据</h3><p>大家都知道保存数据是通过Editor来存储的，事实上也确实是这样的。但是putXXX()仅仅是保存到了map中，正真的是要在commit()或apply()之后。</p>
+<pre><code>public Editor putString(String key, @Nullable String value) {
+    // 同步哦
+    synchronized (this) {
+            mModified.put(key, value);
+            return this;
+        }
+    }
+</code></pre><p>1、</p>
+<pre><code>public boolean commit() {
+    MemoryCommitResult mcr = commitToMemory();
+    // 写数据
+    SharedPreferencesImpl.this.enqueueDiskWrite(
+        mcr, null /* sync write on this thread okay */);
+    try {
+        mcr.writtenToDiskLatch.await();
+    } catch (InterruptedException e) {
+        return false;
+    }
+    notifyListeners(mcr);
+    return mcr.writeToDiskResult;
+}
+</code></pre><p>2、</p>
+<pre><code> private void enqueueDiskWrite(final MemoryCommitResult mcr, final Runnable postWriteRunnable) {
+    final Runnable writeToDiskRunnable = new Runnable() {
+            public void run() {
+                synchronized (mWritingToDiskLock) {
+                    // 往文件中写入数据
+                    writeToFile(mcr);
+                }
+                synchronized (SharedPreferencesImpl.this) {
+                    mDiskWritesInFlight--;
+                }
+                if (postWriteRunnable != null) {
+                    postWriteRunnable.run();
+                }
+            }
+        };
+
+      // ...
+
+    QueuedWork.singleThreadExecutor().execute(writeToDiskRunnable);
+}
+</code></pre><p>3、</p>
+<pre><code> // Note: must hold mWritingToDiskLock
+private void writeToFile(MemoryCommitResult mcr) {
+   // ...
+    try {
+        FileOutputStream str = createFileOutputStream(mFile);
+        if (str == null) {
+            mcr.setDiskWriteResult(false);
+            return;
+        }
+        // 写入到文件中
+        XmlUtils.writeMapXml(mcr.mapToWriteToDisk, str);
+        FileUtils.sync(str);
+        str.close();
+        ContextImpl.setFilePermissionsFromMode(mFile.getPath(), mMode, 0);
+        try {
+         // 更新文件的状态
+            final StructStat stat = Os.stat(mFile.getPath());
+            synchronized (this) {
+                mStatTimestamp = stat.st_mtime;
+                mStatSize = stat.st_size;
+            }
+        } catch (ErrnoException e) {
+            // Do nothing
+        }
+        // Writing was successful, delete the backup file if there is one.
+        mBackupFile.delete();
+        mcr.setDiskWriteResult(true);
+        return;
+    } catch (XmlPullParserException e) {
+        Log.w(TAG, &quot;writeToFile: Got exception:&quot;, e);
+    } catch (IOException e) {
+        Log.w(TAG, &quot;writeToFile: Got exception:&quot;, e);
+    }
+    // Clean up an unsuccessfully written file
+    if (mFile.exists()) {
+        if (!mFile.delete()) {
+            Log.e(TAG, &quot;Couldn&apos;t clean up partially-written file &quot; + mFile);
+        }
+    }
+    mcr.setDiskWriteResult(false);
+}
+</code></pre><h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>1、SharedPreferences有缓存</p>
+<p>2、数据是通过map来快速访问，所以不用担心文件IO耗时</p>
+<p>3、支持多线程并发</p>
+<p>4、本质是基于文件xml的形式</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wxpay.png" alt="lowett WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/alipay.png" alt="lowett Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag">#Android</a>
+          
+            <a href="/tags/SharedPreferences/" rel="tag">#SharedPreferences</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/04/android-message/" rel="next" title="关于Android消息机制你所需要知道的">
+                <i class="fa fa-chevron-left"></i> 关于Android消息机制你所需要知道的
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/08/24/android-multiwindow/" rel="prev" title="Android-7分屏体验，代码上手初见">
+                Android-7分屏体验，代码上手初见 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/08/22/sharedPreferences/"
+           data-title="聊聊SharedPreferences（源码层）" data-url="http://yoursite.com/2016/08/22/sharedPreferences/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="lowett" />
+          <p class="site-author-name" itemprop="name">lowett</p>
+          <p class="site-description motion-element" itemprop="description">雁过无痕，但我确实飞过</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">16</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题"><span class="nav-number">2.</span> <span class="nav-text">问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获得SharedPreferences"><span class="nav-number">3.</span> <span class="nav-text">获得SharedPreferences</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建SharedPreferences"><span class="nav-number">4.</span> <span class="nav-text">创建SharedPreferences</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#读取本地文件中的数据"><span class="nav-number">5.</span> <span class="nav-text">读取本地文件中的数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获得存储的数据"><span class="nav-number">6.</span> <span class="nav-text">获得存储的数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#保存数据"><span class="nav-number">7.</span> <span class="nav-text">保存数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lowett</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"lowett"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("RyOzCscbKiTRuucMD4x8Ce8e-gzGzoHsz", "gNdVnwMrki5jBmRzaQijk5G3");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+</body>
+</html>
