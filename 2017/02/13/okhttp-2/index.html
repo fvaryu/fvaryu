@@ -69,7 +69,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, lowett, Hyu, Android" />
+  <meta name="keywords" content="Android,Okhttp3," />
 
 
 
@@ -85,15 +85,29 @@
 
 
 
-<meta name="description" content="雁过无痕，但我确实飞过">
-<meta property="og:type" content="website">
-<meta property="og:title" content="lowett">
-<meta property="og:url" content="http://lowett.com/page/4/index.html">
+<meta name="description" content="关于Okhttp（二）-如何下载查看源码
+相信看过上篇对其有了基本的认识，同时也知道如何使用，是不是对它的源码实现也产生了浓厚的兴趣呢（不喜欢源码的程序员不是好码农哦），不是有位大神说过学习编码的最好途径就是：Read the fucking source code。工欲善其事，必先利其器。今天我们先把源码弄下来吧！
+
+不知道你是否尝试过下载源码，反正楼主试过，一开始真心不知道怎么弄它的源码，后来">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于Okhttp（二）-如何下载查看源码">
+<meta property="og:url" content="http://lowett.com/2017/02/13/okhttp-2/index.html">
 <meta property="og:site_name" content="lowett">
-<meta property="og:description" content="雁过无痕，但我确实飞过">
+<meta property="og:description" content="关于Okhttp（二）-如何下载查看源码
+相信看过上篇对其有了基本的认识，同时也知道如何使用，是不是对它的源码实现也产生了浓厚的兴趣呢（不喜欢源码的程序员不是好码农哦），不是有位大神说过学习编码的最好途径就是：Read the fucking source code。工欲善其事，必先利其器。今天我们先把源码弄下来吧！
+
+不知道你是否尝试过下载源码，反正楼主试过，一开始真心不知道怎么弄它的源码，后来">
+<meta property="og:image" content="http://7xwe4r.com1.z0.glb.clouddn.com/WechatIMG3.jpeg">
+<meta property="og:image" content="http://7xwe4r.com1.z0.glb.clouddn.com/WechatIMG4.jpeg">
+<meta property="og:image" content="http://7xwe4r.com1.z0.glb.clouddn.com/WechatIMG5.jpeg">
+<meta property="og:updated_time" content="2017-02-13T02:10:44.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="lowett">
-<meta name="twitter:description" content="雁过无痕，但我确实飞过">
+<meta name="twitter:title" content="关于Okhttp（二）-如何下载查看源码">
+<meta name="twitter:description" content="关于Okhttp（二）-如何下载查看源码
+相信看过上篇对其有了基本的认识，同时也知道如何使用，是不是对它的源码实现也产生了浓厚的兴趣呢（不喜欢源码的程序员不是好码农哦），不是有位大神说过学习编码的最好途径就是：Read the fucking source code。工欲善其事，必先利其器。今天我们先把源码弄下来吧！
+
+不知道你是否尝试过下载源码，反正楼主试过，一开始真心不知道怎么弄它的源码，后来">
+<meta name="twitter:image" content="http://7xwe4r.com1.z0.glb.clouddn.com/WechatIMG3.jpeg">
 
 
 
@@ -114,9 +128,9 @@
 
 
 
-  <link rel="canonical" href="http://lowett.com/page/4/"/>
+  <link rel="canonical" href="http://lowett.com/2017/02/13/okhttp-2/"/>
 
-  <title> lowett </title>
+  <title> 关于Okhttp（二）-如何下载查看源码 | lowett </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -147,9 +161,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-right 
-   page-home 
- ">
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -246,9 +258,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
   
@@ -268,10 +280,7 @@
             
             
               
-                
-                <a class="post-title-link" href="/2016/07/13/first/" itemprop="url">
-                  Android`s，面试不过也许真的是你不够努力
-                </a>
+                关于Okhttp（二）-如何下载查看源码
               
             
           </h1>
@@ -283,8 +292,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-07-13T21:15:45+08:00" content="2016-07-13">
-              2016-07-13
+            <time itemprop="dateCreated" datetime="2017-02-13T10:04:49+08:00" content="2017-02-13">
+              2017-02-13
             </time>
           </span>
 
@@ -297,8 +306,20 @@
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/面试/" itemprop="url" rel="index">
-                    <span itemprop="name">面试</span>
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android/Okhttp3/" itemprop="url" rel="index">
+                    <span itemprop="name">Okhttp3</span>
                   </a>
                 </span>
 
@@ -313,8 +334,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/07/13/first/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/13/first/" itemprop="commentsCount"></span>
+                <a href="/2017/02/13/okhttp-2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/02/13/okhttp-2/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -324,7 +345,7 @@
 
           
           
-             <span id="/2016/07/13/first/" class="leancloud_visitors" data-flag-title="Android`s，面试不过也许真的是你不够努力">
+             <span id="/2017/02/13/okhttp-2/" class="leancloud_visitors" data-flag-title="关于Okhttp（二）-如何下载查看源码">
                &nbsp; | &nbsp;
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -346,333 +367,160 @@
       
 
       
-        
-          
-          最近公司新项目启动需要招人，有幸本人负责安卓技术这一块，因为本人也是菜鸟，哈哈
-陆陆续续公司来了一些面试者，但是到目前为止还没有一个合适，不是说他们的技术不过关，而是里面参杂着形形色色的问题。下面说说自己的一点想法。如果说的不对的地方还请谅
-          ...
+        <h4 id="关于Okhttp（二）-如何下载查看源码"><a href="#关于Okhttp（二）-如何下载查看源码" class="headerlink" title="关于Okhttp（二）-如何下载查看源码"></a>关于Okhttp（二）-如何下载查看源码</h4><blockquote>
+<p>相信看过<a href="http://lowett.com/2017/02/09/okhttp-1/">上篇</a>对其有了基本的认识，同时也知道如何使用，是不是对它的源码实现也产生了浓厚的兴趣呢（不喜欢源码的程序员不是好码农哦），不是有位大神说过学习编码的最好途径就是：Read the fucking source code。工欲善其事，必先利其器。今天我们先把源码弄下来吧！</p>
+</blockquote>
+<p>不知道你是否尝试过下载源码，反正楼主试过，一开始真心不知道怎么弄它的源码，后来慢慢折腾才摸出了门路。下面就告诉给大家，免得走太多弯路。</p>
+<p>做安卓的可能都认为Okhttp3是一个安卓工程（楼主一开始就这样认为）其实不是的，它是个地地道道的Java工程，你不能直接把它导入到Android Studio中（除非你自己建个工程，拷贝源码到到工程里，楼主就这么干过😄，太傻了）。</p>
+<h4 id="IDE"><a href="#IDE" class="headerlink" title="IDE"></a>IDE</h4><blockquote>
+<p> 查看此源码的最好工具是<strong><a href="http://www.jetbrains.com/idea/" target="_blank" rel="external">IntelliJ IDEA</a></strong>，Eclipse，MyEclipse也可以但是个人认为不是很方便，推荐使用<a href="http://www.jetbrains.com/idea/" target="_blank" rel="external">IntelliJ IDEA</a>省事、省心、强大。</p>
+</blockquote>
+<p>下载、安装<a href="http://www.jetbrains.com/idea/" target="_blank" rel="external">IntelliJ IDEA</a>请自行研究，没有什么难的。</p>
+<h4 id="下载源码"><a href="#下载源码" class="headerlink" title="下载源码"></a>下载源码</h4><blockquote>
+<p>源码是在Github上，所以需要先安装git（或者下载压缩包）。</p>
+<p>Github源码地址：<a href="https://github.com/square/okhttp" target="_blank" rel="external">https://github.com/square/okhttp</a></p>
+<p>压缩包地址：<a href="https://github.com/square/okhttp/releases" target="_blank" rel="external">https://github.com/square/okhttp/releases</a></p>
+<p>Git客户端工具建议使用sourceTree<a href="https://www.sourcetreeapp.com/" target="_blank" rel="external">https://www.sourcetreeapp.com/</a></p>
+</blockquote>
+<p>如何下载此处不在赘述。</p>
+<h4 id="导入源码"><a href="#导入源码" class="headerlink" title="导入源码"></a>导入源码</h4><p>打开IDEA（第一次需要选在是否导入已存在的配置，按需选择），点击Import Project—进入源码现在目录—点击pom.xml文件，一直next下去—finish（如需修改工程名字，在finish界面修改即可）</p>
+<h4 id="等待IDEA导入所需的依赖包"><a href="#等待IDEA导入所需的依赖包" class="headerlink" title="等待IDEA导入所需的依赖包"></a>等待IDEA导入所需的依赖包</h4><blockquote>
+<p>此过程有点长</p>
+</blockquote>
+<p>导入成功后是这样的：</p>
+<p><img src="http://7xwe4r.com1.z0.glb.clouddn.com/WechatIMG3.jpeg" alt=""></p>
+<p>此时如果去编译okhttp工程会报的错误：</p>
+<p><img src="http://7xwe4r.com1.z0.glb.clouddn.com/WechatIMG4.jpeg" alt=""></p>
+<p>这是因为okhttp的版本号是自动生成的，Version.java不在src文件夹下，我们要自动添加。</p>
+<p>step:选中okhttp工程，右键-open module settings</p>
+<p><img src="http://7xwe4r.com1.z0.glb.clouddn.com/WechatIMG5.jpeg" alt=""></p>
+<p>再次编译，即可通过。</p>
+<p>如果还有错，那就是AndroidPlatform.java有问题，主要是Android sdk没有引入，此处使用的是4.1.1.4的sdk，在pom.xml中可以查看。如果实在无能导入（原因你懂的）把AndroidPlatform.java中的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public void log(int level, String message, Throwable t) &#123;</span><br><span class="line">	// 里面的语句注释掉，此处使用了Log，没有任何影响，再次编译即可</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="项目结构"><a href="#项目结构" class="headerlink" title="项目结构"></a>项目结构</h4><h5 id="主工程"><a href="#主工程" class="headerlink" title="主工程"></a>主工程</h5><ol>
+<li>mockwebserver — 模拟服务器，有用</li>
+<li>okhttp — 源码</li>
+<li>okhttp-logging-interceptor — 日志拦截器，可以自己实现的</li>
+<li>okhttp-urlconnection — 连接方式，用不上</li>
+</ol>
+<p>我们主要研究的是okhttp源码，负责项目mockwebserver，其他目前没用。</p>
+<p>到此，已经完成了，源码的下载任务，当然此项目还有很多值得研究的地方，读者可自行研究。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>源码下载不是什么难事，主要是没弄过会有很多弯路，在此讲一讲，给大家引导一下，觉得还是有必要的，接下来就正式进入，源码研究了，敬请期待！</p>
+<h4 id="系列文章"><a href="#系列文章" class="headerlink" title="系列文章"></a>系列文章</h4><p>1、<a href="http://lowett.com/2017/02/09/okhttp-1/">关于Okhttp（一）</a></p>
+<p>2、<a href="http://lowett.com/2017/02/13/okhttp-2/">关于Okhttp（二）-如何下载查看源码</a></p>
 
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/07/13/first/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
       
     </div>
 
     <div>
       
+        
+
+      
     </div>
 
     <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wxpay.png" alt="lowett WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
       
     </div>
 
     <footer class="post-footer">
       
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/07/12/think-1/" itemprop="url">
-                  聪明的人都在思考奔跑，平庸的人还在呻吟
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-07-12T09:43:38+08:00" content="2016-07-12">
-              2016-07-12
-            </time>
-          </span>
-
+        <div class="post-tags">
           
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/随笔/" itemprop="url" rel="index">
-                    <span itemprop="name">随笔</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
+            <a href="/tags/Android/" rel="tag">#Android</a>
           
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/07/12/think-1/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/12/think-1/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/07/12/think-1/" class="leancloud_visitors" data-flag-title="聪明的人都在思考奔跑，平庸的人还在呻吟">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
+            <a href="/tags/Okhttp3/" rel="tag">#Okhttp3</a>
           
         </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          
-          “聪明的人都在思考奔跑，平庸的人还在呻吟”，当你读到这句话的时候不知你作何感想，也许你会骂我矫情，也许你会停下思考，但是不管怎样这句话都代表了一种社会现象，也许只是我眼中的。
-
-——–明天你好-pic.jpg——–
-
-
-前段时间和朋友一起闲
-          ...
-
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/07/12/think-1/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/02/10/android-aosp/" rel="next" title="Android系统源码下载(2017.2.10)">
+                <i class="fa fa-chevron-left"></i> Android系统源码下载(2017.2.10)
+              </a>
+            
           </div>
-        
-      
-    </div>
 
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
+          <div class="post-nav-prev post-nav-item">
             
-            
-              
-                
-                <a class="post-title-link" href="/2016/07/10/start/" itemprop="url">
-                  开篇
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-07-10T21:15:45+08:00" content="2016-07-10">
-              2016-07-10
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/随笔/" itemprop="url" rel="index">
-                    <span itemprop="name">随笔</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/07/10/start/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/10/start/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/07/10/start/" class="leancloud_visitors" data-flag-title="开篇">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
+          </div>
         </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          
-          生活不止眼前的苟且，还有诗和远方的田野，
-你赤手空拳来到人世间,为找到那片海不顾一切
-                        --《生活不止眼前的苟且》 许巍
-当你抱怨生活，盛赞他人如何如何的时候是否有思考别人是怎样一步步走来的，优
-          ...
-
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/07/10/start/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </article>
 
 
-    
-  </section>
 
-  
-  <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span>
-  </nav>
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
 
+      
+    </div>
+  </div>
 
 
           </div>
           
 
+  <p>热评文章</p>
+  <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
+
 
           
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/02/13/okhttp-2/"
+           data-title="关于Okhttp（二）-如何下载查看源码" data-url="http://lowett.com/2017/02/13/okhttp-2/">
+      </div>
+    
+  </div>
+
 
         </div>
         
@@ -692,8 +540,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+      <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.jpg"
@@ -743,6 +600,17 @@
 
       </section>
 
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#关于Okhttp（二）-如何下载查看源码"><span class="nav-number">1.</span> <span class="nav-text">关于Okhttp（二）-如何下载查看源码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#IDE"><span class="nav-number">2.</span> <span class="nav-text">IDE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#下载源码"><span class="nav-number">3.</span> <span class="nav-text">下载源码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#导入源码"><span class="nav-number">4.</span> <span class="nav-text">导入源码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#等待IDEA导入所需的依赖包"><span class="nav-number">5.</span> <span class="nav-text">等待IDEA导入所需的依赖包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#项目结构"><span class="nav-number">6.</span> <span class="nav-text">项目结构</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#主工程"><span class="nav-number">6.1.</span> <span class="nav-text">主工程</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#系列文章"><span class="nav-number">8.</span> <span class="nav-text">系列文章</span></a></li></ol></div>
+            
+          </div>
+        </section>
       
 
     </div>
@@ -846,6 +714,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
 
   
 
