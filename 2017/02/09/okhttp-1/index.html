@@ -85,7 +85,7 @@
 
 
 
-<meta name="description" content="关于Okhttp（一）简介
+<meta name="description" content="简介
 Okhttp是square公司推出的一款Android和Java网络请求库，当前推出了Okhttp3，在原来的基础上做了很大改进，也是Android目前最流行的网络库之一，本系列文章就是基于最新的来剖析。鉴于能力以及代码的优化改动，文中如有不足之处还望指教，谢谢。
 
 特点
@@ -93,12 +93,13 @@ Http/2支持多路复用
 采用连接池减少请求延时
 支持GZIP压缩
 响应缓存
-支持websocke">
+支持websocket
+多ip切换（连接失">
 <meta property="og:type" content="article">
-<meta property="og:title" content="关于Okhttp（一）">
+<meta property="og:title" content="关于Okhttp（一）-基本使用">
 <meta property="og:url" content="http://lowett.com/2017/02/09/okhttp-1/index.html">
 <meta property="og:site_name" content="lowett">
-<meta property="og:description" content="关于Okhttp（一）简介
+<meta property="og:description" content="简介
 Okhttp是square公司推出的一款Android和Java网络请求库，当前推出了Okhttp3，在原来的基础上做了很大改进，也是Android目前最流行的网络库之一，本系列文章就是基于最新的来剖析。鉴于能力以及代码的优化改动，文中如有不足之处还望指教，谢谢。
 
 特点
@@ -106,11 +107,12 @@ Http/2支持多路复用
 采用连接池减少请求延时
 支持GZIP压缩
 响应缓存
-支持websocke">
-<meta property="og:updated_time" content="2017-02-21T03:42:21.000Z">
+支持websocket
+多ip切换（连接失">
+<meta property="og:updated_time" content="2017-02-21T07:14:00.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="关于Okhttp（一）">
-<meta name="twitter:description" content="关于Okhttp（一）简介
+<meta name="twitter:title" content="关于Okhttp（一）-基本使用">
+<meta name="twitter:description" content="简介
 Okhttp是square公司推出的一款Android和Java网络请求库，当前推出了Okhttp3，在原来的基础上做了很大改进，也是Android目前最流行的网络库之一，本系列文章就是基于最新的来剖析。鉴于能力以及代码的优化改动，文中如有不足之处还望指教，谢谢。
 
 特点
@@ -118,7 +120,8 @@ Http/2支持多路复用
 采用连接池减少请求延时
 支持GZIP压缩
 响应缓存
-支持websocke">
+支持websocket
+多ip切换（连接失">
 
 
 
@@ -141,7 +144,7 @@ Http/2支持多路复用
 
   <link rel="canonical" href="http://lowett.com/2017/02/09/okhttp-1/"/>
 
-  <title> 关于Okhttp（一） | lowett </title>
+  <title> 关于Okhttp（一）-基本使用 | lowett </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -291,7 +294,7 @@ Http/2支持多路复用
             
             
               
-                关于Okhttp（一）
+                关于Okhttp（一）-基本使用
               
             
           </h1>
@@ -356,7 +359,7 @@ Http/2支持多路复用
 
           
           
-             <span id="/2017/02/09/okhttp-1/" class="leancloud_visitors" data-flag-title="关于Okhttp（一）">
+             <span id="/2017/02/09/okhttp-1/" class="leancloud_visitors" data-flag-title="关于Okhttp（一）-基本使用">
                &nbsp; | &nbsp;
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -378,7 +381,7 @@ Http/2支持多路复用
       
 
       
-        <h3 id="关于Okhttp（一）"><a href="#关于Okhttp（一）" class="headerlink" title="关于Okhttp（一）"></a>关于Okhttp（一）</h3><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><blockquote>
+        <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><blockquote>
 <p>Okhttp是square公司推出的一款Android和Java网络请求库，当前推出了Okhttp3，在原来的基础上做了很大改进，也是Android目前最流行的网络库之一，本系列文章就是基于最新的来剖析。鉴于能力以及代码的优化改动，文中如有不足之处还望指教，谢谢。</p>
 </blockquote>
 <h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><ol>
@@ -439,7 +442,7 @@ Http/2支持多路复用
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-dontwarn okhttp3.**</span><br></pre></td></tr></table></figure>
 <h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>Okhttp3已经成为android必备的网络请求库，同时也是比较好用的库，对于更多Okhttp的实现细节，请看下节</p>
-<h4 id="系列文章"><a href="#系列文章" class="headerlink" title="系列文章"></a>系列文章</h4><p>1、<a href="http://lowett.com/2017/02/09/okhttp-1/">关于Okhttp（一）</a></p>
+<h4 id="系列文章"><a href="#系列文章" class="headerlink" title="系列文章"></a>系列文章</h4><p>1、<a href="http://lowett.com/2017/02/09/okhttp-1/">关于Okhttp（一）-基本使用</a></p>
 <p>2、<a href="http://lowett.com/2017/02/13/okhttp-2/">关于Okhttp（二）-如何下载查看源码</a></p>
 <p>3、<a href="http://lowett.com/2017/02/13/okhttp-2/">关于Okhttp3（三）-请求流程](http://lowett.com/2017/02/21/okhttp-3/)</a></p>
 
@@ -554,7 +557,7 @@ Http/2支持多路复用
   <div class="comments" id="comments">
     
       <div class="ds-thread" data-thread-key="2017/02/09/okhttp-1/"
-           data-title="关于Okhttp（一）" data-url="http://lowett.com/2017/02/09/okhttp-1/">
+           data-title="关于Okhttp（一）-基本使用" data-url="http://lowett.com/2017/02/09/okhttp-1/">
       </div>
     
   </div>
@@ -645,7 +648,7 @@ Http/2支持多路复用
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#关于Okhttp（一）"><span class="nav-number">1.</span> <span class="nav-text">关于Okhttp（一）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#简介"><span class="nav-number">2.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#特点"><span class="nav-number">3.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基本使用"><span class="nav-number">4.</span> <span class="nav-text">基本使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#设置缓存"><span class="nav-number">4.1.</span> <span class="nav-text">设置缓存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#超时设置"><span class="nav-number">4.2.</span> <span class="nav-text">超时设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Cookie保存"><span class="nav-number">4.3.</span> <span class="nav-text">Cookie保存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#添加拦截器"><span class="nav-number">4.4.</span> <span class="nav-text">添加拦截器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Https"><span class="nav-number">4.5.</span> <span class="nav-text">Https</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#GET"><span class="nav-number">4.6.</span> <span class="nav-text">GET</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#POST"><span class="nav-number">4.7.</span> <span class="nav-text">POST</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#上传文件"><span class="nav-number">4.8.</span> <span class="nav-text">上传文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Multipart文件"><span class="nav-number">4.9.</span> <span class="nav-text">Multipart文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Websocket"><span class="nav-number">4.10.</span> <span class="nav-text">Websocket</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#混淆"><span class="nav-number">4.11.</span> <span class="nav-text">混淆</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">4.12.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#系列文章"><span class="nav-number">4.13.</span> <span class="nav-text">系列文章</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#特点"><span class="nav-number">2.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基本使用"><span class="nav-number">3.</span> <span class="nav-text">基本使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#设置缓存"><span class="nav-number">3.1.</span> <span class="nav-text">设置缓存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#超时设置"><span class="nav-number">3.2.</span> <span class="nav-text">超时设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Cookie保存"><span class="nav-number">3.3.</span> <span class="nav-text">Cookie保存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#添加拦截器"><span class="nav-number">3.4.</span> <span class="nav-text">添加拦截器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Https"><span class="nav-number">3.5.</span> <span class="nav-text">Https</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#GET"><span class="nav-number">3.6.</span> <span class="nav-text">GET</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#POST"><span class="nav-number">3.7.</span> <span class="nav-text">POST</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#上传文件"><span class="nav-number">3.8.</span> <span class="nav-text">上传文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Multipart文件"><span class="nav-number">3.9.</span> <span class="nav-text">Multipart文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Websocket"><span class="nav-number">3.10.</span> <span class="nav-text">Websocket</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#混淆"><span class="nav-number">3.11.</span> <span class="nav-text">混淆</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">3.12.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#系列文章"><span class="nav-number">3.13.</span> <span class="nav-text">系列文章</span></a></li></ol></li></ol></div>
             
           </div>
         </section>
