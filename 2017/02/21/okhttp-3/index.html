@@ -106,7 +106,7 @@
 <meta property="og:image" content="http://7xwe4r.com1.z0.glb.clouddn.com/20150726162705900">
 <meta property="og:image" content="http://7xwe4r.com1.z0.glb.clouddn.com/0DFEDC0F-C65E-4340-9946-E0C96BA2B2D6.png">
 <meta property="og:image" content="http://7xwe4r.com1.z0.glb.clouddn.com/E8672E0A-F014-4B6D-AF2E-6AC3D1E3FB42.png">
-<meta property="og:updated_time" content="2017-02-23T01:51:50.000Z">
+<meta property="og:updated_time" content="2017-02-24T02:51:16.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="关于Okhttp3（三）--请求流程">
 <meta name="twitter:description" content="前两天我们介绍了，基本使用和如何查看源码，今天我们正式进入源码分析流程。
@@ -462,9 +462,12 @@
 <h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><blockquote>
 <p>Okhttp3的调用流程基本原理就是这样，重要的是思想，整个流程一气呵成，完全解耦。</p>
 </blockquote>
-<h4 id="系列文章"><a href="#系列文章" class="headerlink" title="系列文章"></a>系列文章</h4><p>1、<a href="http://lowett.com/2017/02/09/okhttp-1/">关于Okhttp（一）-基本使用</a></p>
-<p>2、<a href="http://lowett.com/2017/02/13/okhttp-2/">关于Okhttp（二）-如何下载查看源码</a></p>
-<p>3、<a href="http://lowett.com/2017/02/21/okhttp-3/">关于Okhttp3（三）-请求流程</a></p>
+<h4 id="系列文章"><a href="#系列文章" class="headerlink" title="系列文章"></a>系列文章</h4><ol>
+<li><a href="http://lowett.com/2017/02/09/okhttp-1/">关于Okhttp（一）-基本使用</a></li>
+<li><a href="http://lowett.com/2017/02/13/okhttp-2/">关于Okhttp（二）-如何下载查看源码</a></li>
+<li><a href="http://lowett.com/2017/02/21/okhttp-3/">关于Okhttp3（三）-请求流程</a></li>
+<li><a href="http://lowett.com/2017/02/24/okhttp-4/">关于Okhttp3（四）-RetryAndFollowUpInterceptor</a></li>
+</ol>
 
       
     </div>
@@ -521,6 +524,10 @@
           </div>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/02/24/okhttp-4/" rel="prev" title="关于Okhttp3（四）-RetryAndFollowUpInterceptor">
+                关于Okhttp3（四）-RetryAndFollowUpInterceptor <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -618,7 +625,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">19</span>
+              <span class="site-state-item-count">20</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
