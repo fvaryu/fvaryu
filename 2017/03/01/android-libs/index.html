@@ -69,7 +69,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Android,性能优化," />
+  <meta name="keywords" content="Android," />
 
 
 
@@ -85,18 +85,67 @@
 
 
 
-<meta name="description" content="Andorid 开发最令人头痛的也许就是内存泄露了。因为Java的GC机制使得很多Java语言使用者，特别是Android开发者不用太关注内存的问题，这也直接导致了开发者不能够很好的理解、处理实际开发中遇到的内存问题。对于Android来说这个问题就更加突出了，毕竟Android的内存是十分有限的，内存占用过多会直接导致用户使用中程序卡顿，严重的时候还会OOM（内存溢出）。除了常用的MAT、Le">
+<meta name="description" content="安卓资讯知识分类收集整理。
+注：仅收集整理，侵权请联系作者。
+
+ADB命令经验分享
+Android ADB命令?这一次我再也不死记了!
+
+网络Https经验分享
+HTTPS 为什么更安全，先看这些
+
+架构MVP经验分享
+传统 MVP 用在项目中是真的方便还是累赘?
+安居客Android项目架构演进
+从零开始搭建架构实施Android项目
+
+热修复经验分享
+蘑菇街Android热修复探索之路
+
+L">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Android查找Activity泄露的另类方法">
-<meta property="og:url" content="http://lowett.com/2016/07/15/android-leak/index.html">
+<meta property="og:title" content="Android资讯知识库">
+<meta property="og:url" content="http://lowett.com/2017/03/01/android-libs/index.html">
 <meta property="og:site_name" content="lowett">
-<meta property="og:description" content="Andorid 开发最令人头痛的也许就是内存泄露了。因为Java的GC机制使得很多Java语言使用者，特别是Android开发者不用太关注内存的问题，这也直接导致了开发者不能够很好的理解、处理实际开发中遇到的内存问题。对于Android来说这个问题就更加突出了，毕竟Android的内存是十分有限的，内存占用过多会直接导致用户使用中程序卡顿，严重的时候还会OOM（内存溢出）。除了常用的MAT、Le">
-<meta property="og:image" content="http://7xwe4r.com1.z0.glb.clouddn.com/123.png">
-<meta property="og:updated_time" content="2016-07-15T14:00:38.000Z">
+<meta property="og:description" content="安卓资讯知识分类收集整理。
+注：仅收集整理，侵权请联系作者。
+
+ADB命令经验分享
+Android ADB命令?这一次我再也不死记了!
+
+网络Https经验分享
+HTTPS 为什么更安全，先看这些
+
+架构MVP经验分享
+传统 MVP 用在项目中是真的方便还是累赘?
+安居客Android项目架构演进
+从零开始搭建架构实施Android项目
+
+热修复经验分享
+蘑菇街Android热修复探索之路
+
+L">
+<meta property="og:updated_time" content="2017-03-01T07:02:06.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Android查找Activity泄露的另类方法">
-<meta name="twitter:description" content="Andorid 开发最令人头痛的也许就是内存泄露了。因为Java的GC机制使得很多Java语言使用者，特别是Android开发者不用太关注内存的问题，这也直接导致了开发者不能够很好的理解、处理实际开发中遇到的内存问题。对于Android来说这个问题就更加突出了，毕竟Android的内存是十分有限的，内存占用过多会直接导致用户使用中程序卡顿，严重的时候还会OOM（内存溢出）。除了常用的MAT、Le">
-<meta name="twitter:image" content="http://7xwe4r.com1.z0.glb.clouddn.com/123.png">
+<meta name="twitter:title" content="Android资讯知识库">
+<meta name="twitter:description" content="安卓资讯知识分类收集整理。
+注：仅收集整理，侵权请联系作者。
+
+ADB命令经验分享
+Android ADB命令?这一次我再也不死记了!
+
+网络Https经验分享
+HTTPS 为什么更安全，先看这些
+
+架构MVP经验分享
+传统 MVP 用在项目中是真的方便还是累赘?
+安居客Android项目架构演进
+从零开始搭建架构实施Android项目
+
+热修复经验分享
+蘑菇街Android热修复探索之路
+
+L">
 
 
 
@@ -117,9 +166,9 @@
 
 
 
-  <link rel="canonical" href="http://lowett.com/2016/07/15/android-leak/"/>
+  <link rel="canonical" href="http://lowett.com/2017/03/01/android-libs/"/>
 
-  <title> Android查找Activity泄露的另类方法 | lowett </title>
+  <title> Android资讯知识库 | lowett </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -269,7 +318,7 @@
             
             
               
-                Android查找Activity泄露的另类方法
+                Android资讯知识库
               
             
           </h1>
@@ -281,8 +330,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-07-15T15:36:07+08:00" content="2016-07-15">
-              2016-07-15
+            <time itemprop="dateCreated" datetime="2017-03-01T14:28:49+08:00" content="2017-03-01">
+              2017-03-01
             </time>
           </span>
 
@@ -311,8 +360,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/07/15/android-leak/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/15/android-leak/" itemprop="commentsCount"></span>
+                <a href="/2017/03/01/android-libs/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/01/android-libs/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -322,7 +371,7 @@
 
           
           
-             <span id="/2016/07/15/android-leak/" class="leancloud_visitors" data-flag-title="Android查找Activity泄露的另类方法">
+             <span id="/2017/03/01/android-libs/" class="leancloud_visitors" data-flag-title="Android资讯知识库">
                &nbsp; | &nbsp;
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -345,53 +394,43 @@
 
       
         <blockquote>
-<p>Andorid 开发最令人头痛的也许就是内存泄露了。因为Java的GC机制使得很多Java语言使用者，特别是Android开发者不用太关注内存的问题，这也直接导致了开发者不能够很好的理解、处理实际开发中遇到的内存问题。对于Android来说这个问题就更加突出了，毕竟Android的内存是十分有限的，内存占用过多会直接导致用户使用中程序卡顿，严重的时候还会OOM（内存溢出）。除了常用的MAT、LeakCanary等工具，今天给大家介绍个另类的判读方法。且听下面细细道来。</p>
+<p>安卓资讯知识分类收集整理。</p>
+<p>注：仅收集整理，侵权请联系作者。</p>
 </blockquote>
-<h4 id="检查是否有泄露"><a href="#检查是否有泄露" class="headerlink" title="检查是否有泄露"></a>检查是否有泄露</h4><p> 我们有这样一段代码</p>
-<pre><code>public class LeakActivity extends Activity {
-
-    //...业务逻辑 略
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState)
-
-        LeakLogic; // 引起泄露的业务逻辑
-
-    }
-
-    // ...其他业务逻辑 略
-}
-</code></pre><p>现在我们不能确定这段代码是都有内存泄露的问题，怎么办？你可以用其他的工具，当然今天我们不用这样，换种思路。现在我们修改代码：</p>
-<pre><code>public class LeakActivity extends Activity {
-
-    //...业务逻辑 略
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        LeakLogic; // 引起泄露的业务逻辑
-    }
-
-    /**
-     * 重写Object的finalize方法
-     */
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
-        // 打印日志
-        Log.d(&quot;Tag&quot;, &quot;==== LeakActivity has been recycled! ===&quot;);
-    }
-
-    // ...其他业务逻辑 略
-}
-</code></pre><p>紧接着我们运行项目，打开LeakActivity，然后在退出，通过IDE强制触发一次GC：<br><img src="http://7xwe4r.com1.z0.glb.clouddn.com/123.png" alt=""></p>
-<p>然后查看LogCat，确定是否有内存泄露：有打印，则无内存泄漏，无打印则肯定有内存泄漏了！</p>
-<h4 id="定位泄露的位置"><a href="#定位泄露的位置" class="headerlink" title="定位泄露的位置"></a>定位泄露的位置</h4><p>定位问题就比较粗暴了，可以看代码，然后排除，一条条代码注释，重复步骤来确定泄露位置，查找问题本身就是个复杂的过程所以不要嫌麻烦哟，当查找到问题所在修改掉，再把却注释掉的代码补回来。</p>
-<h4 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h4><p>这里用到的一个知识点就是Java中Object类的finalize方法。当GC准备回收一个Java Object（所有Java对象都是Object的子类）的时候，GC会调用这个Object的finalize方法。这个方法有点类似于C++中析构函数，本意是让你用来回收一些已经不需要的资源的（主要是针对Native资源）。其实Java日常开发中，并不鼓励依赖于这个方法来实现回收的逻辑，因为如果你重度依赖于finalize的话，finalize本身也有可能造成内存泄漏，但是我们这里只是用来作为是否已经回收的依据，还是可以的。相信很多人从来都没有使用过这个方法，更不知道他是干嘛的，不过没关系，今天我们就学会了一招不是么。</p>
-<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>这种方式起来很傻，但是很有效。结合其他的工具必定事半功倍。</p>
+<h3 id="ADB命令"><a href="#ADB命令" class="headerlink" title="ADB命令"></a>ADB命令</h3><h4 id="经验分享"><a href="#经验分享" class="headerlink" title="经验分享"></a>经验分享</h4><ol>
+<li><a href="http://mp.weixin.qq.com/s/fWaa1rutwfoIIrje8RfWBw" target="_blank" rel="external">Android ADB命令?这一次我再也不死记了!</a></li>
+</ol>
+<h3 id="网络"><a href="#网络" class="headerlink" title="网络"></a>网络</h3><h4 id="Https"><a href="#Https" class="headerlink" title="Https"></a>Https</h4><h5 id="经验分享-1"><a href="#经验分享-1" class="headerlink" title="经验分享"></a>经验分享</h5><ol>
+<li><a href="https://www.diycode.cc/topics/628" target="_blank" rel="external">HTTPS 为什么更安全，先看这些</a></li>
+</ol>
+<h3 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h3><h4 id="MVP"><a href="#MVP" class="headerlink" title="MVP"></a>MVP</h4><h5 id="经验分享-2"><a href="#经验分享-2" class="headerlink" title="经验分享"></a>经验分享</h5><ol>
+<li><a href="https://www.diycode.cc/topics/630" target="_blank" rel="external">传统 MVP 用在项目中是真的方便还是累赘?</a></li>
+<li><a href="http://www.jianshu.com/p/6fcff2abf468" target="_blank" rel="external">安居客Android项目架构演进</a></li>
+<li><a href="http://android.jobbole.com/82375/" target="_blank" rel="external">从零开始搭建架构实施Android项目</a></li>
+</ol>
+<h3 id="热修复"><a href="#热修复" class="headerlink" title="热修复"></a>热修复</h3><h4 id="经验分享-3"><a href="#经验分享-3" class="headerlink" title="经验分享"></a>经验分享</h4><ol>
+<li><a href="http://mp.weixin.qq.com/s/GuzbU1M1LY1VKmN7PyVbHQ" target="_blank" rel="external">蘑菇街Android热修复探索之路</a></li>
+</ol>
+<h4 id="Library"><a href="#Library" class="headerlink" title="Library"></a>Library</h4><ol>
+<li><a href="https://github.com/meili/Aceso" target="_blank" rel="external">Aceso-(by meili)</a></li>
+</ol>
+<h3 id="事件分发"><a href="#事件分发" class="headerlink" title="事件分发"></a>事件分发</h3><h4 id="经验分享-4"><a href="#经验分享-4" class="headerlink" title="经验分享"></a>经验分享</h4><ol>
+<li><a href="http://allenfeng.com/2017/02/22/android-touch-event-transfer-mechanism/" target="_blank" rel="external">Android事件分发机制源码解析</a></li>
+</ol>
+<h3 id="API-23"><a href="#API-23" class="headerlink" title="API 23"></a>API 23</h3><h4 id="动态权限"><a href="#动态权限" class="headerlink" title="动态权限"></a>动态权限</h4><h5 id="经验分享-5"><a href="#经验分享-5" class="headerlink" title="经验分享"></a>经验分享</h5><ol>
+<li><a href="http://mp.weixin.qq.com/s/YL-NooJmsqbGSUlpNmpqbw" target="_blank" rel="external">Android权限机制与适配经验-(by QQmusic)</a></li>
+</ol>
+<h5 id="Library-1"><a href="#Library-1" class="headerlink" title="Library"></a>Library</h5><ol>
+<li><a href="https://github.com/hotchemi/PermissionsDispatcher" target="_blank" rel="external">PermissionsDispatcher-(by hotchemi)</a></li>
+<li><a href="https://github.com/googlesamples/easypermissions" target="_blank" rel="external">easypermissions-(by googlesamples)</a></li>
+<li><a href="https://github.com/Karumi/Dexter" target="_blank" rel="external">Dexter-(by Karumi)</a></li>
+</ol>
+<h3 id="Thanks"><a href="#Thanks" class="headerlink" title="Thanks"></a>Thanks</h3><ul>
+<li>GitHub</li>
+<li>DiyCode</li>
+<li>AndroidWeekly</li>
+</ul>
+<h3 id="License"><a href="#License" class="headerlink" title="License"></a>License</h3><p>Power by <a href="www.lowett.com">lowett</a>，允许转载，转载请注明出处。</p>
 
       
     </div>
@@ -432,8 +471,6 @@
           
             <a href="/tags/Android/" rel="tag">#Android</a>
           
-            <a href="/tags/性能优化/" rel="tag">#性能优化</a>
-          
         </div>
       
 
@@ -441,17 +478,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/07/15/think-3/" rel="next" title="如果可以，来一场平凡的爱情">
-                <i class="fa fa-chevron-left"></i> 如果可以，来一场平凡的爱情
+              <a href="/2017/02/24/okhttp-4/" rel="next" title="关于Okhttp3（四）-RetryAndFollowUpInterceptor">
+                <i class="fa fa-chevron-left"></i> 关于Okhttp3（四）-RetryAndFollowUpInterceptor
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/07/18/fragment/" rel="prev" title="对Fragment的一些思考(一)">
-                对Fragment的一些思考(一) <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -503,8 +536,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/07/15/android-leak/"
-           data-title="Android查找Activity泄露的另类方法" data-url="http://lowett.com/2016/07/15/android-leak/">
+      <div class="ds-thread" data-thread-key="2017/03/01/android-libs/"
+           data-title="Android资讯知识库" data-url="http://lowett.com/2017/03/01/android-libs/">
       </div>
     
   </div>
@@ -595,7 +628,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#检查是否有泄露"><span class="nav-number">1.</span> <span class="nav-text">检查是否有泄露</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#定位泄露的位置"><span class="nav-number">2.</span> <span class="nav-text">定位泄露的位置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#原理"><span class="nav-number">3.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ADB命令"><span class="nav-number">1.</span> <span class="nav-text">ADB命令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#经验分享"><span class="nav-number">1.1.</span> <span class="nav-text">经验分享</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网络"><span class="nav-number">2.</span> <span class="nav-text">网络</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Https"><span class="nav-number">2.1.</span> <span class="nav-text">Https</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#经验分享-1"><span class="nav-number">2.1.1.</span> <span class="nav-text">经验分享</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#架构"><span class="nav-number">3.</span> <span class="nav-text">架构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#MVP"><span class="nav-number">3.1.</span> <span class="nav-text">MVP</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#经验分享-2"><span class="nav-number">3.1.1.</span> <span class="nav-text">经验分享</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#热修复"><span class="nav-number">4.</span> <span class="nav-text">热修复</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#经验分享-3"><span class="nav-number">4.1.</span> <span class="nav-text">经验分享</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Library"><span class="nav-number">4.2.</span> <span class="nav-text">Library</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#事件分发"><span class="nav-number">5.</span> <span class="nav-text">事件分发</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#经验分享-4"><span class="nav-number">5.1.</span> <span class="nav-text">经验分享</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#API-23"><span class="nav-number">6.</span> <span class="nav-text">API 23</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#动态权限"><span class="nav-number">6.1.</span> <span class="nav-text">动态权限</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#经验分享-5"><span class="nav-number">6.1.1.</span> <span class="nav-text">经验分享</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Library-1"><span class="nav-number">6.1.2.</span> <span class="nav-text">Library</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Thanks"><span class="nav-number">7.</span> <span class="nav-text">Thanks</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#License"><span class="nav-number">8.</span> <span class="nav-text">License</span></a></li></ol></div>
             
           </div>
         </section>
