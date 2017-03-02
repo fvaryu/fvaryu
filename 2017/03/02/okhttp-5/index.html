@@ -1,0 +1,861 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,Okhttp3," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="上一篇我们讲了Okhttp3请求你流程中的第一个拦截器BridgeInterceptor，其中初始化好一个socket连接对象后，随即将进行下一个流程，即今天要讲的BridgeInterceptor（桥接拦截）。
+
+功能
+本拦截器的主要功能是：处理请求头（header），将自定义的头和协议必须的头合在一起，如果有自定义使用自定义的，没有就生成默认头
+
+源码12345678910111213141">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于Okhttp3（五）-BridgeInterceptor">
+<meta property="og:url" content="http://lowett.com/2017/03/02/okhttp-5/index.html">
+<meta property="og:site_name" content="lowett">
+<meta property="og:description" content="上一篇我们讲了Okhttp3请求你流程中的第一个拦截器BridgeInterceptor，其中初始化好一个socket连接对象后，随即将进行下一个流程，即今天要讲的BridgeInterceptor（桥接拦截）。
+
+功能
+本拦截器的主要功能是：处理请求头（header），将自定义的头和协议必须的头合在一起，如果有自定义使用自定义的，没有就生成默认头
+
+源码12345678910111213141">
+<meta property="og:updated_time" content="2017-03-02T02:24:03.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="关于Okhttp3（五）-BridgeInterceptor">
+<meta name="twitter:description" content="上一篇我们讲了Okhttp3请求你流程中的第一个拦截器BridgeInterceptor，其中初始化好一个socket连接对象后，随即将进行下一个流程，即今天要讲的BridgeInterceptor（桥接拦截）。
+
+功能
+本拦截器的主要功能是：处理请求头（header），将自定义的头和协议必须的头合在一起，如果有自定义使用自定义的，没有就生成默认头
+
+源码12345678910111213141">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"right","display":"always"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 6307181688250172000,
+      author: '博主大人'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://lowett.com/2017/03/02/okhttp-5/"/>
+
+  <title> 关于Okhttp3（五）-BridgeInterceptor | lowett </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?dfd5b4385bacdae9367cc56f5736d3fa";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">lowett</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">--mcxiao</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                关于Okhttp3（五）-BridgeInterceptor
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-03-02T09:48:28+08:00" content="2017-03-02">
+              2017-03-02
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android/Okhttp3/" itemprop="url" rel="index">
+                    <span itemprop="name">Okhttp3</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/03/02/okhttp-5/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/02/okhttp-5/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/03/02/okhttp-5/" class="leancloud_visitors" data-flag-title="关于Okhttp3（五）-BridgeInterceptor">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>上一篇我们讲了Okhttp3请求你流程中的第一个拦截器BridgeInterceptor，其中初始化好一个socket连接对象后，随即将进行下一个流程，即今天要讲的BridgeInterceptor（桥接拦截）。</p>
+</blockquote>
+<h3 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h3><blockquote>
+<p>本拦截器的主要功能是：处理请求头（header），将自定义的头和协议必须的头合在一起，如果有自定义使用自定义的，没有就生成默认头</p>
+</blockquote>
+<h3 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 主要方法，其他略</span></span><br><span class="line"><span class="comment">// 此拦截器较为简单，其中有两点比较重要，1、cookie的处理 2、Gzip</span></span><br><span class="line"><span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> Response <span class="title">intercept</span><span class="params">(Chain chain)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">  Request userRequest = chain.request();</span><br><span class="line">  Request.Builder requestBuilder = userRequest.newBuilder();</span><br><span class="line"></span><br><span class="line">  RequestBody body = userRequest.body();</span><br><span class="line">  <span class="keyword">if</span> (body != <span class="keyword">null</span>) &#123;</span><br><span class="line">    MediaType contentType = body.contentType();</span><br><span class="line">    <span class="keyword">if</span> (contentType != <span class="keyword">null</span>) &#123;</span><br><span class="line">      requestBuilder.header(<span class="string">"Content-Type"</span>, contentType.toString());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">long</span> contentLength = body.contentLength();</span><br><span class="line">    <span class="keyword">if</span> (contentLength != -<span class="number">1</span>) &#123;</span><br><span class="line">      requestBuilder.header(<span class="string">"Content-Length"</span>, Long.toString(contentLength));</span><br><span class="line">      requestBuilder.removeHeader(<span class="string">"Transfer-Encoding"</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      requestBuilder.header(<span class="string">"Transfer-Encoding"</span>, <span class="string">"chunked"</span>);</span><br><span class="line">      requestBuilder.removeHeader(<span class="string">"Content-Length"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (userRequest.header(<span class="string">"Host"</span>) == <span class="keyword">null</span>) &#123;</span><br><span class="line">    requestBuilder.header(<span class="string">"Host"</span>, hostHeader(userRequest.url(), <span class="keyword">false</span>));</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (userRequest.header(<span class="string">"Connection"</span>) == <span class="keyword">null</span>) &#123;</span><br><span class="line">    requestBuilder.header(<span class="string">"Connection"</span>, <span class="string">"Keep-Alive"</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// If we add an "Accept-Encoding: gzip" header field we're responsible for also decompressing</span></span><br><span class="line">  <span class="comment">// the transfer stream.</span></span><br><span class="line">  <span class="keyword">boolean</span> transparentGzip = <span class="keyword">false</span>;</span><br><span class="line">  <span class="keyword">if</span> (userRequest.header(<span class="string">"Accept-Encoding"</span>) == <span class="keyword">null</span> &amp;&amp; userRequest.header(<span class="string">"Range"</span>) == <span class="keyword">null</span>) &#123;</span><br><span class="line">    transparentGzip = <span class="keyword">true</span>;</span><br><span class="line">    requestBuilder.header(<span class="string">"Accept-Encoding"</span>, <span class="string">"gzip"</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 创建Okhpptclitent时候配置的cookieJar，</span></span><br><span class="line">  List&lt;Cookie&gt; cookies = cookieJar.loadForRequest(userRequest.url());</span><br><span class="line">  <span class="keyword">if</span> (!cookies.isEmpty()) &#123;</span><br><span class="line">    requestBuilder.header(<span class="string">"Cookie"</span>, cookieHeader(cookies));</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 默认的是 okhttp3/3.0.1，即版本号</span></span><br><span class="line">  <span class="keyword">if</span> (userRequest.header(<span class="string">"User-Agent"</span>) == <span class="keyword">null</span>) &#123;</span><br><span class="line">    requestBuilder.header(<span class="string">"User-Agent"</span>, Version.userAgent());</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//  以上为请求前的头处理</span></span><br><span class="line">  Response networkResponse = chain.proceed(requestBuilder.build());</span><br><span class="line"><span class="comment">// 以下是请求完成，拿到返回后的头处理</span></span><br><span class="line">  HttpHeaders.receiveHeaders(cookieJar, userRequest.url(), networkResponse.headers());</span><br><span class="line"></span><br><span class="line">  Response.Builder responseBuilder = networkResponse.newBuilder()</span><br><span class="line">      .request(userRequest);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (transparentGzip</span><br><span class="line">      &amp;&amp; <span class="string">"gzip"</span>.equalsIgnoreCase(networkResponse.header(<span class="string">"Content-Encoding"</span>))</span><br><span class="line">      &amp;&amp; HttpHeaders.hasBody(networkResponse)) &#123;</span><br><span class="line">    GzipSource responseBody = <span class="keyword">new</span> GzipSource(networkResponse.body().source());</span><br><span class="line">    Headers strippedHeaders = networkResponse.headers().newBuilder()</span><br><span class="line">        .removeAll(<span class="string">"Content-Encoding"</span>)</span><br><span class="line">        .removeAll(<span class="string">"Content-Length"</span>)</span><br><span class="line">        .build();</span><br><span class="line">    responseBuilder.headers(strippedHeaders);</span><br><span class="line">    responseBuilder.body(<span class="keyword">new</span> RealResponseBody(strippedHeaders, Okio.buffer(responseBody)));</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> responseBuilder.build();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="获取本地的cookie"><a href="#获取本地的cookie" class="headerlink" title="获取本地的cookie"></a>获取本地的cookie</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 源码部分，略</span></span><br><span class="line"><span class="comment">// 创建Okhpptclitent时候配置的cookieJar，</span></span><br><span class="line">  List&lt;Cookie&gt; cookies = cookieJar.loadForRequest(userRequest.url());</span><br><span class="line"><span class="comment">// 所以返回的cookies不能为空，否则这里会报空指针</span></span><br><span class="line">  <span class="keyword">if</span> (!cookies.isEmpty()) &#123;</span><br><span class="line">    <span class="comment">// 解析成http协议的cookie格式</span></span><br><span class="line">    requestBuilder.header(<span class="string">"Cookie"</span>, cookieHeader(cookies));</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>此处就是获取本地的cookie，调用cookieJar.loadForRequest()方法，前文<a href="http://lowett.com/2017/02/09/okhttp-1/">关于Okhttp（一）-基本使用</a>有说过：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">OkHttpClient okHttpClient = <span class="keyword">new</span> OkHttpClient.Builder()</span><br><span class="line">               .cookieJar(<span class="keyword">new</span> CookieJar() &#123;</span><br><span class="line">                   <span class="meta">@Override</span></span><br><span class="line">                   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">saveFromResponse</span><span class="params">(HttpUrl url, List&lt;Cookie&gt; cookies)</span> </span>&#123;</span><br><span class="line">					<span class="comment">// 保存cookie通常使用SharedPreferences</span></span><br><span class="line">                   &#125;</span><br><span class="line"></span><br><span class="line">                   <span class="meta">@Override</span></span><br><span class="line">                   <span class="function"><span class="keyword">public</span> List&lt;Cookie&gt; <span class="title">loadForRequest</span><span class="params">(HttpUrl url)</span> </span>&#123;</span><br><span class="line">                     <span class="comment">// 从保存位置读取，注意此处不能为空，否则会导致空指针</span></span><br><span class="line">                       <span class="keyword">return</span> <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">                   &#125;</span><br><span class="line">               &#125;)</span><br><span class="line">               .build();</span><br></pre></td></tr></table></figure>
+<h3 id="解析服务器返回的Header"><a href="#解析服务器返回的Header" class="headerlink" title="解析服务器返回的Header"></a>解析服务器返回的Header</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 响应header， 如果没有自定义配置cookie不会解析</span></span><br><span class="line">HttpHeaders.receiveHeaders(cookieJar, userRequest.url(), networkResponse.headers());</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">receiveHeaders</span><span class="params">(CookieJar cookieJar, HttpUrl url, Headers headers)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 没有配置，不解析</span></span><br><span class="line">  <span class="keyword">if</span> (cookieJar == CookieJar.NO_COOKIES) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 此处遍历，解析Set-Cookie的值，比如max-age</span></span><br><span class="line">  List&lt;Cookie&gt; cookies = Cookie.parseAll(url, headers);</span><br><span class="line">  <span class="keyword">if</span> (cookies.isEmpty()) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 然后保存，即自定义</span></span><br><span class="line">  cookieJar.saveFromResponse(url, cookies);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>cookie的处理比较简单，重要的是要理解http协议。</p>
+<h3 id="Gzip"><a href="#Gzip" class="headerlink" title="Gzip"></a>Gzip</h3><blockquote>
+<p>okhttp3支持gzip压缩，本事不负责处理，而是交给以来库Okio处理</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 略部分代码</span></span><br><span class="line"><span class="comment">// 前面解析完header后，判断服务器是否支持gzip压缩格式，如果支持将交给Okio处理，至于okio如何处理gzip，本人还不是很清楚，读者自行研究</span></span><br><span class="line"><span class="keyword">if</span> (transparentGzip</span><br><span class="line">    &amp;&amp; <span class="string">"gzip"</span>.equalsIgnoreCase(networkResponse.header(<span class="string">"Content-Encoding"</span>))</span><br><span class="line">    &amp;&amp; HttpHeaders.hasBody(networkResponse)) &#123;</span><br><span class="line">  GzipSource responseBody = <span class="keyword">new</span> GzipSource(networkResponse.body().source());</span><br><span class="line">  Headers strippedHeaders = networkResponse.headers().newBuilder()</span><br><span class="line">      .removeAll(<span class="string">"Content-Encoding"</span>)</span><br><span class="line">      .removeAll(<span class="string">"Content-Length"</span>)</span><br><span class="line">      .build();</span><br><span class="line">  responseBuilder.headers(strippedHeaders);</span><br><span class="line">  <span class="comment">// 处理完成后，重新生成一个response</span></span><br><span class="line">  responseBuilder.body(<span class="keyword">new</span> RealResponseBody(strippedHeaders, Okio.buffer(responseBody)));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>至此，BridgeInterceptor的功能就说完了，是不是很简单。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><blockquote>
+<p>Okhttp3本事有5个重要的拦截器，到这里我们讲了2个，下一篇将介绍平日说的比较多的，也是比较重要的一个，与缓存相关的拦截器，敬请期待。</p>
+</blockquote>
+<h4 id="系列文章"><a href="#系列文章" class="headerlink" title="系列文章"></a>系列文章</h4><ol>
+<li><a href="http://lowett.com/2017/02/09/okhttp-1/">关于Okhttp（一）-基本使用</a></li>
+<li><a href="http://lowett.com/2017/02/13/okhttp-2/">关于Okhttp（二）-如何下载查看源码</a></li>
+<li><a href="http://lowett.com/2017/02/21/okhttp-3/">关于Okhttp3（三）-请求流程</a></li>
+<li><a href="http://lowett.com/2017/02/24/okhttp-4/">关于Okhttp3（四）-RetryAndFollowUpInterceptor</a></li>
+<li><a href="http://lowett.com/2017/03/02/okhttp-5/">关于Okhttp3（五）-BridgeInterceptor</a></li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wxpay.png" alt="lowett WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag">#Android</a>
+          
+            <a href="/tags/Okhttp3/" rel="tag">#Okhttp3</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/01/android-libs/" rel="next" title="Android资讯知识库">
+                <i class="fa fa-chevron-left"></i> Android资讯知识库
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  <p>热评文章</p>
+  <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/03/02/okhttp-5/"
+           data-title="关于Okhttp3（五）-BridgeInterceptor" data-url="http://lowett.com/2017/03/02/okhttp-5/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="lowett" />
+          <p class="site-author-name" itemprop="name">lowett</p>
+          <p class="site-description motion-element" itemprop="description">雁过无痕，但我确实飞过</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">22</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#功能"><span class="nav-number">1.</span> <span class="nav-text">功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#源码"><span class="nav-number">2.</span> <span class="nav-text">源码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获取本地的cookie"><span class="nav-number">3.</span> <span class="nav-text">获取本地的cookie</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解析服务器返回的Header"><span class="nav-number">4.</span> <span class="nav-text">解析服务器返回的Header</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Gzip"><span class="nav-number">5.</span> <span class="nav-text">Gzip</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#系列文章"><span class="nav-number">6.1.</span> <span class="nav-text">系列文章</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lowett</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"lowett"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("RyOzCscbKiTRuucMD4x8Ce8e-gzGzoHsz", "gNdVnwMrki5jBmRzaQijk5G3");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+</body>
+</html>
