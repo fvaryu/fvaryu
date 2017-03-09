@@ -1,0 +1,900 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,Okhttp3," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="现在的app没有几个是不联网的了，在流量费用很高、速度一般的今天给用户合理节省流量，以及提高响应速度就显得尤为重要了。所以一个优秀的app都会在发展到一定程度后就会开始引入缓存，什么是缓存呢？
+百度百科：
+缓存就是数据交换的缓冲区（称作Cache），当某一硬件要读取数据时，会首先从缓存中查找需要的数据，如果找到了则直接执行，找不到的话则从内存中找。由于缓存的运行速度比内存快得多，故缓存的作用就是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于Okhttp3（六）-CacheInterceptor">
+<meta property="og:url" content="http://lowett.com/2017/03/09/okhttp-6/index.html">
+<meta property="og:site_name" content="lowett">
+<meta property="og:description" content="现在的app没有几个是不联网的了，在流量费用很高、速度一般的今天给用户合理节省流量，以及提高响应速度就显得尤为重要了。所以一个优秀的app都会在发展到一定程度后就会开始引入缓存，什么是缓存呢？
+百度百科：
+缓存就是数据交换的缓冲区（称作Cache），当某一硬件要读取数据时，会首先从缓存中查找需要的数据，如果找到了则直接执行，找不到的话则从内存中找。由于缓存的运行速度比内存快得多，故缓存的作用就是">
+<meta property="og:updated_time" content="2017-03-09T08:48:26.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="关于Okhttp3（六）-CacheInterceptor">
+<meta name="twitter:description" content="现在的app没有几个是不联网的了，在流量费用很高、速度一般的今天给用户合理节省流量，以及提高响应速度就显得尤为重要了。所以一个优秀的app都会在发展到一定程度后就会开始引入缓存，什么是缓存呢？
+百度百科：
+缓存就是数据交换的缓冲区（称作Cache），当某一硬件要读取数据时，会首先从缓存中查找需要的数据，如果找到了则直接执行，找不到的话则从内存中找。由于缓存的运行速度比内存快得多，故缓存的作用就是">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"right","display":"always"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 6307181688250172000,
+      author: '博主大人'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://lowett.com/2017/03/09/okhttp-6/"/>
+
+  <title> 关于Okhttp3（六）-CacheInterceptor | lowett </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?dfd5b4385bacdae9367cc56f5736d3fa";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">lowett</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">--mcxiao</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                关于Okhttp3（六）-CacheInterceptor
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-03-09T09:12:23+08:00" content="2017-03-09">
+              2017-03-09
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android/Okhttp3/" itemprop="url" rel="index">
+                    <span itemprop="name">Okhttp3</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/03/09/okhttp-6/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/09/okhttp-6/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/03/09/okhttp-6/" class="leancloud_visitors" data-flag-title="关于Okhttp3（六）-CacheInterceptor">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>现在的app没有几个是不联网的了，在流量费用很高、速度一般的今天给用户合理节省流量，以及提高响应速度就显得尤为重要了。所以一个优秀的app都会在发展到一定程度后就会开始引入缓存，什么是缓存呢？</p>
+<p>百度百科：</p>
+<p>缓存就是数据交换的缓冲区（称作Cache），当某一硬件要读取数据时，会首先从缓存中查找需要的数据，如果找到了则直接执行，找不到的话则从内存中找。由于缓存的运行速度比内存快得多，故缓存的作用就是帮助硬件更快地运行。</p>
+<p>通俗一点就是：接杯水放在手边，渴了直接喝，没有去饮水机取。</p>
+</blockquote>
+<h4 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h4><blockquote>
+<p>Okhttp3的网络缓存是基于http协议，如果不清楚，请自行搜索。</p>
+<p>对于缓存，可阅读，<a href="https://my.oschina.net/leejun2005/blog/369148" target="_blank" rel="external">缓存简介</a>。</p>
+<p>使用DiskLruCache缓存策略</p>
+</blockquote>
+<h4 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h4><ol>
+<li>目前只支持GET方式，其他请求方式需要自己实现</li>
+<li>需要服务器配合，通过header相关的头来控制缓存</li>
+<li>创建okhttpclient时候需要配置Cache</li>
+</ol>
+<h4 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">1、如果配置缓存，则从缓存中取一次，不保证存在</span><br><span class="line">2、缓存策略</span><br><span class="line">3、缓存监测</span><br><span class="line">4、禁止使用网络（根据缓存策略），缓存又无效，直接返回</span><br><span class="line">5、缓存有效，不使用网络</span><br><span class="line">6、缓存无效，执行下一个拦截器</span><br><span class="line">7、本地有缓存，根具条件选择使用哪个响应</span><br><span class="line">8、使用网络响应</span><br><span class="line">9、 缓存到本地</span><br></pre></td></tr></table></figure>
+<h4 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span> </span><br><span class="line"><span class="function"><span class="keyword">public</span> Response <span class="title">intercept</span><span class="params">(Chain chain)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">  <span class="comment">// 1、如果配置缓存，则从缓存中取一次，不保证存在</span></span><br><span class="line">  Response cacheCandidate = cache != <span class="keyword">null</span></span><br><span class="line">      ? cache.get(chain.request())</span><br><span class="line">      : <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">long</span> now = System.currentTimeMillis();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 2、缓存策略</span></span><br><span class="line">  CacheStrategy strategy = <span class="keyword">new</span> CacheStrategy.Factory(now, chain.request(), cacheCandidate).get();</span><br><span class="line">  Request networkRequest = strategy.networkRequest;</span><br><span class="line">  Response cacheResponse = strategy.cacheResponse;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 3、缓存监测</span></span><br><span class="line">  <span class="keyword">if</span> (cache != <span class="keyword">null</span>) &#123;</span><br><span class="line">    cache.trackResponse(strategy);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (cacheCandidate != <span class="keyword">null</span> &amp;&amp; cacheResponse == <span class="keyword">null</span>) &#123;</span><br><span class="line">    closeQuietly(cacheCandidate.body()); <span class="comment">// The cache candidate wasn't applicable. Close it.</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 4、禁止使用网络（根据缓存策略），缓存又无效，直接返回</span></span><br><span class="line">  <span class="comment">// If we're forbidden from using the network and the cache is insufficient, fail.</span></span><br><span class="line">  <span class="keyword">if</span> (networkRequest == <span class="keyword">null</span> &amp;&amp; cacheResponse == <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Response.Builder()</span><br><span class="line">        .request(chain.request())</span><br><span class="line">        .protocol(Protocol.HTTP_1_1)</span><br><span class="line">        .code(<span class="number">504</span>)</span><br><span class="line">        .message(<span class="string">"Unsatisfiable Request (only-if-cached)"</span>)</span><br><span class="line">        .body(Util.EMPTY_RESPONSE)</span><br><span class="line">        .sentRequestAtMillis(-<span class="number">1L</span>)</span><br><span class="line">        .receivedResponseAtMillis(System.currentTimeMillis())</span><br><span class="line">        .build();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 5、缓存有效，不使用网络</span></span><br><span class="line">  <span class="comment">// If we don't need the network, we're done.</span></span><br><span class="line">  <span class="keyword">if</span> (networkRequest == <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> cacheResponse.newBuilder()</span><br><span class="line">        .cacheResponse(stripBody(cacheResponse))</span><br><span class="line">        .build();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 6、缓存无效，执行下一个拦截器</span></span><br><span class="line">  Response networkResponse = <span class="keyword">null</span>;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    networkResponse = chain.proceed(networkRequest);</span><br><span class="line">  &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    <span class="comment">// If we're crashing on I/O or otherwise, don't leak the cache body.</span></span><br><span class="line">    <span class="keyword">if</span> (networkResponse == <span class="keyword">null</span> &amp;&amp; cacheCandidate != <span class="keyword">null</span>) &#123;</span><br><span class="line">      closeQuietly(cacheCandidate.body());</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 7、本地有缓存，根具条件选择使用哪个响应</span></span><br><span class="line">  <span class="comment">// If we have a cache response too, then we're doing a conditional get.</span></span><br><span class="line">  <span class="keyword">if</span> (cacheResponse != <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (networkResponse.code() == HTTP_NOT_MODIFIED) &#123;</span><br><span class="line">      Response response = cacheResponse.newBuilder()</span><br><span class="line">          .headers(combine(cacheResponse.headers(), networkResponse.headers()))</span><br><span class="line">          .sentRequestAtMillis(networkResponse.sentRequestAtMillis())</span><br><span class="line">          .receivedResponseAtMillis(networkResponse.receivedResponseAtMillis())</span><br><span class="line">          .cacheResponse(stripBody(cacheResponse))</span><br><span class="line">          .networkResponse(stripBody(networkResponse))</span><br><span class="line">          .build();</span><br><span class="line">      networkResponse.body().close();</span><br><span class="line"></span><br><span class="line">      <span class="comment">// Update the cache after combining headers but before stripping the</span></span><br><span class="line">      <span class="comment">// Content-Encoding header (as performed by initContentStream()).</span></span><br><span class="line">      cache.trackConditionalCacheHit();</span><br><span class="line">      cache.update(cacheResponse, response);</span><br><span class="line">      <span class="keyword">return</span> response;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      closeQuietly(cacheResponse.body());</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 8、使用网络响应</span></span><br><span class="line">  Response response = networkResponse.newBuilder()</span><br><span class="line">      .cacheResponse(stripBody(cacheResponse))</span><br><span class="line">      .networkResponse(stripBody(networkResponse))</span><br><span class="line">      .build();</span><br><span class="line"> <span class="comment">// 9、 缓存到本地</span></span><br><span class="line">  <span class="keyword">if</span> (HttpHeaders.hasBody(response)) &#123;</span><br><span class="line">    CacheRequest cacheRequest = maybeCache(response, networkResponse.request(), cache);</span><br><span class="line">    response = cacheWritingResponse(cacheRequest, response);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> response;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="步骤分析"><a href="#步骤分析" class="headerlink" title="步骤分析"></a>步骤分析</h4><h5 id="读取缓存"><a href="#读取缓存" class="headerlink" title="读取缓存"></a>读取缓存</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 入口</span></span><br><span class="line">Response cacheCandidate = cache != <span class="keyword">null</span></span><br><span class="line">    ? cache.get(chain.request())</span><br><span class="line">    : <span class="keyword">null</span>;</span><br><span class="line"><span class="comment">// 主要是Cache类</span></span><br></pre></td></tr></table></figure>
+<ol>
+<li>通过url生成key（MD5、HEX）</li>
+<li>通过key从内存中读取包装实体类Entry，内存中使用LinkedHashMap<string, entry=""></string,></li>
+<li>通过实体得到一个Snapshot，关联起文件系统中的缓存文件（缓存文件有多个，请求头文件、响应提文件），然后生成流（Source，Okio中的类，时间上就是inputStream）</li>
+<li>通过快照得到一个Response实例</li>
+<li>匹配是否是符合要求的，是返回响应，否关闭</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 位置 okhttp3/Cache</span></span><br><span class="line"><span class="function">Response <span class="title">get</span><span class="params">(Request request)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 1、</span></span><br><span class="line">  String key = key(request.url());</span><br><span class="line">  DiskLruCache.Snapshot snapshot;</span><br><span class="line">  Entry entry;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">     <span class="comment">// 2、</span></span><br><span class="line">    snapshot = cache.get(key);</span><br><span class="line">    <span class="keyword">if</span> (snapshot == <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">    <span class="comment">// Give up because the cache cannot be read.</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">     <span class="comment">// 3、</span></span><br><span class="line">    entry = <span class="keyword">new</span> Entry(snapshot.getSource(ENTRY_METADATA));</span><br><span class="line">  &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">    Util.closeQuietly(snapshot);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// 4、</span></span><br><span class="line">  Response response = entry.response(snapshot);</span><br><span class="line"></span><br><span class="line">   <span class="comment">// 5、</span></span><br><span class="line">  <span class="keyword">if</span> (!entry.matches(request, response)) &#123;</span><br><span class="line">    Util.closeQuietly(response.body());</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> response;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="缓存策略的配置"><a href="#缓存策略的配置" class="headerlink" title="缓存策略的配置"></a>缓存策略的配置</h5><p>如果上一步能够得到缓存响应，则配置策略，主要是解析缓存中与响应有关的头（Date\Expires\Last-Modified\ETag\Age）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 2、缓存策略</span></span><br><span class="line">CacheStrategy strategy = <span class="keyword">new</span> CacheStrategy.Factory(now, chain.request(), cacheCandidate).get();</span><br><span class="line">Request networkRequest = strategy.networkRequest;</span><br><span class="line">Response cacheResponse = strategy.cacheResponse;</span><br></pre></td></tr></table></figure>
+<ol>
+<li><p>解析缓存中与缓存有关的头</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Factory</span><span class="params">(<span class="keyword">long</span> nowMillis, Request request, Response cacheResponse)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.nowMillis = nowMillis;</span><br><span class="line">  <span class="keyword">this</span>.request = request;</span><br><span class="line">  <span class="keyword">this</span>.cacheResponse = cacheResponse;</span><br><span class="line"> <span class="comment">// 有缓存响应</span></span><br><span class="line">  <span class="keyword">if</span> (cacheResponse != <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="keyword">this</span>.sentRequestMillis = cacheResponse.sentRequestAtMillis();</span><br><span class="line">    <span class="keyword">this</span>.receivedResponseMillis = cacheResponse.receivedResponseAtMillis();</span><br><span class="line">    Headers headers = cacheResponse.headers();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>, size = headers.size(); i &lt; size; i++) &#123;</span><br><span class="line">      String fieldName = headers.name(i);</span><br><span class="line">      String value = headers.value(i);</span><br><span class="line">      <span class="keyword">if</span> (<span class="string">"Date"</span>.equalsIgnoreCase(fieldName)) &#123;</span><br><span class="line">        servedDate = HttpDate.parse(value);</span><br><span class="line">        servedDateString = value;</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">"Expires"</span>.equalsIgnoreCase(fieldName)) &#123;</span><br><span class="line">        expires = HttpDate.parse(value);</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">"Last-Modified"</span>.equalsIgnoreCase(fieldName)) &#123;</span><br><span class="line">        lastModified = HttpDate.parse(value);</span><br><span class="line">        lastModifiedString = value;</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">"ETag"</span>.equalsIgnoreCase(fieldName)) &#123;</span><br><span class="line">        etag = value;</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">"Age"</span>.equalsIgnoreCase(fieldName)) &#123;</span><br><span class="line">        ageSeconds = HttpHeaders.parseSeconds(value, -<span class="number">1</span>);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>根据一些条件实例一个CacheStrategy（get()）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> CacheStrategy <span class="title">getCandidate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="comment">// No cached response.</span></span><br><span class="line">  <span class="comment">// 1、没有缓存响应，返回一个没有响应的策略</span></span><br><span class="line">  <span class="keyword">if</span> (cacheResponse == <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> CacheStrategy(request, <span class="keyword">null</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 2、如果是https，丢失了握手缓存则，返回一个没有响应的策略</span></span><br><span class="line">  <span class="comment">// Drop the cached response if it's missing a required handshake.</span></span><br><span class="line">  <span class="keyword">if</span> (request.isHttps() &amp;&amp; cacheResponse.handshake() == <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> CacheStrategy(request, <span class="keyword">null</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 3、不能被缓存</span></span><br><span class="line">  <span class="comment">// If this response shouldn't have been stored, it should never be used</span></span><br><span class="line">  <span class="comment">// as a response source. This check should be redundant as long as the</span></span><br><span class="line">  <span class="comment">// persistence store is well-behaved and the rules are constant.</span></span><br><span class="line">  <span class="keyword">if</span> (!isCacheable(cacheResponse, request)) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> CacheStrategy(request, <span class="keyword">null</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 4、缓存控制</span></span><br><span class="line">  CacheControl requestCaching = request.cacheControl();</span><br><span class="line">  <span class="keyword">if</span> (requestCaching.noCache() || hasConditions(request)) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> CacheStrategy(request, <span class="keyword">null</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 5、根据响应头</span></span><br><span class="line">  <span class="keyword">long</span> ageMillis = cacheResponseAge();</span><br><span class="line">  <span class="keyword">long</span> freshMillis = computeFreshnessLifetime();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (requestCaching.maxAgeSeconds() != -<span class="number">1</span>) &#123;</span><br><span class="line">    freshMillis = Math.min(freshMillis, SECONDS.toMillis(requestCaching.maxAgeSeconds()));</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">long</span> minFreshMillis = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">if</span> (requestCaching.minFreshSeconds() != -<span class="number">1</span>) &#123;</span><br><span class="line">    minFreshMillis = SECONDS.toMillis(requestCaching.minFreshSeconds());</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">long</span> maxStaleMillis = <span class="number">0</span>;</span><br><span class="line">  CacheControl responseCaching = cacheResponse.cacheControl();</span><br><span class="line">  <span class="keyword">if</span> (!responseCaching.mustRevalidate() &amp;&amp; requestCaching.maxStaleSeconds() != -<span class="number">1</span>) &#123;</span><br><span class="line">    maxStaleMillis = SECONDS.toMillis(requestCaching.maxStaleSeconds());</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!responseCaching.noCache() &amp;&amp; ageMillis + minFreshMillis &lt; freshMillis + maxStaleMillis) &#123;</span><br><span class="line">    Response.Builder builder = cacheResponse.newBuilder();</span><br><span class="line">    <span class="keyword">if</span> (ageMillis + minFreshMillis &gt;= freshMillis) &#123;</span><br><span class="line">      builder.addHeader(<span class="string">"Warning"</span>, <span class="string">"110 HttpURLConnection \"Response is stale\""</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">long</span> oneDayMillis = <span class="number">24</span> * <span class="number">60</span> * <span class="number">60</span> * <span class="number">1000L</span>;</span><br><span class="line">    <span class="keyword">if</span> (ageMillis &gt; oneDayMillis &amp;&amp; isFreshnessLifetimeHeuristic()) &#123;</span><br><span class="line">      builder.addHeader(<span class="string">"Warning"</span>, <span class="string">"113 HttpURLConnection \"Heuristic expiration\""</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> CacheStrategy(<span class="keyword">null</span>, builder.build());</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Find a condition to add to the request. If the condition is satisfied, the response body</span></span><br><span class="line">  <span class="comment">// will not be transmitted.</span></span><br><span class="line">  String conditionName;</span><br><span class="line">  String conditionValue;</span><br><span class="line">  <span class="keyword">if</span> (etag != <span class="keyword">null</span>) &#123;</span><br><span class="line">    conditionName = <span class="string">"If-None-Match"</span>;</span><br><span class="line">    conditionValue = etag;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (lastModified != <span class="keyword">null</span>) &#123;</span><br><span class="line">    conditionName = <span class="string">"If-Modified-Since"</span>;</span><br><span class="line">    conditionValue = lastModifiedString;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (servedDate != <span class="keyword">null</span>) &#123;</span><br><span class="line">    conditionName = <span class="string">"If-Modified-Since"</span>;</span><br><span class="line">    conditionValue = servedDateString;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> CacheStrategy(request, <span class="keyword">null</span>); <span class="comment">// No condition! Make a regular request.</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  Headers.Builder conditionalRequestHeaders = request.headers().newBuilder();</span><br><span class="line">  Internal.instance.addLenient(conditionalRequestHeaders, conditionName, conditionValue);</span><br><span class="line"></span><br><span class="line">  Request conditionalRequest = request.newBuilder()</span><br><span class="line">      .headers(conditionalRequestHeaders.build())</span><br><span class="line">      .build();</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> CacheStrategy(conditionalRequest, cacheResponse);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p><strong>只有一种情况是会有正常的缓存被使用：所有的缓存头符合要求，即第5条。</strong></p>
+<h5 id="缓存监测"><a href="#缓存监测" class="headerlink" title="缓存监测"></a>缓存监测</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 3、缓存监测</span><br><span class="line">if (cache != null) &#123;</span><br><span class="line">  cache.trackResponse(strategy);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此处记录缓存使用情况</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">trackResponse</span><span class="params">(CacheStrategy cacheStrategy)</span> </span>&#123;</span><br><span class="line">  requestCount++;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (cacheStrategy.networkRequest != <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="comment">// If this is a conditional request, we'll increment hitCount if/when it hits.</span></span><br><span class="line">    networkCount++;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (cacheStrategy.cacheResponse != <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="comment">// This response uses the cache and not the network. That's a cache hit.</span></span><br><span class="line">    hitCount++;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="禁止使用网络（根据缓存策略），缓存又无效，直接返回"><a href="#禁止使用网络（根据缓存策略），缓存又无效，直接返回" class="headerlink" title="禁止使用网络（根据缓存策略），缓存又无效，直接返回"></a>禁止使用网络（根据缓存策略），缓存又无效，直接返回</h5><p>根据上面缓存策略的配置，这种情况不会发生，不清楚为什么有这个逻辑</p>
+<h5 id="缓存有效，不使用网络"><a href="#缓存有效，不使用网络" class="headerlink" title="缓存有效，不使用网络"></a>缓存有效，不使用网络</h5><p>通过缓存策略，如果符合要求将会把Request置空，Response不为空，所以直接使用缓存</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// 5、缓存有效，不使用网络</span><br><span class="line">// If we don&apos;t need the network, we&apos;re done.</span><br><span class="line">if (networkRequest == null) &#123;</span><br><span class="line">  return cacheResponse.newBuilder()</span><br><span class="line">      .cacheResponse(stripBody(cacheResponse))</span><br><span class="line">      .build();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="缓存无效，执行下一个拦截器"><a href="#缓存无效，执行下一个拦截器" class="headerlink" title="缓存无效，执行下一个拦截器"></a>缓存无效，执行下一个拦截器</h5><p>如果缓存无效，将会执行下一个拦截器，等待响应结果</p>
+<h5 id="本地有缓存，根具条件选择使用哪个响应"><a href="#本地有缓存，根具条件选择使用哪个响应" class="headerlink" title="本地有缓存，根具条件选择使用哪个响应"></a>本地有缓存，根具条件选择使用哪个响应</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 本地有缓存，响应结果没有修改，合并两个响应</span></span><br><span class="line"><span class="keyword">if</span> (cacheResponse != <span class="keyword">null</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (networkResponse.code() == HTTP_NOT_MODIFIED) &#123;</span><br><span class="line">    Response response = cacheResponse.newBuilder()</span><br><span class="line">        .headers(combine(cacheResponse.headers(), networkResponse.headers()))</span><br><span class="line">        .sentRequestAtMillis(networkResponse.sentRequestAtMillis())</span><br><span class="line">        .receivedResponseAtMillis(networkResponse.receivedResponseAtMillis())</span><br><span class="line">        .cacheResponse(stripBody(cacheResponse))</span><br><span class="line">        .networkResponse(stripBody(networkResponse))</span><br><span class="line">        .build();</span><br><span class="line">    networkResponse.body().close();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Update the cache after combining headers but before stripping the</span></span><br><span class="line">    <span class="comment">// Content-Encoding header (as performed by initContentStream()).</span></span><br><span class="line">    cache.trackConditionalCacheHit();</span><br><span class="line">    <span class="comment">// 更新缓存</span></span><br><span class="line">    cache.update(cacheResponse, response);</span><br><span class="line">    <span class="keyword">return</span> response;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    closeQuietly(cacheResponse.body());</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="使用网络响应"><a href="#使用网络响应" class="headerlink" title="使用网络响应"></a>使用网络响应</h5><p>以上都不符合，只能使用网络响应</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Response response = networkResponse.newBuilder()</span><br><span class="line">    .cacheResponse(stripBody(cacheResponse))</span><br><span class="line">    .networkResponse(stripBody(networkResponse))</span><br><span class="line">    .build();</span><br></pre></td></tr></table></figure>
+<h5 id="缓存到本地"><a href="#缓存到本地" class="headerlink" title="缓存到本地"></a>缓存到本地</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 9、 缓存到本地</span></span><br><span class="line"><span class="comment">// 1.</span></span><br><span class="line"><span class="keyword">if</span> (HttpHeaders.hasBody(response)) &#123;</span><br><span class="line">  <span class="comment">// 2.</span></span><br><span class="line">  CacheRequest cacheRequest = maybeCache(response, networkResponse.request(), cache);</span><br><span class="line">  response = cacheWritingResponse(cacheRequest, response);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li><p>根据头判断是否支持缓存</p>
+<ol>
+<li>必须有响应体</li>
+<li>内容有变化</li>
+</ol>
+</li>
+<li><p>是否符合缓存要求，根据策略</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> CacheRequest <span class="title">maybeCache</span><span class="params">(Response userResponse, Request networkRequest,</span><br><span class="line">    InternalCache responseCache)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">  <span class="comment">// 1、没有响应体 不缓存</span></span><br><span class="line">  <span class="keyword">if</span> (responseCache == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 2、是否支持</span></span><br><span class="line">  <span class="comment">// Should we cache this response for this request?</span></span><br><span class="line">  <span class="comment">// 2.1、根据头</span></span><br><span class="line">  <span class="keyword">if</span> (!CacheStrategy.isCacheable(userResponse, networkRequest)) &#123;</span><br><span class="line">    <span class="comment">// 2.2、根据请求方式，有请求体的方式都不支持</span></span><br><span class="line">    <span class="keyword">if</span> (HttpMethod.invalidatesCache(networkRequest.method())) &#123;</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        responseCache.remove(networkRequest);</span><br><span class="line">      &#125; <span class="keyword">catch</span> (IOException ignored) &#123;</span><br><span class="line">        <span class="comment">// The cache cannot be written.</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 写入缓存</span></span><br><span class="line">  <span class="comment">// Offer this request to the cache.</span></span><br><span class="line">  <span class="keyword">return</span> responseCache.put(userResponse);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p><strong>根据请求方式，有请求体的方式都不支持缓存</strong></p>
+<ol>
+<li><p>通过配置好的cache写入缓存</p>
+<p>写入缓存和读取缓存使用的方式类似，都是通过Cache，DiskLruCache</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">CacheRequest <span class="title">put</span><span class="params">(Response response)</span> </span>&#123;</span><br><span class="line">  String requestMethod = response.request().method();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (HttpMethod.invalidatesCache(response.request().method())) &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      remove(response.request());</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException ignored) &#123;</span><br><span class="line">      <span class="comment">// The cache cannot be written.</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (!requestMethod.equals(<span class="string">"GET"</span>)) &#123;</span><br><span class="line">    <span class="comment">// Don't cache non-GET responses. We're technically allowed to cache</span></span><br><span class="line">    <span class="comment">// HEAD requests and some POST requests, but the complexity of doing</span></span><br><span class="line">    <span class="comment">// so is high and the benefit is low.</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (HttpHeaders.hasVaryAll(response)) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  Entry entry = <span class="keyword">new</span> Entry(response);</span><br><span class="line">  DiskLruCache.Editor editor = <span class="keyword">null</span>;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    editor = cache.edit(key(response.request().url()));</span><br><span class="line">    <span class="keyword">if</span> (editor == <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 提交缓存</span></span><br><span class="line">    entry.writeTo(editor);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> CacheRequestImpl(editor);</span><br><span class="line">  &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">    abortQuietly(editor);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>缓存实际上是一个比较复杂的逻辑，单独的功能块，实际上不属于okhttp上的功能，只是通过http协议和DiskLruCache做了处理而已。</p>
+<h4 id="系列文章"><a href="#系列文章" class="headerlink" title="系列文章"></a>系列文章</h4><ol>
+<li><a href="http://lowett.com/2017/02/09/okhttp-1/">关于Okhttp（一）-基本使用</a></li>
+<li><a href="http://lowett.com/2017/02/13/okhttp-2/">关于Okhttp（二）-如何下载查看源码</a></li>
+<li><a href="http://lowett.com/2017/02/21/okhttp-3/">关于Okhttp3（三）-请求流程</a></li>
+<li><a href="http://lowett.com/2017/02/24/okhttp-4/">关于Okhttp3（四）-RetryAndFollowUpInterceptor</a></li>
+<li><a href="http://lowett.com/2017/03/02/okhttp-5/">关于Okhttp3（五）-BridgeInterceptor</a></li>
+<li><a href="http://lowett.com/2017/03/09/okhttp-6/">关于Okhttp3（六）-CacheInterceptor</a></li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wxpay.png" alt="lowett WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag">#Android</a>
+          
+            <a href="/tags/Okhttp3/" rel="tag">#Okhttp3</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/03/job/" rel="next" title="招聘/求职(长期更新)">
+                <i class="fa fa-chevron-left"></i> 招聘/求职(长期更新)
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  <p>热评文章</p>
+  <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/03/09/okhttp-6/"
+           data-title="关于Okhttp3（六）-CacheInterceptor" data-url="http://lowett.com/2017/03/09/okhttp-6/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="lowett" />
+          <p class="site-author-name" itemprop="name">lowett</p>
+          <p class="site-description motion-element" itemprop="description">雁过无痕，但我确实飞过</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">25</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#原理"><span class="nav-number">1.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#注意点"><span class="nav-number">2.</span> <span class="nav-text">注意点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#流程"><span class="nav-number">3.</span> <span class="nav-text">流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#源码"><span class="nav-number">4.</span> <span class="nav-text">源码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#步骤分析"><span class="nav-number">5.</span> <span class="nav-text">步骤分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#读取缓存"><span class="nav-number">5.1.</span> <span class="nav-text">读取缓存</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#缓存策略的配置"><span class="nav-number">5.2.</span> <span class="nav-text">缓存策略的配置</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#缓存监测"><span class="nav-number">5.3.</span> <span class="nav-text">缓存监测</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#禁止使用网络（根据缓存策略），缓存又无效，直接返回"><span class="nav-number">5.4.</span> <span class="nav-text">禁止使用网络（根据缓存策略），缓存又无效，直接返回</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#缓存有效，不使用网络"><span class="nav-number">5.5.</span> <span class="nav-text">缓存有效，不使用网络</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#缓存无效，执行下一个拦截器"><span class="nav-number">5.6.</span> <span class="nav-text">缓存无效，执行下一个拦截器</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#本地有缓存，根具条件选择使用哪个响应"><span class="nav-number">5.7.</span> <span class="nav-text">本地有缓存，根具条件选择使用哪个响应</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#使用网络响应"><span class="nav-number">5.8.</span> <span class="nav-text">使用网络响应</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#缓存到本地"><span class="nav-number">5.9.</span> <span class="nav-text">缓存到本地</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#系列文章"><span class="nav-number">7.</span> <span class="nav-text">系列文章</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lowett</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"lowett"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("RyOzCscbKiTRuucMD4x8Ce8e-gzGzoHsz", "gNdVnwMrki5jBmRzaQijk5G3");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+</body>
+</html>
