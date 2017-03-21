@@ -1,0 +1,888 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,Okhttp3," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="上篇我们将来缓存拦截器，鉴于本系列是将Okhttp的所以就没有将太多关于缓存相关的东西，后面又机会在开一个系列。今天我们讲讲倒数第二个拦截器—连接拦截器，这才是真正的开始向服务端发起进攻，同志们是不是已经急不可耐了，哈哈，马上到来。
+
+源码
+获取到最初实例化的通道对象
+得到一个httpcodec
+得到一个连接对象
+
+123456789101112@Override public Response">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于Okhttp3（七）-ConnectInterceptor">
+<meta property="og:url" content="http://lowett.com/2017/03/21/okhttp-7/index.html">
+<meta property="og:site_name" content="lowett">
+<meta property="og:description" content="上篇我们将来缓存拦截器，鉴于本系列是将Okhttp的所以就没有将太多关于缓存相关的东西，后面又机会在开一个系列。今天我们讲讲倒数第二个拦截器—连接拦截器，这才是真正的开始向服务端发起进攻，同志们是不是已经急不可耐了，哈哈，马上到来。
+
+源码
+获取到最初实例化的通道对象
+得到一个httpcodec
+得到一个连接对象
+
+123456789101112@Override public Response">
+<meta property="og:updated_time" content="2017-03-21T08:11:04.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="关于Okhttp3（七）-ConnectInterceptor">
+<meta name="twitter:description" content="上篇我们将来缓存拦截器，鉴于本系列是将Okhttp的所以就没有将太多关于缓存相关的东西，后面又机会在开一个系列。今天我们讲讲倒数第二个拦截器—连接拦截器，这才是真正的开始向服务端发起进攻，同志们是不是已经急不可耐了，哈哈，马上到来。
+
+源码
+获取到最初实例化的通道对象
+得到一个httpcodec
+得到一个连接对象
+
+123456789101112@Override public Response">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"right","display":"always"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 6307181688250172000,
+      author: '博主大人'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://lowett.com/2017/03/21/okhttp-7/"/>
+
+  <title> 关于Okhttp3（七）-ConnectInterceptor | lowett </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?dfd5b4385bacdae9367cc56f5736d3fa";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">lowett</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">程序员吕小布</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                关于Okhttp3（七）-ConnectInterceptor
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-03-21T15:15:22+08:00" content="2017-03-21">
+              2017-03-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android/Okhttp3/" itemprop="url" rel="index">
+                    <span itemprop="name">Okhttp3</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/03/21/okhttp-7/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/21/okhttp-7/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/03/21/okhttp-7/" class="leancloud_visitors" data-flag-title="关于Okhttp3（七）-ConnectInterceptor">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>上篇我们将来缓存拦截器，鉴于本系列是将Okhttp的所以就没有将太多关于缓存相关的东西，后面又机会在开一个系列。今天我们讲讲倒数第二个拦截器—连接拦截器，这才是真正的开始向服务端发起进攻，同志们是不是已经急不可耐了，哈哈，马上到来。</p>
+</blockquote>
+<h4 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h4><ol>
+<li>获取到最初实例化的通道对象</li>
+<li>得到一个httpcodec</li>
+<li>得到一个连接对象</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> Response <span class="title">intercept</span><span class="params">(Chain chain)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">  RealInterceptorChain realChain = (RealInterceptorChain) chain;</span><br><span class="line">  Request request = realChain.request();</span><br><span class="line">  StreamAllocation streamAllocation = realChain.streamAllocation();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// We need the network to satisfy this request. Possibly for validating a conditional GET.</span></span><br><span class="line">  <span class="keyword">boolean</span> doExtensiveHealthChecks = !request.method().equals(<span class="string">"GET"</span>);</span><br><span class="line">  HttpCodec httpCodec = streamAllocation.newStream(client, doExtensiveHealthChecks);</span><br><span class="line">  RealConnection connection = streamAllocation.connection();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> realChain.proceed(request, streamAllocation, httpCodec, connection);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此处的逻辑很简单，因为已经转嫁到其他的类对象上去了。前面我们提到过RealInterceptorChain构造函数有四个重要的属性（Request、StreamAllocation， HttpCodec、Connection）第一个不用说一开始就必须有，第二个是在重试拦截器中实例化的，第三、第四就是在本节中腰实例化出来的。</p>
+<h4 id="获取httpcodec"><a href="#获取httpcodec" class="headerlink" title="获取httpcodec"></a>获取httpcodec</h4><p>通过StreamAllocation的newStream()方法可以的得到一个HttpCodec。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> HttpCodec <span class="title">newStream</span><span class="params">(OkHttpClient client, <span class="keyword">boolean</span> doExtensiveHealthChecks)</span> </span>&#123;</span><br><span class="line"> <span class="comment">// 略</span></span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment">// 1.查找是否有完好的连接，仅在http2.0有用，如果没有将会实例化一个</span></span><br><span class="line">    RealConnection resultConnection = findHealthyConnection(connectTimeout, readTimeout,</span><br><span class="line">        writeTimeout, connectionRetryEnabled, doExtensiveHealthChecks);</span><br><span class="line">    <span class="comment">// 2.实例化httpcodec，如果是http2.0实例化Http2Codec否则Http2Codec</span></span><br><span class="line">    HttpCodec resultCodec = resultConnection.newCodec(client, <span class="keyword">this</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">synchronized</span> (connectionPool) &#123;</span><br><span class="line">      codec = resultCodec;</span><br><span class="line">      <span class="keyword">return</span> resultCodec;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> RouteException(e);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>对于健康连接的判断<ol>
+<li>socket没有关闭</li>
+<li>输入流没有关闭</li>
+<li>输出流没有关闭</li>
+<li>http2时连接没有关闭</li>
+</ol>
+</li>
+</ol>
+<h4 id="获取连接并连接"><a href="#获取连接并连接" class="headerlink" title="获取连接并连接"></a>获取连接并连接</h4><p>流程：</p>
+<ol>
+<li>上一个连接是否完好，是，直接使用</li>
+<li>缓存中有没有可以用的，有，使用</li>
+<li>自己创建</li>
+<li>握手、连接</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> RealConnection <span class="title">findConnection</span><span class="params">(<span class="keyword">int</span> connectTimeout, <span class="keyword">int</span> readTimeout, <span class="keyword">int</span> writeTimeout,</span><br><span class="line">    <span class="keyword">boolean</span> connectionRetryEnabled)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">  Route selectedRoute;</span><br><span class="line">  <span class="keyword">synchronized</span> (connectionPool) &#123;</span><br><span class="line">    <span class="comment">// 异常的处理</span></span><br><span class="line">    <span class="keyword">if</span> (released) <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"released"</span>);</span><br><span class="line">    <span class="keyword">if</span> (codec != <span class="keyword">null</span>) <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"codec != null"</span>);</span><br><span class="line">    <span class="keyword">if</span> (canceled) <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"Canceled"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 使用已存在的连接</span></span><br><span class="line">    <span class="comment">// Attempt to use an already-allocated connection.</span></span><br><span class="line">    RealConnection allocatedConnection = <span class="keyword">this</span>.connection;</span><br><span class="line">    <span class="keyword">if</span> (allocatedConnection != <span class="keyword">null</span> &amp;&amp; !allocatedConnection.noNewStreams) &#123;</span><br><span class="line">      <span class="keyword">return</span> allocatedConnection;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 从缓存中获取</span></span><br><span class="line">    <span class="comment">// Attempt to get a connection from the pool.</span></span><br><span class="line">    Internal.instance.get(connectionPool, address, <span class="keyword">this</span>);</span><br><span class="line">    <span class="keyword">if</span> (connection != <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> connection;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    selectedRoute = route;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 线路的选择，多ip的支持</span></span><br><span class="line">  <span class="comment">// If we need a route, make one. This is a blocking operation.</span></span><br><span class="line">  <span class="keyword">if</span> (selectedRoute == <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="comment">// 里面又个神奇的递归</span></span><br><span class="line">    selectedRoute = routeSelector.next();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Create a connection and assign it to this allocation immediately. This makes it possible for</span></span><br><span class="line">  <span class="comment">// an asynchronous cancel() to interrupt the handshake we're about to do.</span></span><br><span class="line">  <span class="comment">// 以上都不符合，创建一个连接</span></span><br><span class="line">  RealConnection result;</span><br><span class="line">  <span class="keyword">synchronized</span> (connectionPool) &#123;</span><br><span class="line">    route = selectedRoute;</span><br><span class="line">    refusedStreamCount = <span class="number">0</span>;</span><br><span class="line">    result = <span class="keyword">new</span> RealConnection(connectionPool, selectedRoute);</span><br><span class="line">    acquire(result);</span><br><span class="line">    <span class="keyword">if</span> (canceled) <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"Canceled"</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 连接 并握手</span></span><br><span class="line">  <span class="comment">// Do TCP + TLS handshakes. This is a blocking operation.</span></span><br><span class="line">  result.connect(connectTimeout, readTimeout, writeTimeout, connectionRetryEnabled);</span><br><span class="line">  routeDatabase().connected(result.route());</span><br><span class="line"></span><br><span class="line">  Socket socket = <span class="keyword">null</span>;</span><br><span class="line">  <span class="comment">// 放到缓存中</span></span><br><span class="line">  <span class="keyword">synchronized</span> (connectionPool) &#123;</span><br><span class="line">    <span class="comment">// Pool the connection.</span></span><br><span class="line">    Internal.instance.put(connectionPool, result);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// If another multiplexed connection to the same address was created concurrently, then</span></span><br><span class="line">    <span class="comment">// release this connection and acquire that one.</span></span><br><span class="line">    <span class="keyword">if</span> (result.isMultiplexed()) &#123;</span><br><span class="line">      socket = Internal.instance.deduplicate(connectionPool, address, <span class="keyword">this</span>);</span><br><span class="line">      result = connection;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  closeQuietly(socket);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="连接"><a href="#连接" class="headerlink" title="连接"></a>连接</h4><p>建立连接是比较重要的一步了。如果是Https还有证书步骤</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">connect</span><span class="params">(</span><br><span class="line">    <span class="keyword">int</span> connectTimeout, <span class="keyword">int</span> readTimeout, <span class="keyword">int</span> writeTimeout, <span class="keyword">boolean</span> connectionRetryEnabled)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (protocol != <span class="keyword">null</span>) <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"already connected"</span>);</span><br><span class="line"><span class="comment">// 线路的选择</span></span><br><span class="line">  RouteException routeException = <span class="keyword">null</span>;</span><br><span class="line">  List&lt;ConnectionSpec&gt; connectionSpecs = route.address().connectionSpecs();</span><br><span class="line">  ConnectionSpecSelector connectionSpecSelector = <span class="keyword">new</span> ConnectionSpecSelector(connectionSpecs);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (route.address().sslSocketFactory() == <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (!connectionSpecs.contains(ConnectionSpec.CLEARTEXT)) &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> RouteException(<span class="keyword">new</span> UnknownServiceException(</span><br><span class="line">          <span class="string">"CLEARTEXT communication not enabled for client"</span>));</span><br><span class="line">    &#125;</span><br><span class="line">    String host = route.address().url().host();</span><br><span class="line">    <span class="keyword">if</span> (!Platform.get().isCleartextTrafficPermitted(host)) &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> RouteException(<span class="keyword">new</span> UnknownServiceException(</span><br><span class="line">          <span class="string">"CLEARTEXT communication to "</span> + host + <span class="string">" not permitted by network security policy"</span>));</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 连接开始</span></span><br><span class="line">  <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment">// 如果要求通道模式，建立通道连接，通常不是这种</span></span><br><span class="line">      <span class="keyword">if</span> (route.requiresTunnel()) &#123;</span><br><span class="line">        connectTunnel(connectTimeout, readTimeout, writeTimeout);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">// 一般都走这条逻辑了，实际上很简单就是socket的连接</span></span><br><span class="line">        connectSocket(connectTimeout, readTimeout);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// https的建立</span></span><br><span class="line">      establishProtocol(connectionSpecSelector);</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">      closeQuietly(socket);</span><br><span class="line">      closeQuietly(rawSocket);</span><br><span class="line">      socket = <span class="keyword">null</span>;</span><br><span class="line">      rawSocket = <span class="keyword">null</span>;</span><br><span class="line">      source = <span class="keyword">null</span>;</span><br><span class="line">      sink = <span class="keyword">null</span>;</span><br><span class="line">      handshake = <span class="keyword">null</span>;</span><br><span class="line">      protocol = <span class="keyword">null</span>;</span><br><span class="line">      http2Connection = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (routeException == <span class="keyword">null</span>) &#123;</span><br><span class="line">        routeException = <span class="keyword">new</span> RouteException(e);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        routeException.addConnectException(e);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (!connectionRetryEnabled || !connectionSpecSelector.connectionFailed(e)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> routeException;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (http2Connection != <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (connectionPool) &#123;</span><br><span class="line">      allocationLimit = http2Connection.maxConcurrentStreams();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们进入connectSocket()函数看看，</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">connectSocket</span><span class="params">(<span class="keyword">int</span> connectTimeout, <span class="keyword">int</span> readTimeout)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">  Proxy proxy = route.proxy();</span><br><span class="line">  Address address = route.address();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 根据代理类型处理socket，为true</span></span><br><span class="line">  rawSocket = proxy.type() == Proxy.Type.DIRECT || proxy.type() == Proxy.Type.HTTP</span><br><span class="line">      ? address.socketFactory().createSocket()</span><br><span class="line">      : <span class="keyword">new</span> Socket(proxy);</span><br><span class="line"></span><br><span class="line">  rawSocket.setSoTimeout(readTimeout);</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment">// 连接socket，之所以这样写是因为支持不同的平台</span></span><br><span class="line">    <span class="comment">/**</span><br><span class="line">    * 里面实际上是  socket.connect(address, connectTimeout);</span><br><span class="line">    *</span><br><span class="line">    */</span></span><br><span class="line">    Platform.get().connectSocket(rawSocket, route.socketAddress(), connectTimeout);</span><br><span class="line">  &#125; <span class="keyword">catch</span> (ConnectException e) &#123;</span><br><span class="line">    ConnectException ce = <span class="keyword">new</span> ConnectException(<span class="string">"Failed to connect to "</span> + route.socketAddress());</span><br><span class="line">    ce.initCause(e);</span><br><span class="line">    <span class="keyword">throw</span> ce;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 得到输入／输出流</span></span><br><span class="line">  source = Okio.buffer(Okio.source(rawSocket));</span><br><span class="line">  sink = Okio.buffer(Okio.sink(rawSocket));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果使用的是https协议，并且配置有真实将会协议升级。</p>
+<h4 id="Https协议的建立"><a href="#Https协议的建立" class="headerlink" title="Https协议的建立"></a>Https协议的建立</h4><p>如果使用的是https协议socket连接完成后还有一步，就是Tls的处理</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">connectTls</span><span class="params">(ConnectionSpecSelector connectionSpecSelector)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">  Address address = route.address();</span><br><span class="line">  SSLSocketFactory sslSocketFactory = address.sslSocketFactory();</span><br><span class="line">  <span class="keyword">boolean</span> success = <span class="keyword">false</span>;</span><br><span class="line">  SSLSocket sslSocket = <span class="keyword">null</span>;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment">// 在原来socket上加一层ssl</span></span><br><span class="line">    <span class="comment">// Create the wrapper over the connected socket.</span></span><br><span class="line">    sslSocket = (SSLSocket) sslSocketFactory.createSocket(</span><br><span class="line">        rawSocket, address.url().host(), address.url().port(), <span class="keyword">true</span> <span class="comment">/* autoClose */</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Configure the socket's ciphers, TLS versions, and extensions.</span></span><br><span class="line">    ConnectionSpec connectionSpec = connectionSpecSelector.configureSecureSocket(sslSocket);</span><br><span class="line">    <span class="keyword">if</span> (connectionSpec.supportsTlsExtensions()) &#123;</span><br><span class="line">      Platform.get().configureTlsExtensions(</span><br><span class="line">          sslSocket, address.url().host(), address.protocols());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Force handshake. This can throw!</span></span><br><span class="line">    sslSocket.startHandshake();</span><br><span class="line">    Handshake unverifiedHandshake = Handshake.get(sslSocket.getSession());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Verify that the socket's certificates are acceptable for the target host.</span></span><br><span class="line">    <span class="keyword">if</span> (!address.hostnameVerifier().verify(address.url().host(), sslSocket.getSession())) &#123;</span><br><span class="line">      X509Certificate cert = (X509Certificate) unverifiedHandshake.peerCertificates().get(<span class="number">0</span>);</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> SSLPeerUnverifiedException(<span class="string">"Hostname "</span> + address.url().host() + <span class="string">" not verified:"</span></span><br><span class="line">          + <span class="string">"\n    certificate: "</span> + CertificatePinner.pin(cert)</span><br><span class="line">          + <span class="string">"\n    DN: "</span> + cert.getSubjectDN().getName()</span><br><span class="line">          + <span class="string">"\n    subjectAltNames: "</span> + OkHostnameVerifier.allSubjectAltNames(cert));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Check that the certificate pinner is satisfied by the certificates presented.</span></span><br><span class="line">    address.certificatePinner().check(address.url().host(),</span><br><span class="line">        unverifiedHandshake.peerCertificates());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Success! Save the handshake and the ALPN protocol.</span></span><br><span class="line">    String maybeProtocol = connectionSpec.supportsTlsExtensions()</span><br><span class="line">        ? Platform.get().getSelectedProtocol(sslSocket)</span><br><span class="line">        : <span class="keyword">null</span>;</span><br><span class="line">    socket = sslSocket;</span><br><span class="line">    source = Okio.buffer(Okio.source(socket));</span><br><span class="line">    sink = Okio.buffer(Okio.sink(socket));</span><br><span class="line">    handshake = unverifiedHandshake;</span><br><span class="line">    protocol = maybeProtocol != <span class="keyword">null</span></span><br><span class="line">        ? Protocol.get(maybeProtocol)</span><br><span class="line">        : Protocol.HTTP_1_1;</span><br><span class="line">    success = <span class="keyword">true</span>;</span><br><span class="line">  &#125; <span class="keyword">catch</span> (AssertionError e) &#123;</span><br><span class="line">    <span class="keyword">if</span> (Util.isAndroidGetsocknameError(e)) <span class="keyword">throw</span> <span class="keyword">new</span> IOException(e);</span><br><span class="line">    <span class="keyword">throw</span> e;</span><br><span class="line">  &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (sslSocket != <span class="keyword">null</span>) &#123;</span><br><span class="line">      Platform.get().afterHandshake(sslSocket);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (!success) &#123;</span><br><span class="line">      closeQuietly(sslSocket);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果对https熟悉的话，应该知道，https就是在http的基础上加了一层。</p>
+<p>到此链接完成RealConnection实例化完成。</p>
+<p>然后就是进行下一拦截器。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>这个拦截器原理流程都比较简单，重点是要把Socket和Http协议相关知识理解清楚。此文知识抛砖引玉，里面的一些细节没有讲，建议读者更具这系列文章自己去梳理。</p>
+<h4 id="系列文章"><a href="#系列文章" class="headerlink" title="系列文章"></a>系列文章</h4><ol>
+<li><a href="http://lowett.com/2017/02/09/okhttp-1/">关于Okhttp（一）-基本使用</a></li>
+<li><a href="http://lowett.com/2017/02/13/okhttp-2/">关于Okhttp（二）-如何下载查看源码</a></li>
+<li><a href="http://lowett.com/2017/02/21/okhttp-3/">关于Okhttp3（三）-请求流程</a></li>
+<li><a href="http://lowett.com/2017/02/24/okhttp-4/">关于Okhttp3（四）-RetryAndFollowUpInterceptor</a></li>
+<li><a href="http://lowett.com/2017/03/02/okhttp-5/">关于Okhttp3（五）-BridgeInterceptor</a></li>
+<li><a href="http://lowett.com/2017/03/09/okhttp-6/">关于Okhttp3（六）-CacheInterceptor</a></li>
+<li><a href="http://lowett.com/2017/03/21/okhttp-7/">关于Okhttp3（七）-ConnectInterceptor</a></li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wxpay.png" alt="lowett WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag">#Android</a>
+          
+            <a href="/tags/Okhttp3/" rel="tag">#Okhttp3</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/09/okhttp-6/" rel="next" title="关于Okhttp3（六）-CacheInterceptor">
+                <i class="fa fa-chevron-left"></i> 关于Okhttp3（六）-CacheInterceptor
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  <p>热评文章</p>
+  <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/03/21/okhttp-7/"
+           data-title="关于Okhttp3（七）-ConnectInterceptor" data-url="http://lowett.com/2017/03/21/okhttp-7/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="lowett" />
+          <p class="site-author-name" itemprop="name">lowett</p>
+          <p class="site-description motion-element" itemprop="description">雁过无痕，但我确实飞过</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">25</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#源码"><span class="nav-number">1.</span> <span class="nav-text">源码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#获取httpcodec"><span class="nav-number">2.</span> <span class="nav-text">获取httpcodec</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#获取连接并连接"><span class="nav-number">3.</span> <span class="nav-text">获取连接并连接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#连接"><span class="nav-number">4.</span> <span class="nav-text">连接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Https协议的建立"><span class="nav-number">5.</span> <span class="nav-text">Https协议的建立</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#系列文章"><span class="nav-number">7.</span> <span class="nav-text">系列文章</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lowett</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"lowett"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("RyOzCscbKiTRuucMD4x8Ce8e-gzGzoHsz", "gNdVnwMrki5jBmRzaQijk5G3");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+</body>
+</html>
