@@ -1,0 +1,902 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,Okhttp3," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="本系列文章终于要到尾声了。上篇我们已经成功连接到服务了，那解析来应该做什么呢，相比聪明的你已经猜到了，那就是发送接收数据。
+
+读写数据
+第一步，写入请求头
+第二步，写入请求头
+第三步，读取响应头
+第四步，读取响应体
+
+前面我们已经说过，okhttp的流程是完全独立的，同样读写数据也是交给相关的类来处理，这个类就是HttpCodec（解码器）
+源码1234567891011121314151617">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于Okhttp3（八）-CallServerInterceptor">
+<meta property="og:url" content="http://lowett.com/2017/03/30/okhttp-8/index.html">
+<meta property="og:site_name" content="lowett">
+<meta property="og:description" content="本系列文章终于要到尾声了。上篇我们已经成功连接到服务了，那解析来应该做什么呢，相比聪明的你已经猜到了，那就是发送接收数据。
+
+读写数据
+第一步，写入请求头
+第二步，写入请求头
+第三步，读取响应头
+第四步，读取响应体
+
+前面我们已经说过，okhttp的流程是完全独立的，同样读写数据也是交给相关的类来处理，这个类就是HttpCodec（解码器）
+源码1234567891011121314151617">
+<meta property="og:updated_time" content="2017-03-30T02:53:00.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="关于Okhttp3（八）-CallServerInterceptor">
+<meta name="twitter:description" content="本系列文章终于要到尾声了。上篇我们已经成功连接到服务了，那解析来应该做什么呢，相比聪明的你已经猜到了，那就是发送接收数据。
+
+读写数据
+第一步，写入请求头
+第二步，写入请求头
+第三步，读取响应头
+第四步，读取响应体
+
+前面我们已经说过，okhttp的流程是完全独立的，同样读写数据也是交给相关的类来处理，这个类就是HttpCodec（解码器）
+源码1234567891011121314151617">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"right","display":"always"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 6307181688250172000,
+      author: '博主大人'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://lowett.com/2017/03/30/okhttp-8/"/>
+
+  <title> 关于Okhttp3（八）-CallServerInterceptor | lowett </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?dfd5b4385bacdae9367cc56f5736d3fa";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">lowett</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">程序员吕小布</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                关于Okhttp3（八）-CallServerInterceptor
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-03-30T09:56:18+08:00" content="2017-03-30">
+              2017-03-30
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android/Okhttp3/" itemprop="url" rel="index">
+                    <span itemprop="name">Okhttp3</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/03/30/okhttp-8/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/30/okhttp-8/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/03/30/okhttp-8/" class="leancloud_visitors" data-flag-title="关于Okhttp3（八）-CallServerInterceptor">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>本系列文章终于要到尾声了。上篇我们已经成功连接到服务了，那解析来应该做什么呢，相比聪明的你已经猜到了，那就是发送接收数据。</p>
+</blockquote>
+<h4 id="读写数据"><a href="#读写数据" class="headerlink" title="读写数据"></a>读写数据</h4><ol>
+<li>第一步，写入请求头</li>
+<li>第二步，写入请求头</li>
+<li>第三步，读取响应头</li>
+<li>第四步，读取响应体</li>
+</ol>
+<p>前面我们已经说过，okhttp的流程是完全独立的，同样读写数据也是交给相关的类来处理，这个类就是HttpCodec（解码器）</p>
+<h4 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> Response <span class="title">intercept</span><span class="params">(Chain chain)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">  HttpCodec httpCodec = ((RealInterceptorChain) chain).httpStream();</span><br><span class="line">  StreamAllocation streamAllocation = ((RealInterceptorChain) chain).streamAllocation();</span><br><span class="line">  Request request = chain.request();</span><br><span class="line"><span class="comment">// 第一步，写入请求头</span></span><br><span class="line">  <span class="keyword">long</span> sentRequestMillis = System.currentTimeMillis();</span><br><span class="line">  httpCodec.writeRequestHeaders(request);</span><br><span class="line"></span><br><span class="line">  Response.Builder responseBuilder = <span class="keyword">null</span>;</span><br><span class="line">  <span class="keyword">if</span> (HttpMethod.permitsRequestBody(request.method()) &amp;&amp; request.body() != <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="comment">// If there's a "Expect: 100-continue" header on the request, wait for a "HTTP/1.1 100</span></span><br><span class="line">    <span class="comment">// Continue" response before transmitting the request body. If we don't get that, return what</span></span><br><span class="line">    <span class="comment">// we did get (such as a 4xx response) without ever transmitting the request body.</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="string">"100-continue"</span>.equalsIgnoreCase(request.header(<span class="string">"Expect"</span>))) &#123;</span><br><span class="line">      httpCodec.flushRequest();</span><br><span class="line">      responseBuilder = httpCodec.readResponseHeaders(<span class="keyword">true</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//第二步，写入请求头</span></span><br><span class="line">    <span class="comment">// Write the request body, unless an "Expect: 100-continue" expectation failed.</span></span><br><span class="line">    <span class="keyword">if</span> (responseBuilder == <span class="keyword">null</span>) &#123;</span><br><span class="line">      Sink requestBodyOut = httpCodec.createRequestBody(request, request.body().contentLength());</span><br><span class="line">      BufferedSink bufferedRequestBody = Okio.buffer(requestBodyOut);</span><br><span class="line">      request.body().writeTo(bufferedRequestBody);</span><br><span class="line">      bufferedRequestBody.close();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  httpCodec.finishRequest();</span><br><span class="line"><span class="comment">// 第三步，读取响应头</span></span><br><span class="line">  <span class="keyword">if</span> (responseBuilder == <span class="keyword">null</span>) &#123;</span><br><span class="line">    responseBuilder = httpCodec.readResponseHeaders(<span class="keyword">false</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  Response response = responseBuilder</span><br><span class="line">      .request(request)</span><br><span class="line">      .handshake(streamAllocation.connection().handshake())</span><br><span class="line">      .sentRequestAtMillis(sentRequestMillis)</span><br><span class="line">      .receivedResponseAtMillis(System.currentTimeMillis())</span><br><span class="line">      .build();</span><br><span class="line"><span class="comment">// 第四步，读取响应体</span></span><br><span class="line">  <span class="keyword">int</span> code = response.code();</span><br><span class="line">  <span class="keyword">if</span> (forWebSocket &amp;&amp; code == <span class="number">101</span>) &#123;</span><br><span class="line">    <span class="comment">// Connection is upgrading, but we need to ensure interceptors see a non-null response body.</span></span><br><span class="line">    response = response.newBuilder()</span><br><span class="line">        .body(Util.EMPTY_RESPONSE)</span><br><span class="line">        .build();</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    response = response.newBuilder()</span><br><span class="line">        .body(httpCodec.openResponseBody(response))</span><br><span class="line">        .build();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (<span class="string">"close"</span>.equalsIgnoreCase(response.request().header(<span class="string">"Connection"</span>))</span><br><span class="line">      || <span class="string">"close"</span>.equalsIgnoreCase(response.header(<span class="string">"Connection"</span>))) &#123;</span><br><span class="line">    streamAllocation.noNewStreams();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> ((code == <span class="number">204</span> || code == <span class="number">205</span>) &amp;&amp; response.body().contentLength() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> ProtocolException(</span><br><span class="line">        <span class="string">"HTTP "</span> + code + <span class="string">" had non-zero Content-Length: "</span> + response.body().contentLength());</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> response;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="写入请求头"><a href="#写入请求头" class="headerlink" title="写入请求头"></a>写入请求头</h4><p>每一次的网络请求必然携带有请求头，这是http协议里面的东西，建议大家对http相关知识要熟悉掌握，这对开发工作大有好处。</p>
+<p>这里我们看上面第一步，调用到了，httpcodec的写入方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">httpCodec.writeRequestHeaders(request);</span><br></pre></td></tr></table></figure>
+<p>我们跟进去看看</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@Override public void writeRequestHeaders(Request request) throws IOException &#123;</span><br><span class="line"> // 创建一个请求行 比如GET /index.html HTTP/1.1。</span><br><span class="line"> String requestLine = RequestLine.get(</span><br><span class="line">      request, streamAllocation.connection().route().proxy().type());</span><br><span class="line"> // 写入请求头</span><br><span class="line"> writeRequest(request.headers(), requestLine);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>继续看writeRequest()方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// 此处有状态的判断</span><br><span class="line">public void writeRequest(Headers headers, String requestLine) throws IOException &#123;</span><br><span class="line">  if (state != STATE_IDLE) throw new IllegalStateException(&quot;state: &quot; + state);</span><br><span class="line">  sink.writeUtf8(requestLine).writeUtf8(&quot;\r\n&quot;);</span><br><span class="line">  for (int i = 0, size = headers.size(); i &lt; size; i++) &#123;</span><br><span class="line">    sink.writeUtf8(headers.name(i))</span><br><span class="line">        .writeUtf8(&quot;: &quot;)</span><br><span class="line">        .writeUtf8(headers.value(i))</span><br><span class="line">        .writeUtf8(&quot;\r\n&quot;);</span><br><span class="line">  &#125;</span><br><span class="line">  sink.writeUtf8(&quot;\r\n&quot;);</span><br><span class="line">  state = STATE_OPEN_REQUEST_BODY;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>sink是Okio里面的内容，可以理解为outputstream，</p>
+<ol>
+<li>首先写入请求行</li>
+<li>循环写入请求头</li>
+</ol>
+<p>完成后，会判断是否需要请求体，比如get就没有</p>
+<h4 id="写入请求体"><a href="#写入请求体" class="headerlink" title="写入请求体"></a>写入请求体</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// 其他略</span><br><span class="line">if (responseBuilder == null) &#123;</span><br><span class="line">  Sink requestBodyOut = httpCodec.createRequestBody(request, request.body().contentLength());</span><br><span class="line">  BufferedSink bufferedRequestBody = Okio.buffer(requestBodyOut);</span><br><span class="line">  request.body().writeTo(bufferedRequestBody);</span><br><span class="line">  bufferedRequestBody.close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>写入请求体比较简单，对于post的请求体本质上就是一个写入流，当然这里是Okio的东西，再次封装而已，通过连接成功后获取到的读写流，我们就可以把请求体写出。</p>
+<p>写完后会有一个，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">finishRequest（）// 时间上就是flush（）,把流中的数据刷出去</span><br></pre></td></tr></table></figure>
+<h4 id="读响应头"><a href="#读响应头" class="headerlink" title="读响应头"></a>读响应头</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">@Override public Response.Builder readResponseHeaders(boolean expectContinue) throws IOException &#123;</span><br><span class="line">  if (state != STATE_OPEN_REQUEST_BODY &amp;&amp; state != STATE_READ_RESPONSE_HEADERS) &#123;</span><br><span class="line">    throw new IllegalStateException(&quot;state: &quot; + state);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  try &#123;</span><br><span class="line">  // 首先解析相应行，协议，状态吗，响应头</span><br><span class="line">    StatusLine statusLine = StatusLine.parse(source.readUtf8LineStrict());</span><br><span class="line"></span><br><span class="line">    Response.Builder responseBuilder = new Response.Builder()</span><br><span class="line">        .protocol(statusLine.protocol)</span><br><span class="line">        .code(statusLine.code)</span><br><span class="line">        .message(statusLine.message)</span><br><span class="line">        .headers(readHeaders()); //响应头</span><br><span class="line"></span><br><span class="line">    if (expectContinue &amp;&amp; statusLine.code == HTTP_CONTINUE) &#123;</span><br><span class="line">      return null;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    state = STATE_OPEN_RESPONSE_BODY;</span><br><span class="line">    return responseBuilder;</span><br><span class="line">  &#125; catch (EOFException e) &#123;</span><br><span class="line">    // Provide more context if the server ends the stream before sending a response.</span><br><span class="line">    IOException exception = new IOException(&quot;unexpected end of stream on &quot; + streamAllocation);</span><br><span class="line">    exception.initCause(e);</span><br><span class="line">    throw exception;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>解析相应头</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public Headers readHeaders() throws IOException &#123;</span><br><span class="line">// 创建一个builder</span><br><span class="line">  Headers.Builder headers = new Headers.Builder();</span><br><span class="line">  // parse the result headers until the first blank line</span><br><span class="line">  // 一行行读出数据</span><br><span class="line">  for (String line; (line = source.readUtf8LineStrict()).length() != 0; ) &#123;</span><br><span class="line">    Internal.instance.addLenient(headers, line);</span><br><span class="line">  &#125;</span><br><span class="line">  return headers.build();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此处存放在一个list中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">0     1    2    3   4 5 6</span><br><span class="line">key value key value ...</span><br><span class="line">Builder addLenient(String name, String value) &#123;</span><br><span class="line">  namesAndValues.add(name);</span><br><span class="line">  namesAndValues.add(value.trim());</span><br><span class="line">  return this;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最后调用build()，转化成Headers。</p>
+<h4 id="读取响应体"><a href="#读取响应体" class="headerlink" title="读取响应体"></a>读取响应体</h4><p>解析完成头后会根据状态判断响应是否成功，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">int code = response.code();</span><br><span class="line">// web socket</span><br><span class="line">if (forWebSocket &amp;&amp; code == 101) &#123;</span><br><span class="line">  // Connection is upgrading, but we need to ensure interceptors see a non-null response body.</span><br><span class="line">  response = response.newBuilder()</span><br><span class="line">      .body(Util.EMPTY_RESPONSE)</span><br><span class="line">      .build();</span><br><span class="line">&#125; else &#123;</span><br><span class="line">// 响应成功</span><br><span class="line">  response = response.newBuilder()</span><br><span class="line">      .body(httpCodec.openResponseBody(response))</span><br><span class="line">      .build();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打开响应体</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@Override public ResponseBody openResponseBody(Response response) throws IOException &#123;</span><br><span class="line">  Source source = getTransferStream(response);</span><br><span class="line">  return new RealResponseBody(response.headers(), Okio.buffer(source));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意：这里并没有解析，响应结果，而是关联起了一个Source，okio知识</p>
+<p>至此整个请求过程完成。</p>
+<p>然后往上一层拦截器返回结果，即回到上一个拦截器的intercept()方法，把响应结果交给上一个拦截器处理，比如缓存拦截器，会处理是不是要缓存下来等。</p>
+<p>最后getResponseWithInterceptorChain()返回，我们再来看看这个方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">Response getResponseWithInterceptorChain() throws IOException &#123;</span><br><span class="line">  // Build a full stack of interceptors.</span><br><span class="line">  List&lt;Interceptor&gt; interceptors = new ArrayList&lt;&gt;();</span><br><span class="line">  interceptors.addAll(client.interceptors());</span><br><span class="line">  interceptors.add(retryAndFollowUpInterceptor);</span><br><span class="line">  interceptors.add(new BridgeInterceptor(client.cookieJar()));</span><br><span class="line">  interceptors.add(new CacheInterceptor(client.internalCache()));</span><br><span class="line">  interceptors.add(new ConnectInterceptor(client));</span><br><span class="line">  if (!forWebSocket) &#123;</span><br><span class="line">    interceptors.addAll(client.networkInterceptors());</span><br><span class="line">  &#125;</span><br><span class="line">  interceptors.add(new CallServerInterceptor(forWebSocket));</span><br><span class="line"></span><br><span class="line">  Interceptor.Chain chain = new RealInterceptorChain(</span><br><span class="line">      interceptors, null, null, null, 0, originalRequest);</span><br><span class="line">  return chain.proceed(originalRequest);//返回结果</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong><em>关于拦截器: 拦截器有点像上楼梯，一层层上去，让后在一层层倒回来，拿到结果给调用入口。</em></strong></p>
+<h4 id="调用入口"><a href="#调用入口" class="headerlink" title="调用入口"></a>调用入口</h4><p>我们再回过头来看看调用入口</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">  @Override protected void execute() &#123;</span><br><span class="line">    boolean signalledCallback = false;</span><br><span class="line">    try &#123;</span><br><span class="line">    // 通过一系列的拦截器最终难道结果</span><br><span class="line">      Response response = getResponseWithInterceptorChain();</span><br><span class="line">      // 中途取消, callback回调</span><br><span class="line">      if (retryAndFollowUpInterceptor.isCanceled()) &#123;</span><br><span class="line">        signalledCallback = true;</span><br><span class="line">        responseCallback.onFailure(RealCall.this, new IOException(&quot;Canceled&quot;));</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">      // 否则调用成功</span><br><span class="line">        signalledCallback = true;</span><br><span class="line">        responseCallback.onResponse(RealCall.this, response);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; catch (IOException e) &#123;</span><br><span class="line">    // 其他异常调用失败，</span><br><span class="line">      if (signalledCallback) &#123;</span><br><span class="line">        // Do not signal the callback twice!</span><br><span class="line">        Platform.get().log(INFO, &quot;Callback failure for &quot; + toLoggableString(), e);</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">        responseCallback.onFailure(RealCall.this, e);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; finally &#123;</span><br><span class="line">    // 最终一定会调用finished</span><br><span class="line">      client.dispatcher().finished(this);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>通过本系列文章，你一定对Okhttp有了清晰的认识，至少大体流程会有一个清晰的脉络，至于有些细节，还需要聪明的你去，慢慢研读。本系列文章对细节并没有详细说明，我们学习的并不是具体的实现而是一个思路，真正的技术实现都是各个api的调用而已。Thanks！！！</p>
+<h4 id="系列文章"><a href="#系列文章" class="headerlink" title="系列文章"></a>系列文章</h4><ol>
+<li><a href="http://lowett.com/2017/02/09/okhttp-1/">关于Okhttp（一）-基本使用</a></li>
+<li><a href="http://lowett.com/2017/02/13/okhttp-2/">关于Okhttp（二）-如何下载查看源码</a></li>
+<li><a href="http://lowett.com/2017/02/21/okhttp-3/">关于Okhttp3（三）-请求流程</a></li>
+<li><a href="http://lowett.com/2017/02/24/okhttp-4/">关于Okhttp3（四）-RetryAndFollowUpInterceptor</a></li>
+<li><a href="http://lowett.com/2017/03/02/okhttp-5/">关于Okhttp3（五）-BridgeInterceptor</a></li>
+<li><a href="http://lowett.com/2017/03/09/okhttp-6/">关于Okhttp3（六）-CacheInterceptor</a></li>
+<li><a href="http://lowett.com/2017/03/21/okhttp-7/">关于Okhttp3（七）-ConnectInterceptor</a></li>
+<li><a href="http://lowett.com/2017/03/30/okhttp-8/">关于Okhttp3（八）-CallServerInterceptor</a></li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wxpay.png" alt="lowett WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag">#Android</a>
+          
+            <a href="/tags/Okhttp3/" rel="tag">#Okhttp3</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/23/android-bluetooth/" rel="next" title="Android低功耗蓝牙的那点事儿">
+                <i class="fa fa-chevron-left"></i> Android低功耗蓝牙的那点事儿
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  <p>热评文章</p>
+  <div class="ds-top-threads" data-range="weekly" data-num-items="4"></div>
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/03/30/okhttp-8/"
+           data-title="关于Okhttp3（八）-CallServerInterceptor" data-url="http://lowett.com/2017/03/30/okhttp-8/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="lowett" />
+          <p class="site-author-name" itemprop="name">lowett</p>
+          <p class="site-description motion-element" itemprop="description">雁过无痕，但我确实飞过</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">27</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#读写数据"><span class="nav-number">1.</span> <span class="nav-text">读写数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#源码"><span class="nav-number">2.</span> <span class="nav-text">源码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#写入请求头"><span class="nav-number">3.</span> <span class="nav-text">写入请求头</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#写入请求体"><span class="nav-number">4.</span> <span class="nav-text">写入请求体</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#读响应头"><span class="nav-number">5.</span> <span class="nav-text">读响应头</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#读取响应体"><span class="nav-number">6.</span> <span class="nav-text">读取响应体</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#调用入口"><span class="nav-number">7.</span> <span class="nav-text">调用入口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#系列文章"><span class="nav-number">9.</span> <span class="nav-text">系列文章</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lowett</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"lowett"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("RyOzCscbKiTRuucMD4x8Ce8e-gzGzoHsz", "gNdVnwMrki5jBmRzaQijk5G3");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+</body>
+</html>
