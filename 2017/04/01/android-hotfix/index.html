@@ -1,0 +1,960 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Adnroid,Hotfix," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="基本概念
+热修复（也称热补丁、热修复补丁，英语：hotfix）是一种包含信息的独立的累积更新包，通常表现为一个或多个文件。这被用来解决软件产品的问题（例如一个程序错误）[1]。通常情况下，热修复是为解决特定用户的具体问题而制作。– 维基百科
+
+相关解释热更新和热修复是同一个概念？Google I/O的Instant Run提出了几个概念：
+
++ Hot swap - 热替换：无需重启Applica">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android热修复你想知道的一切都在这里了">
+<meta property="og:url" content="http://lowett.com/2017/04/01/android-hotfix/index.html">
+<meta property="og:site_name" content="lowett">
+<meta property="og:description" content="基本概念
+热修复（也称热补丁、热修复补丁，英语：hotfix）是一种包含信息的独立的累积更新包，通常表现为一个或多个文件。这被用来解决软件产品的问题（例如一个程序错误）[1]。通常情况下，热修复是为解决特定用户的具体问题而制作。– 维基百科
+
+相关解释热更新和热修复是同一个概念？Google I/O的Instant Run提出了几个概念：
+
++ Hot swap - 热替换：无需重启Applica">
+<meta property="og:updated_time" content="2017-04-01T08:39:13.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android热修复你想知道的一切都在这里了">
+<meta name="twitter:description" content="基本概念
+热修复（也称热补丁、热修复补丁，英语：hotfix）是一种包含信息的独立的累积更新包，通常表现为一个或多个文件。这被用来解决软件产品的问题（例如一个程序错误）[1]。通常情况下，热修复是为解决特定用户的具体问题而制作。– 维基百科
+
+相关解释热更新和热修复是同一个概念？Google I/O的Instant Run提出了几个概念：
+
++ Hot swap - 热替换：无需重启Applica">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"right","display":"always"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 6307181688250172000,
+      author: '博主大人'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://lowett.com/2017/04/01/android-hotfix/"/>
+
+  <title> Android热修复你想知道的一切都在这里了 | lowett </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?dfd5b4385bacdae9367cc56f5736d3fa";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">lowett</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">程序员诸葛小布</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Android热修复你想知道的一切都在这里了
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-04-01T16:26:18+08:00" content="2017-04-01">
+              2017-04-01
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/04/01/android-hotfix/" class="leancloud_visitors" data-flag-title="Android热修复你想知道的一切都在这里了">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><blockquote>
+<p>热修复（也称热补丁、热修复补丁，英语：hotfix）是一种包含信息的独立的累积更新包，通常表现为一个或多个文件。这被用来解决软件产品的问题（例如一个程序错误）[1]。通常情况下，热修复是为解决特定用户的具体问题而制作。– 维基百科</p>
+</blockquote>
+<h3 id="相关解释"><a href="#相关解释" class="headerlink" title="相关解释"></a>相关解释</h3><h4 id="热更新和热修复是同一个概念？"><a href="#热更新和热修复是同一个概念？" class="headerlink" title="热更新和热修复是同一个概念？"></a>热更新和热修复是同一个概念？</h4><pre><code>Google I/O的Instant Run提出了几个概念：
+
++ Hot swap - 热替换：无需重启Application、无需启动Activity即可更新Java方法
++ Warm swap - 暖替换：重启Activity可更新Android资源
++ Code swap - 冷替换：重启Application达到更新效果
+所以，狭义上来说“热”可以理解为“应用正在跑”，在“正在跑”的时候完成“xx”操作，才可以称之为“热xx”。
+
+安卓代码要达到真正“热”更新的效果，也只有基于AOP这种技术，就是在方法级别这个粒度做替换。
+如果是dex级别的，由于Application会缓存加载好的类，所以必须要重启Application，只能算“冷”更新。
+
+所以Small的这条TODO理论上无法实现。现在的解决方案是在用户退到后台时，完成升级操作，基本上可以满足业务场景。这个方案我认为是在Code跟Warm之间 -- “这个更新不太冷”。
+
+当然，现在广义上的“热更新”指的是“不用发版”达到更新的效果。这个也是技术人员比较好向产品等非技术人员吹牛逼的一个点：“看，我这个框架支持热更新”。实际上这里的“热”还不是那么回事.
+</code></pre><h3 id="原理分析"><a href="#原理分析" class="headerlink" title="原理分析"></a>原理分析</h3><blockquote>
+<p>基本概念，原理分析，库分析文章  </p>
+</blockquote>
+<p><a href="https://juejin.im/entry/57964afba34131005a96a5b8" target="_blank" rel="external">最全面的 Android 热修复技术</a><br><a href="http://blog.csdn.net/sbsujjbcy/article/details/52541803?hmsr=toutiao.io&amp;utm_medium=toutiao.io&amp;utm_source=toutiao.io" target="_blank" rel="external">Android 热补丁技术——资源的热修复</a><br><a href="http://wereadteam.github.io/2016/07/26/AndroidPatch/?from=timeline&amp;isappinstalled=0" target="_blank" rel="external">Android Patch 方案与持续交付</a><br><a href="https://zhuanlan.zhihu.com/p/20308548?columnSlug=magilu" target="_blank" rel="external">安卓App热补丁动态修复技术介绍</a>  </p>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><h4 id="Tinker"><a href="#Tinker" class="headerlink" title="Tinker"></a>Tinker</h4><h5 id="Tinker是什么？"><a href="#Tinker是什么？" class="headerlink" title="Tinker是什么？"></a>Tinker是什么？</h5><p>Tinker是微信官方的Android热补丁解决方案，它支持动态下发代码、So库以及资源，让应用能够在不需要重新安装的情况下实现更新。同时也支持更新插件。</p>
+<h5 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h5><ul>
+<li>gradle编译插件: tinker-patch-gradle-plugin</li>
+<li>核心sdk库: tinker-android-lib</li>
+<li>非gradle编译用户的命令行版本: tinker-patch-cli.jar</li>
+</ul>
+<h5 id="由于原理与系统限制，Tinker有以下已知问题："><a href="#由于原理与系统限制，Tinker有以下已知问题：" class="headerlink" title="由于原理与系统限制，Tinker有以下已知问题："></a>由于原理与系统限制，Tinker有以下已知问题：</h5><ol>
+<li>Tinker不支持修改AndroidManifest.xml，Tinker不支持新增四大组件；</li>
+<li>由于Google Play的开发者条款限制，不建议在GP渠道动态更新代码；</li>
+<li>在Android N上，补丁对应用启动时间有轻微的影响；</li>
+<li>不支持部分三星android-21机型，加载补丁时会主动抛出”TinkerRuntimeException:checkDexInstall failed”；</li>
+<li>由于各个厂商的加固实现并不一致，在1.7.6以及之后的版本，tinker不再支持加固的动态更新；</li>
+<li>对于资源替换，不支持修改remoteView。例如transition动画，notification icon以及桌面图标。</li>
+</ol>
+<h5 id="如何使用Tinker"><a href="#如何使用Tinker" class="headerlink" title="如何使用Tinker"></a>如何使用Tinker</h5><ol>
+<li>快速接入，<a href="https://github.com/Tencent/tinker/wiki/Tinker-%E6%8E%A5%E5%85%A5%E6%8C%87%E5%8D%97" target="_blank" rel="external">快速接入指南</a></li>
+<li>自定义类<a href="https://github.com/Tencent/tinker/wiki/Tinker-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%89%A9%E5%B1%95" target="_blank" rel="external">自定义扩展</a></li>
+<li>API预览<a href="https://github.com/Tencent/tinker/wiki/Tinker-API%E6%A6%82%E8%A7%88" target="_blank" rel="external">API概览</a></li>
+<li>其他问题<a href="https://github.com/Tencent/tinker/wiki/Tinker-%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98" target="_blank" rel="external">常见问题</a></li>
+<li>布丁下发平台<a href="http://tinkerpatch.com/Docs/intro" target="_blank" rel="external">参考文档</a></li>
+</ol>
+<p>GitHub地址：<a href="https://github.com/Tencent/tinker" target="_blank" rel="external">https://github.com/Tencent/tinker</a><br><a href="https://bugly.qq.com/docs/user-guide/instruction-manual-android-hotfix/?v=20161229104838" target="_blank" rel="external">相关视频文档</a></p>
+<h4 id="相关文章"><a href="#相关文章" class="headerlink" title="相关文章"></a>相关文章</h4><p><a href="https://www.diycode.cc/topics/231" target="_blank" rel="external">微信Tinker负责人张绍文关于Android热修复直播分享记录</a><br><a href="http://mp.weixin.qq.com/s?__biz=MzAwNDY1ODY2OQ%3Cmark%3E&amp;mid=2649286306&amp;idx=1&amp;sn=d6b2865e033a99de60b2d4314c6e0a25&amp;scene=0#wechat_redirect" target="_blank" rel="external">微信Android热补丁实践演进之路</a><br><a href="https://github.com/WeMobileDev/article/blob/master/final-%E5%BE%AE%E4%BF%A1%E7%83%AD%E8%A1%A5%E4%B8%81%E5%AE%9E%E8%B7%B5%E6%BC%94%E8%BF%9B%E4%B9%8B%E8%B7%AF-v2016-9-24.pdf" target="_blank" rel="external">Tinker MDCC会议 slide(微信热修复演进PDF)</a><br><a href="https://github.com/WeMobileDev/article/blob/master/%E5%BE%AE%E4%BF%A1Android%E7%83%AD%E8%A1%A5%E4%B8%81%E5%AE%9E%E8%B7%B5%E6%BC%94%E8%BF%9B%E4%B9%8B%E8%B7%AF.md" target="_blank" rel="external">微信Android热补丁实践演进之路</a><br><a href="http://mp.weixin.qq.com/s?__biz=MzAwNDY1ODY2OQ==&amp;mid=2649286384&amp;idx=1&amp;sn=f1aff31d6a567674759be476bcd12549&amp;scene=4#wechat_redirect" target="_blank" rel="external">微信Tinker的一切都在这里，包括源码(一)</a><br><a href="https://github.com/WeMobileDev/article/blob/master/Android_N%E6%B7%B7%E5%90%88%E7%BC%96%E8%AF%91%E4%B8%8E%E5%AF%B9%E7%83%AD%E8%A1%A5%E4%B8%81%E5%BD%B1%E5%93%8D%E8%A7%A3%E6%9E%90.md" target="_blank" rel="external">Android_N混合编译与对热补丁影响解析</a><br><a href="http://dev.qq.com/topic/57ad7a70eaed47bb2699e68e" target="_blank" rel="external">【Dev Club 分享第六期】微信热补丁 Tinker 的实践演进之路</a><br><a href="https://www.zybuluo.com/dodola/note/554061" target="_blank" rel="external">Tinker Dexdiff算法解析</a><br><a href="https://github.com/LaurenceYang/tinker-dex-dump" target="_blank" rel="external">DexDiff格式查看工具</a><br><a href="http://mp.weixin.qq.com/s?__biz=MzAwNDY1ODY2OQ==&amp;sn=eb75349c0c3663f10fbdd74ef87be338&amp;mid=2649286426&amp;idx=1" target="_blank" rel="external">RT下的方法内联策略及其对Android热修复方案的影响分析</a></p>
+<p>微信动态库下发支持：<br><a href="http://tinkerpatch.com/Docs/intro" target="_blank" rel="external">http://tinkerpatch.com/Docs/intro</a>  </p>
+<h4 id="QZone"><a href="#QZone" class="headerlink" title="QZone"></a>QZone</h4><p>GitHub地址：<a href="https://github.com/jasonross/Nuwa" target="_blank" rel="external">https://github.com/jasonross/Nuwa</a><br>Android 热补丁技术的探索与简单实战—-Qzone方案  <a href="http://blog.csdn.net/u012760183/article/details/52050789" target="_blank" rel="external">http://blog.csdn.net/u012760183/article/details/52050789</a></p>
+<h4 id="AndFix"><a href="#AndFix" class="headerlink" title="AndFix"></a>AndFix</h4><p>GitHub地址：<a href="https://github.com/alibaba/AndFix" target="_blank" rel="external">https://github.com/alibaba/AndFix</a><br><a href="http://www.jianshu.com/p/c36c9e0ca3fe" target="_blank" rel="external">Android热修复实践应用–AndFix</a>  </p>
+<h4 id="阿里百川HotFix"><a href="#阿里百川HotFix" class="headerlink" title="阿里百川HotFix"></a>阿里百川HotFix</h4><p>当前版本：Hotfix2.0<br>开源：否<br><a href="http://baichuan.taobao.com/docs/doc.htm?spm=a3c0d.7629140.0.0.BYGjlQ&amp;treeId=234&amp;articleId=105461&amp;docType=1" target="_blank" rel="external">官方文档</a><br><a href="http://baichuan.taobao.com/docs/doc.htm?spm=a3c0d.7629140.0.0.PyFwhu&amp;treeId=234&amp;articleId=106531&amp;docType=1" target="_blank" rel="external">Android Hotfix2.0集成文档</a></p>
+<h5 id="HotFix总体来说最大的优势在于："><a href="#HotFix总体来说最大的优势在于：" class="headerlink" title="HotFix总体来说最大的优势在于："></a>HotFix总体来说最大的优势在于：</h5><ul>
+<li>补丁即时生效，不需要应用重启；</li>
+<li>补丁包同样采用差量技术，生成的PATCH体积小；</li>
+<li>对应用无侵入，几乎无性能损耗；</li>
+<li>傻瓜式接入。<h5 id="已知问题"><a href="#已知问题" class="headerlink" title="已知问题"></a>已知问题</h5></li>
+<li>暂时不支持新增方法, 新增字段, 但是支持新增类, 所以需要新增方法/字段可以通过新增类来实现</li>
+<li>不支持资源修复, so修复</li>
+<li>三星note3,S4,S5的5.0设备以及X86设备不支持（点击查看具体支持的机型）</li>
+<li>参数包括long,double,float基本类型的方法不能被patch, 不包括基本类型封装类Long,Double,Float</li>
+<li>被反射调用的非静态方法不能被patch</li>
+<li>参数超过8的方法不能被patch</li>
+<li>构造方法不能被patch</li>
+<li>使用注解的方法视情况而定是否支持被patch(详细说明参考Demo工程BaseBug.md文件中关于注解的说明）</li>
+<li>泛型参数的方法如果patch存在兼容性问题</li>
+<li>在打包的时候偶尔会存在两次打包内部类的名字不一致问题，这种情况会导致打AndFix打包失败，暂时无解</li>
+<li>我们建议不要通过GooglePlay发布带热修复SDK的APP，存在政策风险</li>
+<li>暂不支持android7.0<h5 id="常见问题及解决方案"><a href="#常见问题及解决方案" class="headerlink" title="常见问题及解决方案"></a>常见问题及解决方案</h5><a href="http://baichuan.taobao.com/docs/doc.htm?spm=a3c0d.7629140.0.0.yuJdBV&amp;treeId=234&amp;articleId=105843&amp;docType=1" target="_blank" rel="external">http://baichuan.taobao.com/docs/doc.htm?spm=a3c0d.7629140.0.0.yuJdBV&amp;treeId=234&amp;articleId=105843&amp;docType=1</a><h4 id="Robust"><a href="#Robust" class="headerlink" title="Robust"></a>Robust</h4>GitHub地址：<a href="https://github.com/Meituan-Dianping/Robust" target="_blank" rel="external">https://github.com/Meituan-Dianping/Robust</a><br><a href="http://tech.meituan.com/android_robust.html" target="_blank" rel="external">Android热更新方案Robust</a><h4 id="其他相关"><a href="#其他相关" class="headerlink" title="其他相关"></a>其他相关</h4>Dexposed：<a href="https://github.com/rovo89/Xposed" target="_blank" rel="external">https://github.com/rovo89/Xposed</a><br>比较文章：<a href="http://blog.zhaiyifan.cn/2015/11/20/HotPatchCompare/" target="_blank" rel="external">http://blog.zhaiyifan.cn/2015/11/20/HotPatchCompare/</a><h3 id="流行库比较"><a href="#流行库比较" class="headerlink" title="流行库比较"></a>流行库比较</h3></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">库</th>
+<th style="text-align:center">Tinker</th>
+<th style="text-align:center">QZone</th>
+<th style="text-align:center">AndFix</th>
+<th style="text-align:center">Robust</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">类替换</td>
+<td style="text-align:center">yes</td>
+<td style="text-align:center">yes</td>
+<td style="text-align:center">no</td>
+<td style="text-align:center">no</td>
+</tr>
+<tr>
+<td style="text-align:center">So替换</td>
+<td style="text-align:center">yes</td>
+<td style="text-align:center">no</td>
+<td style="text-align:center">no</td>
+<td style="text-align:center">no</td>
+</tr>
+<tr>
+<td style="text-align:center">资源替换</td>
+<td style="text-align:center">yes</td>
+<td style="text-align:center">yes</td>
+<td style="text-align:center">no</td>
+<td style="text-align:center">no</td>
+</tr>
+<tr>
+<td style="text-align:center">全平台支持</td>
+<td style="text-align:center">yes</td>
+<td style="text-align:center">yes</td>
+<td style="text-align:center">yes</td>
+<td style="text-align:center">yes</td>
+</tr>
+<tr>
+<td style="text-align:center">即时生效</td>
+<td style="text-align:center">no</td>
+<td style="text-align:center">no</td>
+<td style="text-align:center">yes</td>
+<td style="text-align:center">yes</td>
+</tr>
+<tr>
+<td style="text-align:center">性能损耗</td>
+<td style="text-align:center">较小</td>
+<td style="text-align:center">较大</td>
+<td style="text-align:center">较小</td>
+<td style="text-align:center">较小</td>
+</tr>
+<tr>
+<td style="text-align:center">补丁包大小</td>
+<td style="text-align:center">较小</td>
+<td style="text-align:center">较大</td>
+<td style="text-align:center">一般</td>
+<td style="text-align:center">一般</td>
+</tr>
+<tr>
+<td style="text-align:center">开发透明</td>
+<td style="text-align:center">yes</td>
+<td style="text-align:center">yes</td>
+<td style="text-align:center">no</td>
+<td style="text-align:center">no</td>
+</tr>
+<tr>
+<td style="text-align:center">复杂度</td>
+<td style="text-align:center">较低</td>
+<td style="text-align:center">较低</td>
+<td style="text-align:center">复杂</td>
+<td style="text-align:center">复杂</td>
+</tr>
+<tr>
+<td style="text-align:center">gradle支持</td>
+<td style="text-align:center">yes</td>
+<td style="text-align:center">no</td>
+<td style="text-align:center">no</td>
+<td style="text-align:center">no</td>
+</tr>
+<tr>
+<td style="text-align:center">Rom体积</td>
+<td style="text-align:center">较大</td>
+<td style="text-align:center">较小</td>
+<td style="text-align:center">较小</td>
+<td style="text-align:center">较小</td>
+</tr>
+<tr>
+<td style="text-align:center">成功率</td>
+<td style="text-align:center">较高</td>
+<td style="text-align:center">较高</td>
+<td style="text-align:center">一般</td>
+<td style="text-align:center">最高</td>
+</tr>
+</tbody>
+</table>
+<p>注：表格来源Tinker文档，阿里也有类似比较，仅供参考<br><a href="https://github.com/DiyCodes/code_news/blob/master/dialy_news/2016/06/%E7%AC%AC34%E6%9C%9F%EF%BC%9AAndroid%E7%83%AD%E4%BF%AE%E5%A4%8D%E6%8A%80%E6%9C%AF%E4%B8%93%E9%A2%98%EF%BC%9A%E6%9D%A5%E8%87%AA%E5%BE%AE%E4%BF%A1%E3%80%81%E6%B7%98%E5%AE%9D%E3%80%81%E6%94%AF%E4%BB%98%E5%AE%9D%E3%80%81QQ%E7%A9%BA%E9%97%B4%E7%9A%84%E7%83%AD%E4%BF%AE%E5%A4%8D%E6%96%B9%E6%A1%88.md" target="_blank" rel="external">Diycode热修复方案对比文章</a>  </p>
+<h3 id="相关文章-1"><a href="#相关文章-1" class="headerlink" title="相关文章"></a>相关文章</h3><p><a href="http://www.infoq.com/cn/articles/Android-hot-fix" target="_blank" rel="external">Android热修复技术选型——三大流派解析</a>  </p>
+<p><a href="http://blog.csdn.net/lmj623565791/article/details/49883661" target="_blank" rel="external">Android热补丁动态修复框架小结</a>  </p>
+<p><a href="http://blog.csdn.net/qq_31530015/article/details/51785228?locationNum=11" target="_blank" rel="external">Android 热修复其实很简单</a>  </p>
+<p><a href="http://blog.csdn.net/caihongdao123/article/details/52051799" target="_blank" rel="external">浅谈Android热修复</a> </p>
+<h3 id="布丁下发"><a href="#布丁下发" class="headerlink" title="布丁下发"></a>布丁下发</h3><p><a href="https://github.com/baidao/tinker-manager" target="_blank" rel="external">布丁管理</a>  </p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>从目前的文档，技术支持来看微信的Tinker和阿里的HotFix比较好一些，其他的支持相对落后，如果需要接入最好是二选一，出现问题也比较容易解决，当然有些是需要成本的哦；如果作为学习研究那么都研究一下最好了。</p>
+<h3 id="THANKS"><a href="#THANKS" class="headerlink" title="THANKS"></a>THANKS</h3><p>本文是基于以上开源库，以及优秀文章而总结收集的，首先感谢各位的贡献，如有侵权请联系作者将会及时更正，其次转载请注明出处，已尊重作者的劳动成果。<br>来源：www.lowett.com </p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wxpay.png" alt="诸葛小布 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Adnroid/" rel="tag">#Adnroid</a>
+          
+            <a href="/tags/Hotfix/" rel="tag">#Hotfix</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/31/django-2/" rel="next" title="入门-安装">
+                <i class="fa fa-chevron-left"></i> 入门-安装
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="诸葛小布" />
+          <p class="site-author-name" itemprop="name">诸葛小布</p>
+          <p class="site-description motion-element" itemprop="description">雁过无痕，但我确实飞过</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">30</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本概念"><span class="nav-number">1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#相关解释"><span class="nav-number">2.</span> <span class="nav-text">相关解释</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#热更新和热修复是同一个概念？"><span class="nav-number">2.1.</span> <span class="nav-text">热更新和热修复是同一个概念？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原理分析"><span class="nav-number">3.</span> <span class="nav-text">原理分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决方案"><span class="nav-number">4.</span> <span class="nav-text">解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Tinker"><span class="nav-number">4.1.</span> <span class="nav-text">Tinker</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Tinker是什么？"><span class="nav-number">4.1.1.</span> <span class="nav-text">Tinker是什么？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#结构"><span class="nav-number">4.1.2.</span> <span class="nav-text">结构</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#由于原理与系统限制，Tinker有以下已知问题："><span class="nav-number">4.1.3.</span> <span class="nav-text">由于原理与系统限制，Tinker有以下已知问题：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#如何使用Tinker"><span class="nav-number">4.1.4.</span> <span class="nav-text">如何使用Tinker</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#相关文章"><span class="nav-number">4.2.</span> <span class="nav-text">相关文章</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#QZone"><span class="nav-number">4.3.</span> <span class="nav-text">QZone</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AndFix"><span class="nav-number">4.4.</span> <span class="nav-text">AndFix</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#阿里百川HotFix"><span class="nav-number">4.5.</span> <span class="nav-text">阿里百川HotFix</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#HotFix总体来说最大的优势在于："><span class="nav-number">4.5.1.</span> <span class="nav-text">HotFix总体来说最大的优势在于：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#已知问题"><span class="nav-number">4.5.2.</span> <span class="nav-text">已知问题</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#常见问题及解决方案"><span class="nav-number">4.5.3.</span> <span class="nav-text">常见问题及解决方案</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Robust"><span class="nav-number">4.6.</span> <span class="nav-text">Robust</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#其他相关"><span class="nav-number">4.7.</span> <span class="nav-text">其他相关</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#流行库比较"><span class="nav-number">5.</span> <span class="nav-text">流行库比较</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#相关文章-1"><span class="nav-number">6.</span> <span class="nav-text">相关文章</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#布丁下发"><span class="nav-number">7.</span> <span class="nav-text">布丁下发</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#THANKS"><span class="nav-number">9.</span> <span class="nav-text">THANKS</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">诸葛小布</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("RyOzCscbKiTRuucMD4x8Ce8e-gzGzoHsz", "gNdVnwMrki5jBmRzaQijk5G3");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+</body>
+</html>
