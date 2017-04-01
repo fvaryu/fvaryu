@@ -369,39 +369,20 @@
       
         
           
-            <blockquote>
-<p>Android-7(API24)前几天风风火火发布，小的里面下载最新的体验一把，当然是模拟器了，说实话然并卵。下面是小的录的gif先睹为快吧。</p>
-</blockquote>
-<h3 id="体验"><a href="#体验" class="headerlink" title="体验"></a>体验</h3><p><img src="http://7xwe4r.com1.z0.glb.clouddn.com/z502.gif" alt=""></p>
-<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><p>实现分屏，还是蛮简单的，代码层，当然底层实现暂未研究，不过真心不知道在这小小的手机上分屏有什么用处，好了废话不说了现在就是撸一把。</p>
-<p>要实现分屏只要在AndroidManifest.xml定义一个属性就行，默认是支持分屏的</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;activity</span><br><span class="line">    android:name=&quot;.MainActivity&quot;</span><br><span class="line">    // 就是他、就是他、就是他，如果不想支持给为false，默认是true</span><br><span class="line">    android:resizeableActivity=&quot;true&quot;&gt;</span><br><span class="line">    &lt;intent-filter&gt;</span><br><span class="line">        &lt;action android:name=&quot;android.intent.action.MAIN&quot;/&gt;</span><br><span class="line">        &lt;category android:name=&quot;android.intent.category.LAUNCHER&quot;/&gt;</span><br><span class="line">    &lt;/intent-filter&gt;</span><br><span class="line">&lt;/activity&gt;</span><br></pre></td></tr></table></figure>
-<p>是不是很简单呢，是你想的简单了，这样变化后什么周期呢？</p>
-<h3 id="将Activity启动到另外一个分屏中"><a href="#将Activity启动到另外一个分屏中" class="headerlink" title="将Activity启动到另外一个分屏中"></a>将Activity启动到另外一个分屏中</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 启动时添加Intent.FLAG_ACTIVITY_LAUNCH_ADJACENT这个flags，就可以把Activity启动到另一个分屏中</span><br><span class="line">Intent intent = new Intent(this, AdjacentActivity.class);</span><br><span class="line">intent.setFlags(Intent.FLAG_ACTIVITY_LAUNCH_ADJACENT | Intent.FLAG_ACTIVITY_NEW_TASK);</span><br><span class="line">startActivity(intent);</span><br></pre></td></tr></table></figure>
-<h3 id="不支持分屏时"><a href="#不支持分屏时" class="headerlink" title="不支持分屏时"></a>不支持分屏时</h3><ol>
-<li>不支持分屏，没有设置 Intent.FLAG_ACTIVITY_NEW_TASK直接启动到当前分屏中</li>
-<li>设置了 Intent.FLAG_ACTIVITY_NEW_TASK，取消分屏，全部显示</li>
-</ol>
-<h3 id="分屏变化监听"><a href="#分屏变化监听" class="headerlink" title="分屏变化监听"></a>分屏变化监听</h3><p>新的api中添加了下面的回到，通知分屏变化</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 当屏幕变化是回调</span><br><span class="line">@Override</span><br><span class="line">public void onMultiWindowModeChanged(boolean isInMultiWindowMode) &#123;</span><br><span class="line">    super.onMultiWindowModeChanged(isInMultiWindowMode);</span><br><span class="line">    Log.i(TAG, &quot;****** onMultiWindowModeChanged() ******&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="生命周期变化"><a href="#生命周期变化" class="headerlink" title="生命周期变化"></a>生命周期变化</h3><p>Activity的分屏变化还是和原来差不多，可以看成是Activity 的切换（下文log，为了好看去掉了时间）</p>
-<ol>
-<li><p>长按菜单键（通常是方快建）进入分屏状态</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">com.mz.android_7.MainActivity****** onMultiWindowModeChanged() ******</span><br><span class="line">com.mz.android_7.MainActivity****** onPause() ******</span><br><span class="line">com.mz.android_7.MainActivity****** onStop() ******</span><br><span class="line">com.mz.android_7.MainActivity****** onDestroy() ******</span><br><span class="line">com.mz.android_7.MainActivity****** onCreate() ******</span><br><span class="line">com.mz.android_7.MainActivity****** onStart() ******</span><br><span class="line">com.mz.android_7.MainActivity****** onResume() ******</span><br><span class="line">com.mz.android_7.MainActivity****** onPause() ******</span><br><span class="line">// // Activity销毁重建，此时当前Activity进入到pause状态，不在有焦点</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>点击当前分屏</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">com.mz.android_7.MainActivity****** onResume() ******</span><br><span class="line">// 进入到resume状态</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>点击另一分屏</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">com.mz.android_7.MainActivity****** onPause() ******</span><br><span class="line">// 再次进入到pause状态，如果不进行其他操作，来回点击，两个状态来回切换</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>退出分屏</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">com.mz.android_7.MainActivity****** onPause() ******</span><br><span class="line">com.mz.android_7.MainActivity****** onStop() ******</span><br><span class="line">com.mz.android_7.MainActivity****** onDestroy() ******</span><br><span class="line">com.mz.android_7.MainActivity****** onCreate() ******</span><br><span class="line">com.mz.android_7.MainActivity****** onStart() ******</span><br><span class="line">com.mz.android_7.MainActivity****** onResume() ******</span><br><span class="line">com.mz.android_7.MainActivity****** onMultiWindowModeChanged() ******</span><br><span class="line">// Activity销毁重建，进入resume状态，分屏退出</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>Android-7的分屏在我看来没什么用处，但是本质是提高了用户的体验，当然是在运行流畅的前提下。它的本质还是同一时刻只有一个Activity处于resume状态，所以并没有太高深的东西，只是对于生命周期的理解要加强。</p>
-
           
+Android-7(API24)前几天风风火火发布，小的里面下载最新的体验一把，当然是模拟器了，说实话然并卵。下面是小的录的gif先睹为快吧。
+
+体验
+实现实现分屏，还是蛮简单的，代码层，当然底层实现暂未研究，不过真心不知道在这小小的手机上分屏有什么用处，好了废话不说了现在就是撸一把。
+要实现分屏
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/08/24/android-multiwindow/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -542,170 +523,16 @@
       
         
           
-            <blockquote>
-<p>说在前面：SharedPreferences是Android中几种重要的存储数据的方式，Android开发不会没有人从来没有使用过，但是却很好人会关注它是怎么实现的，确实SharedPreferences实现起来比较简单，本质是基于文件存储，格式是XML形势的，本篇文章并没有太深的技术，但绝对是不可缺少的知识。</p>
-</blockquote>
-<h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>SharedPreferences可以通过Context获取到，它是一个接口，实现在frameworks\base\core\java\android\app\SharedPreferencesImpl.java</p>
-<p>源码也仅仅只有630行，相对于庞大的Android源码，小很多。但是你真的了解它吗？</p>
-<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><ul>
-<li>1、不同的Activity里面Context.getSharedPreferences()获取的SharedPreferences相同吗？</li>
-<li>2、支持并发吗？</li>
-<li>3、SharedPreferences.putXXX()直接保存了吗？</li>
-<li>……</li>
-</ul>
-<p>针对上面的问题，我们一点点来分析。</p>
-<h3 id="获得SharedPreferences"><a href="#获得SharedPreferences" class="headerlink" title="获得SharedPreferences"></a>获得SharedPreferences</h3><p>我们获得SharedPreferences是通过Context.getSharedPreferences(),源码如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> SharedPreferences <span class="title">getSharedPreferences</span><span class="params">(String name, <span class="keyword">int</span> mode)</span> </span>&#123;</span><br><span class="line">  SharedPreferencesImpl sp;</span><br><span class="line">  <span class="keyword">synchronized</span> (ContextImpl.class) &#123;</span><br><span class="line">    <span class="comment">// 静态的 全局唯一，缓存得到的SharedPreferences，key是app包名</span></span><br><span class="line">    <span class="keyword">if</span> (sSharedPrefs == <span class="keyword">null</span>) &#123;</span><br><span class="line">      	sSharedPrefs = <span class="keyword">new</span> ArrayMap&lt;String, ArrayMap&lt;String, SharedPreferencesImpl&gt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 通过每一个app的包名缓存不同的SharedPreferences，key是文件名</span></span><br><span class="line">    <span class="comment">// 这里就明白前面提到的第一个问题了，一个文件对应一个SharedPreferences</span></span><br><span class="line">    <span class="keyword">final</span> String packageName = getPackageName();</span><br><span class="line">    ArrayMap&lt;String, SharedPreferencesImpl&gt; packagePrefs = sSharedPrefs.get(packageName);</span><br><span class="line">    <span class="keyword">if</span> (packagePrefs == <span class="keyword">null</span>) &#123;</span><br><span class="line">      packagePrefs = <span class="keyword">new</span> ArrayMap&lt;String, SharedPreferencesImpl&gt;();</span><br><span class="line">      sSharedPrefs.put(packageName, packagePrefs);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 略...</span></span><br><span class="line">    <span class="comment">// 如果以创建过，直接从缓存中获取返回</span></span><br><span class="line">    sp = packagePrefs.get(name);</span><br><span class="line">    <span class="keyword">if</span> (sp == <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="comment">// 如果没有创建一个 文件名为data/data/packege/shared_prefs/xxx.xml</span></span><br><span class="line">      File prefsFile = getSharedPrefsFile(name); </span><br><span class="line">      sp = <span class="keyword">new</span> SharedPreferencesImpl(prefsFile, mode); <span class="comment">// 创建实例对象</span></span><br><span class="line">      packagePrefs.put(name, sp); <span class="comment">// 放到缓存中</span></span><br><span class="line">      <span class="keyword">return</span> sp;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"><span class="comment">// 略...</span></span><br><span class="line">  <span class="keyword">return</span> sp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="创建SharedPreferences"><a href="#创建SharedPreferences" class="headerlink" title="创建SharedPreferences"></a>创建SharedPreferences</h3><p>SharedPreferences的创建很简单，我们先看看构造方法：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// 仅有一个</span><br><span class="line">SharedPreferencesImpl(File file, int mode) &#123;</span><br><span class="line">  mFile = file;</span><br><span class="line">  mBackupFile = makeBackupFile(file); // 创建备份</span><br><span class="line">  mMode = mode;</span><br><span class="line">  mLoaded = false;</span><br><span class="line">  mMap = null; // 存放键值对的map</span><br><span class="line">  startLoadFromDisk();  // 从本地load出来</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>从构造函数我们不难看出，SharedPreferences实际是以Map（HashMap）存储数据，创建的时候就从本地文件中读取数据到内存中，所以，<strong>不能存储太多的数据</strong> ，否则内存会爆掉的哦。</p>
-<h3 id="读取本地文件中的数据"><a href="#读取本地文件中的数据" class="headerlink" title="读取本地文件中的数据"></a>读取本地文件中的数据</h3><p>当实例化的时候就会触发，一个读取本地已存储的数据，</p>
-<pre><code> private void loadFromDiskLocked() {
- // 读取过就不在读取
- if (mLoaded) {
-        return;
-    }
-    //...
-
-    Map map = null;
-    StructStat stat = null;
-    try {
-        // 存储文件状态
-        stat = Os.stat(mFile.getPath());
-        if (mFile.canRead()) {
-            BufferedInputStream str = null;
-            try {
-                str = new BufferedInputStream(
-                        new FileInputStream(mFile), 16*1024);
-                // 格式为xml，解析xml得到map
-                map = XmlUtils.readMapXml(str);
-            } catch (XmlPullParserException e) {
-                Log.w(TAG, &quot;getSharedPreferences&quot;, e);
-            } catch (FileNotFoundException e) {
-                Log.w(TAG, &quot;getSharedPreferences&quot;, e);
-            } catch (IOException e) {
-                Log.w(TAG, &quot;getSharedPreferences&quot;, e);
-            } finally {
-                IoUtils.closeQuietly(str);
-            }
-        }
-    } catch (ErrnoException e) {
-    }
-    // 加载过后更改状态，如果没有创建一个HashMap
-    mLoaded = true;
-    if (map != null) {
-        mMap = map;
-        mStatTimestamp = stat.st_mtime;
-        mStatSize = stat.st_size;
-    } else {
-        mMap = new HashMap&lt;String, Object&gt;();
-    }
-    notifyAll();
-}
-</code></pre><h3 id="获得存储的数据"><a href="#获得存储的数据" class="headerlink" title="获得存储的数据"></a>获得存储的数据</h3><p>得到数据通常是getXXX(),实际很简单，就是存map中取数据。</p>
-<pre><code>// 已getString()为例，其他一样
-@Nullable
-public String getString(String key, @Nullable String defValue) {
-    // 同步哦
-    synchronized (this) {
-        // 确保，已从文件中读取过数据
-        awaitLoadedLocked();
-        // 从map中的得到数据
-        String v = (String)mMap.get(key);
-        return v != null ? v : defValue;
-    }
-}
-</code></pre><h3 id="保存数据"><a href="#保存数据" class="headerlink" title="保存数据"></a>保存数据</h3><p>大家都知道保存数据是通过Editor来存储的，事实上也确实是这样的。但是putXXX()仅仅是保存到了map中，正真的是要在commit()或apply()之后。</p>
-<pre><code>public Editor putString(String key, @Nullable String value) {
-    // 同步哦
-    synchronized (this) {
-            mModified.put(key, value);
-            return this;
-        }
-    }
-</code></pre><p>1、</p>
-<pre><code>public boolean commit() {
-    MemoryCommitResult mcr = commitToMemory();
-    // 写数据
-    SharedPreferencesImpl.this.enqueueDiskWrite(
-        mcr, null /* sync write on this thread okay */);
-    try {
-        mcr.writtenToDiskLatch.await();
-    } catch (InterruptedException e) {
-        return false;
-    }
-    notifyListeners(mcr);
-    return mcr.writeToDiskResult;
-}
-</code></pre><p>2、</p>
-<pre><code> private void enqueueDiskWrite(final MemoryCommitResult mcr, final Runnable postWriteRunnable) {
-    final Runnable writeToDiskRunnable = new Runnable() {
-            public void run() {
-                synchronized (mWritingToDiskLock) {
-                    // 往文件中写入数据
-                    writeToFile(mcr);
-                }
-                synchronized (SharedPreferencesImpl.this) {
-                    mDiskWritesInFlight--;
-                }
-                if (postWriteRunnable != null) {
-                    postWriteRunnable.run();
-                }
-            }
-        };
-
-      // ...
-
-    QueuedWork.singleThreadExecutor().execute(writeToDiskRunnable);
-}
-</code></pre><p>3、</p>
-<pre><code> // Note: must hold mWritingToDiskLock
-private void writeToFile(MemoryCommitResult mcr) {
-   // ...
-    try {
-        FileOutputStream str = createFileOutputStream(mFile);
-        if (str == null) {
-            mcr.setDiskWriteResult(false);
-            return;
-        }
-        // 写入到文件中
-        XmlUtils.writeMapXml(mcr.mapToWriteToDisk, str);
-        FileUtils.sync(str);
-        str.close();
-        ContextImpl.setFilePermissionsFromMode(mFile.getPath(), mMode, 0);
-        try {
-         // 更新文件的状态
-            final StructStat stat = Os.stat(mFile.getPath());
-            synchronized (this) {
-                mStatTimestamp = stat.st_mtime;
-                mStatSize = stat.st_size;
-            }
-        } catch (ErrnoException e) {
-            // Do nothing
-        }
-        // Writing was successful, delete the backup file if there is one.
-        mBackupFile.delete();
-        mcr.setDiskWriteResult(true);
-        return;
-    } catch (XmlPullParserException e) {
-        Log.w(TAG, &quot;writeToFile: Got exception:&quot;, e);
-    } catch (IOException e) {
-        Log.w(TAG, &quot;writeToFile: Got exception:&quot;, e);
-    }
-    // Clean up an unsuccessfully written file
-    if (mFile.exists()) {
-        if (!mFile.delete()) {
-            Log.e(TAG, &quot;Couldn&apos;t clean up partially-written file &quot; + mFile);
-        }
-    }
-    mcr.setDiskWriteResult(false);
-}
-</code></pre><h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>1、SharedPreferences有缓存</p>
-<p>2、数据是通过map来快速访问，所以不用担心文件IO耗时</p>
-<p>3、支持多线程并发</p>
-<p>4、本质是基于文件xml的形式</p>
-
           
+说在前面：SharedPreferences是Android中几种重要的存储数据的方式，Android开发不会没有人从来没有使用过，但是却很好人会关注它是怎么实现的，确实SharedPreferences实现起来比较简单，本质是基于文件存储，格式是XML形势的，本篇文章并没有太深的技术，但绝对是不
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/08/22/sharedPreferences/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -846,63 +673,23 @@ private void writeToFile(MemoryCommitResult mcr) {
       
         
           
-            <blockquote>
-<p>Android的消息机制几乎是面试必问的话题，当然也并不是因为面试，而去学习，更重要的是它在Android的开发中是必不可少的，占着举足轻重的地位，所以弄懂它是很有必要的。下面就来说说最基本的东西。</p>
-</blockquote>
-<h3 id="Looper"><a href="#Looper" class="headerlink" title="Looper"></a>Looper</h3><p>作用：</p>
-<ul>
-<li>关联起Thread</li>
-<li>循环取出消息</li>
-</ul>
-<h4 id="1、Looper是否可以直接实例化？"><a href="#1、Looper是否可以直接实例化？" class="headerlink" title="1、Looper是否可以直接实例化？"></a>1、Looper是否可以直接实例化？</h4><p>Looper构造方法是私有的，其中做了两件事</p>
-<ul>
-<li>创建一个MessageQueue</li>
-</ul>
-<ul>
-<li>得到与之对应的Thread</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> <span class="function"><span class="keyword">private</span> <span class="title">Looper</span><span class="params">(<span class="keyword">boolean</span> quitAllowed)</span> </span>&#123;</span><br><span class="line">    mQueue = <span class="keyword">new</span> MessageQueue(quitAllowed);</span><br><span class="line">    mThread = Thread.currentThread();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="2、一个线程能对应多个Lopper？"><a href="#2、一个线程能对应多个Lopper？" class="headerlink" title="2、一个线程能对应多个Lopper？"></a>2、一个线程能对应多个Lopper？</h4><p>不能，一个线程对应一个Looper对象，通过ThreadLocal保证一个线程只有一个Looper与之对应，如果多次调用<code>Looper.prepare()</code>;则会抛出运行时异常。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"> <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">prepare</span><span class="params">(<span class="keyword">boolean</span> quitAllowed)</span> </span>&#123;</span><br><span class="line">   <span class="keyword">if</span> (sThreadLocal.get() != <span class="keyword">null</span>) &#123; <span class="comment">// 查看是否有looper与当前线程对应</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"Only one Looper may be created per thread"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    sThreadLocal.set(<span class="keyword">new</span> Looper(quitAllowed));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="3、Looper是无限循环，会阻塞吗？"><a href="#3、Looper是无限循环，会阻塞吗？" class="headerlink" title="3、Looper是无限循环，会阻塞吗？"></a>3、Looper是无限循环，会阻塞吗？</h4><p>是，当开启一个loop后是一个死循环，从MessageQueue中取出消息，处理消息，但是也有可能退出，在没有消息后退出循环。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">loop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Looper me = myLooper();</span><br><span class="line">    <span class="keyword">if</span> (me == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"No Looper; Looper.prepare() wasn't called on 				this thread."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">final</span> MessageQueue queue = me.mQueue;</span><br><span class="line">	<span class="comment">// 略</span></span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        Message msg = queue.next(); <span class="comment">// might block</span></span><br><span class="line">        <span class="keyword">if</span> (msg == <span class="keyword">null</span>) &#123; <span class="comment">// 当没有消息的时候，退出</span></span><br><span class="line">            <span class="comment">// No message indicates that the message queue is quitting.</span></span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="comment">// 略</span></span><br><span class="line">        msg.target.dispatchMessage(msg);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
-<h4 id="4、可以再次调用Looper-prepareMainLooper吗？"><a href="#4、可以再次调用Looper-prepareMainLooper吗？" class="headerlink" title="4、可以再次调用Looper.prepareMainLooper吗？"></a>4、可以再次调用Looper.prepareMainLooper吗？</h4><p>不可以，Looper.prepareMainLooper最终也是调用prepare()，同2.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">prepareMainLooper</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    prepare(<span class="keyword">false</span>); <span class="comment">// 创建一个Looper</span></span><br><span class="line">    <span class="keyword">synchronized</span> (Looper.class) &#123;</span><br><span class="line">        <span class="keyword">if</span> (sMainLooper != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"The main Looper has already been 				prepared."</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        sMainLooper = myLooper();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="5、MainLooper什么时候创建的？"><a href="#5、MainLooper什么时候创建的？" class="headerlink" title="5、MainLooper什么时候创建的？"></a>5、MainLooper什么时候创建的？</h4><p>MainLooper是启动Activity创建ActivityThread(并不是一个Thread)时候创建，所以不能多次创建。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) &#123;</span><br><span class="line">  // 略</span><br><span class="line">   Process.setArgV0(&quot;&lt;pre-initialized&gt;&quot;);</span><br><span class="line">  Looper.prepareMainLooper();</span><br><span class="line">  // 略</span><br><span class="line">  ActivityThread thread = new ActivityThread();</span><br><span class="line">  thread.attach(false);</span><br><span class="line">  // 略</span><br><span class="line">  if (sMainThreadHandler == null) &#123;</span><br><span class="line">  	sMainThreadHandler = thread.getHandler();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // 略</span><br><span class="line">  Looper.loop();</span><br><span class="line">  throw new RuntimeException(&quot;Main thread loop unexpectedly exited&quot;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="Handler"><a href="#Handler" class="headerlink" title="Handler"></a>Handler</h4><p>作用:</p>
-<ul>
-<li>发送消息到MessageQueue</li>
-<li>处理消息</li>
-</ul>
-<h4 id="1、Handler如何与Looper、MessageQueue关联起来？"><a href="#1、Handler如何与Looper、MessageQueue关联起来？" class="headerlink" title="1、Handler如何与Looper、MessageQueue关联起来？"></a>1、Handler如何与Looper、MessageQueue关联起来？</h4><p>我们知道一个Looper对应一个Thread，一个Looper包含一个MessageQueue。当我们创建Handler时就会从当前线程中取出与之对应的Looper，让后在从Looper中取出MessageQueue。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1、自动获取</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Handler</span><span class="params">(Callback callback, <span class="keyword">boolean</span> async)</span> </span>&#123;</span><br><span class="line"> 	<span class="comment">// 略</span></span><br><span class="line">    mLooper = Looper.myLooper(); <span class="comment">// 取出当前线程中的Looper</span></span><br><span class="line">    <span class="keyword">if</span> (mLooper == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(</span><br><span class="line">            <span class="string">"Can't create handler inside thread that has not called 						Looper.prepare()"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    mQueue = mLooper.mQueue; <span class="comment">// 取出MessageQueue</span></span><br><span class="line">    mCallback = callback;</span><br><span class="line">    mAsynchronous = async;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 2、传递一个Looper进来</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Handler</span><span class="params">(Looper looper, Callback callback, <span class="keyword">boolean</span> async)</span> </span>&#123;</span><br><span class="line">        mLooper = looper;</span><br><span class="line">        mQueue = looper.mQueue;</span><br><span class="line">        mCallback = callback;</span><br><span class="line">        mAsynchronous = async;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<h3 id="Message"><a href="#Message" class="headerlink" title="Message"></a>Message</h3><p>单项链表结构。</p>
-<p>作用：</p>
-<ul>
-<li>数据的载体</li>
-</ul>
-<h4 id="1、消息如何复用的？"><a href="#1、消息如何复用的？" class="headerlink" title="1、消息如何复用的？"></a>1、消息如何复用的？</h4><p>从全局消息池(链表结构)中</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Message <span class="title">obtain</span><span class="params">()</span> </span>&#123;</span><br><span class="line">   	<span class="keyword">synchronized</span> (sPoolSync) &#123;</span><br><span class="line">        <span class="keyword">if</span> (sPool != <span class="keyword">null</span>) &#123;</span><br><span class="line">            Message m = sPool;</span><br><span class="line">            sPool = m.next;</span><br><span class="line">            m.next = <span class="keyword">null</span>;</span><br><span class="line">            m.flags = <span class="number">0</span>; <span class="comment">// clear in-use flag</span></span><br><span class="line">            sPoolSize--;</span><br><span class="line">            <span class="keyword">return</span> m;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Message();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="2、Message为什么能传递？"><a href="#2、Message为什么能传递？" class="headerlink" title="2、Message为什么能传递？"></a>2、Message为什么能传递？</h4><p>Android中想要传递对象要么实现Serializable要么Parcelable，在这里是实现了Parcelable接口。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public final class Message implements Parcelable &#123;</span><br><span class="line">  // 略</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="3、如何与Handler关联？"><a href="#3、如何与Handler关联？" class="headerlink" title="3、如何与Handler关联？"></a>3、如何与Handler关联？</h4><p>我们知道在消息传机制中Handler充当着“快递员”的角色，那么他又是如何与“货物”－－Message发生关系呢？实际上Message有一个成员变量target他的类型正是Handler，</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*package*/</span> Runnable callback;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">int</span> arg1; </span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">int</span> arg2;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> Object obj;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*package*/</span> Handler target; <span class="comment">// 关键点</span></span><br></pre></td></tr></table></figure>
-<p>当我们通过Handler去send一个Message时候最终都会为target赋值为this，即当前的Handler。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">enqueueMessage</span><span class="params">(MessageQueue queue, Message msg, <span class="keyword">long</span> uptimeMillis)</span> </span>&#123;</span><br><span class="line">    msg.target = <span class="keyword">this</span>; <span class="comment">// 赋值语句</span></span><br><span class="line">    <span class="keyword">if</span> (mAsynchronous) &#123;</span><br><span class="line">        msg.setAsynchronous(<span class="keyword">true</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> queue.enqueueMessage(msg, uptimeMillis);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>另为如果是通过Message.Obtain(),获取的复用Message也会为其赋值。</p>
-<p>多说一句，Handler.obtainMessage()调用的就是Message.Obtain()。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Message <span class="title">obtainMessage</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Message.obtain(<span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h3><p>通过一系列的包涵关系，最终Looper、Handler、Message、MessageQueue即发生关联，从而形成一个闭合，开启消息循环。</p>
-<p><img src="http://7xwe4r.com1.z0.glb.clouddn.com/wKioL1OhN5mRGI3xAAA4g3j4V30690.jpg" alt=""></p>
-<h3 id="困惑"><a href="#困惑" class="headerlink" title="困惑"></a>困惑</h3><p><strong>最近一直在看这方面的知识，但是能力有限，还是有不少困惑，如果有错误，或你理解下面的问题请联系我fvaryu@qq.com,愿与君交流学习，谢谢</strong></p>
-<p>1、Message中的sPool，哪里初始化的？为什么Message.obtain()中不会抛异常？</p>
-<p>2、ActivityThread并不是线程，为什么可以创建一个Looper，Main Thread什么时候创建？</p>
-<p>3、为什么序列化了的对象就可以传递？与Binder有关？</p>
-<p>4、MessageQueue对应的是NativeMessageQueue，具体实现需要学习？</p>
-<p>5、Loop.loop()，会退出吗？退出时机是什么？如果会退出，那么主线程同样会退出吗？</p>
-
           
+Android的消息机制几乎是面试必问的话题，当然也并不是因为面试，而去学习，更重要的是它在Android的开发中是必不可少的，占着举足轻重的地位，所以弄懂它是很有必要的。下面就来说说最基本的东西。
+
+Looper作用：
+
+关联起Thread
+循环取出消息
+
+1、Looper是否可以直接实例化？L
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/08/04/android-message/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1054,64 +841,18 @@ private void writeToFile(MemoryCommitResult mcr) {
       
         
           
-            <blockquote>
-<p>Gradle已经出来很久了，相信你一定有所了解，作为Android开发者，如果不知道，或者不了解那就真的Out了。那么Gradle什么呢？又什么用处呢？</p>
-</blockquote>
-<h3 id="简述"><a href="#简述" class="headerlink" title="简述"></a>简述</h3><h4 id="什么是Gradle？"><a href="#什么是Gradle？" class="headerlink" title="什么是Gradle？"></a>什么是Gradle？</h4><p>Gradle 是新一代的自动化构建工具，它是一个独立的工具，跟 Android和Android Studio 没有关系，换句话说，AS是依赖于Gradle，<a href="https://gradle.org/" target="_blank" rel="external">官方网站</a>, 它同 Ant、Maven这类构建工具的不同在于它是一种DSL(区域描述语言)，什么是DSL？说白了就是黑话，比如警察卧底，做手势，标记通知对接人，对接人就明白是什么意思。而Ant、Maven基于 xml 来进行描述的，不够简洁，同是也不能包含一些复杂的逻辑在里面，而 Gradle 采用的是一种叫做 Groovy 的语言，兼容Java语言，实际上是Java的一种脚本化的体现，都是要运行在JVM中的，但它是一种动态语言，在 Java 基础上做了不少改进，用起来更加简洁、灵活，而且 Gradle 完全兼容 Maven、Ivy，这点基本上宣布了 Maven、Ivy 可以被抛弃了，Gradle 的推出主要以 Java 应用为主，当然目前还支持 Android、C、C++。相信在以后会又更大的运用空间。</p>
-<h4 id="有什么用？"><a href="#有什么用？" class="headerlink" title="有什么用？"></a>有什么用？</h4><p>我们都知道Android开发语言是Java，而Java是一种编译语言，就是要编译器编译成运行环境能够识别的东西，在Java中就是class字节码，Android中略有不同是打包在一起的class－－dex。所以如何能更好的把源文件组织起来，就成了问题。比如Android从源代码、资源文件到最后的Apk，是需要Android SDK资源包里面的工具来完成（见下图）。</p>
-<p><img src="http://7xwe4r.com1.z0.glb.clouddn.com/FD953C23-2978-4706-AB35-F91A1916A598.png" alt=""></p>
-<p>具体的过程参见下图，</p>
-<p><img src="http://7xwe4r.com1.z0.glb.clouddn.com/2012122510343031.png" alt=""></p>
-<p>而其中Gradle就是构建、编译、运行、签名、打包等等一系列流程组合构造者，更直白一点说像是管家一样，管理一个家庭日场的活动、生活，而在这里就是帮助你打理好你的项目。其中流程见下图，</p>
-<p><img src="http://7xwe4r.com1.z0.glb.clouddn.com/build-process_2x.png" alt=""></p>
-<p>现在你基本明白Gradle是干什么的了吧。</p>
-<h3 id="Gradle和Android的关系"><a href="#Gradle和Android的关系" class="headerlink" title="Gradle和Android的关系"></a>Gradle和Android的关系</h3><p>Gradle实际上和Android或者AS没有任何关系，Gradle是可以单独安装在电脑上使用的(安装过程自行学习）。完成可打开命令行输入 <strong><em>Gradle -v</em></strong>查看是否安装正确。</p>
-<p><img src="http://7xwe4r.com1.z0.glb.clouddn.com/EC6BF6EB-2D63-49B0-BA40-B11EE0727917.png" alt=""></p>
-<p>其中可以看到：Gradle的版本:V2.8（现在已经2.14了），Groovy的版本:V2.4.4，虚拟机JVM：V1.8.0(Java8)，是不是感觉很熟悉呢，就是安装JDK的步骤了。</p>
-<p>既然没有关系那为什么能够，帮助我们管理好项目呢？（这个问题问得好），实际上Gradle基于Groovy但它并不直接参与到具体项目的工作流上来，而仅仅是定义了API，就和我们平日调用Android API一样，真正起作用的是：基于Groovy开发出来的插件。比如Java插件－－专门编译Java工程的，Groovy插件等等。</p>
-<p>也许你平日开发已经注意到，</p>
-<p><img src="http://7xwe4r.com1.z0.glb.clouddn.com/79C35D18-7A79-419F-B397-B413759C9E0E.png" alt=""></p>
-<p>其中，<code>apply plugin: &#39;com.android.application&#39;</code>此处就是加载Android所对应的插件（工具），来构建app工程，相对的还有，如果你有library工程的话就会有<code>apply plugin：&#39;com.android.library&#39;</code>插件。</p>
-<h3 id="初见"><a href="#初见" class="headerlink" title="初见"></a>初见</h3><p>在上面我们讲解了一些关于Gradle的知识，对他有了初步的认识，现在我们就创建一个具体的工程来看看。</p>
-<p>首先创建Android工程不用我多说了，用AS按步骤操作即可。创建完成会看到下结构的工程，</p>
-<p><img src="http://7xwe4r.com1.z0.glb.clouddn.com/21003938-3654-4FAC-BE72-30A97463C457.png" alt=""></p>
-<p>说明：</p>
-<ol>
-<li><p>上面方框就是存放源代码、资源文件的地方</p>
-</li>
-<li><p>下面是工程配置文件，其中,</p>
-<ul>
-<li><p>第一个build.gradle:全工程配置文件，</p>
-<p><img src="http://7xwe4r.com1.z0.glb.clouddn.com/30A296C1-3E16-4A0A-8BA9-AFE3101A0A2C.png" alt=""></p>
-<p>这里配置工程的全局依赖，比如Gradle Android插件的版本，V2.1.2不是Gradle的版本，切记，</p>
-<p>代码仓库的位置等等。</p>
-<p>其中：</p>
-<p>第一个：repositories{…} 指的是插件仓库</p>
-<p>第二个：指的是项目中依赖的SDK库代码位置</p>
-</li>
-</ul>
-</li>
-</ol>
-<ul>
-<li><p>第二个build.gradle:app主工程配置文件，</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">apply plugin: &apos;com.android.application&apos;</span><br><span class="line"></span><br><span class="line">android &#123; // Android 插件特有</span><br><span class="line">    compileSdkVersion 23 // 编译SDK版本</span><br><span class="line">    buildToolsVersion &quot;23.0.3&quot; // 编译工具版本</span><br><span class="line"></span><br><span class="line">    defaultConfig &#123; // 默认的配置文件</span><br><span class="line">        applicationId &quot;com.simplify.gradlett&quot; // app id</span><br><span class="line">        minSdkVersion 18 // 最小支持的sdk版本</span><br><span class="line">        targetSdkVersion 23 // 目标版本</span><br><span class="line">        versionCode 1 // app 版本号</span><br><span class="line">        versionName &quot;1.0&quot; // app 版本名称</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    buildTypes &#123; // 编译渠道 默认有</span><br><span class="line">        release &#123;</span><br><span class="line">            minifyEnabled false // 混淆相关</span><br><span class="line">            proguardFiles getDefaultProguardFile(&apos;proguard-android.txt&apos;), &apos;proguard-rules.pro&apos;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">dependencies &#123; // 依赖库</span><br><span class="line">    compile fileTree(dir: &apos;libs&apos;, include: [&apos;*.jar&apos;])</span><br><span class="line">    testCompile &apos;junit:junit:4.12&apos;</span><br><span class="line">    compile &apos;com.android.support:appcompat-v7:23.4.0&apos; // 格式：组：名称：版本</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>setting.gradle：项目管理配置文件。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">include <span class="string">':app'</span> <span class="comment">// 引入module</span></span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<ol>
-<li><p>gradle.properties你可能没有，自己配置的文件，全局性的</p>
-</li>
-<li><p>gradle-wrapper.properties:此项目所使用的Gralde信息，</p>
-<p><img src="http://7xwe4r.com1.z0.glb.clouddn.com/9BEB16BA-FAB5-4E78-A95A-511F8A5B486E.png" alt=""></p>
-<p>​此处的2.10才是真正的Gradle版本号。</p>
-</li>
-</ol>
-<p>注意：Android用的Gradle并不是原生的，而是在原生的基础上包装了一层，为什么要这样呢，道理很简单，比如你有两个Android工程，一个用Gralde V1.0，另一个用V2.0，那么只有一个Gradle如是使用呢？所以在此基础上就有来Gradle Wrapper出现，每一个工程都有单独的一个Gradle彼此分离，互不影响。</p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>上面说了这么多，其实都是些简单的基础概念，看完相信大家有来基本的了解，Gradle是Google重点推广的工具，运用起来十分方便，当你学会了就会发现它太神奇了。好了，今天就说这么多，后期及时更新关于Gradle的其他知识，敬请期待。</p>
-
           
+Gradle已经出来很久了，相信你一定有所了解，作为Android开发者，如果不知道，或者不了解那就真的Out了。那么Gradle什么呢？又什么用处呢？
+
+简述什么是Gradle？Gradle 是新一代的自动化构建工具，它是一个独立的工具，跟 Android和Android Studio 没有关系
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/08/02/android-gradle-1/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
