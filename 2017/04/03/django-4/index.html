@@ -87,88 +87,43 @@
 
 
 
-<meta name="description" content="安装Python Django作为一个Python Web框架，毫无疑问首先必须安装python。Django和python支持版本见下表或官方说明。
-对应版本：
+<meta name="description" content="编写你的第一个Django应用
+上面我们讲解了，如何安装Django，接下来我们就开始编写第一个Django应用。和其他的大多数教程一样我们使用一个Blog的列子来讲解。
 
+它包含两部分：
 
+一个公开的网站，展示你的博客给其他人看的
+一个后台管理系统，你可以添加、修改和删除博客  
 
-Django versions
-Python versions
-
-
-
-
-1.8
-2.7, 3.2,3.3,3.4,3.5
-
-
-1.9,1.10
-2.7,3.4,3.5
-
-
-1.11
-2.7,3.4,3.5,3.6
-
-
-2.0
-3.">
+说明：实际上Django的有时也就在于此，前文我们也说过自带后台管理系统是他的一大特色。
+一点感想我们学习东西的时">
 <meta property="og:type" content="article">
-<meta property="og:title" content="入门-安装">
-<meta property="og:url" content="http://lowett.com/2017/03/31/django-2/index.html">
+<meta property="og:title" content="Django小试牛刀">
+<meta property="og:url" content="http://lowett.com/2017/04/03/django-4/index.html">
 <meta property="og:site_name" content="诸葛小布 - 农民程序猿">
-<meta property="og:description" content="安装Python Django作为一个Python Web框架，毫无疑问首先必须安装python。Django和python支持版本见下表或官方说明。
-对应版本：
+<meta property="og:description" content="编写你的第一个Django应用
+上面我们讲解了，如何安装Django，接下来我们就开始编写第一个Django应用。和其他的大多数教程一样我们使用一个Blog的列子来讲解。
 
+它包含两部分：
 
+一个公开的网站，展示你的博客给其他人看的
+一个后台管理系统，你可以添加、修改和删除博客  
 
-Django versions
-Python versions
-
-
-
-
-1.8
-2.7, 3.2,3.3,3.4,3.5
-
-
-1.9,1.10
-2.7,3.4,3.5
-
-
-1.11
-2.7,3.4,3.5,3.6
-
-
-2.0
-3.">
-<meta property="og:updated_time" content="2017-03-31T08:15:36.000Z">
+说明：实际上Django的有时也就在于此，前文我们也说过自带后台管理系统是他的一大特色。
+一点感想我们学习东西的时">
+<meta property="og:updated_time" content="2017-04-03T09:24:16.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="入门-安装">
-<meta name="twitter:description" content="安装Python Django作为一个Python Web框架，毫无疑问首先必须安装python。Django和python支持版本见下表或官方说明。
-对应版本：
+<meta name="twitter:title" content="Django小试牛刀">
+<meta name="twitter:description" content="编写你的第一个Django应用
+上面我们讲解了，如何安装Django，接下来我们就开始编写第一个Django应用。和其他的大多数教程一样我们使用一个Blog的列子来讲解。
 
+它包含两部分：
 
+一个公开的网站，展示你的博客给其他人看的
+一个后台管理系统，你可以添加、修改和删除博客  
 
-Django versions
-Python versions
-
-
-
-
-1.8
-2.7, 3.2,3.3,3.4,3.5
-
-
-1.9,1.10
-2.7,3.4,3.5
-
-
-1.11
-2.7,3.4,3.5,3.6
-
-
-2.0
-3.">
+说明：实际上Django的有时也就在于此，前文我们也说过自带后台管理系统是他的一大特色。
+一点感想我们学习东西的时">
 
 
 
@@ -196,13 +151,13 @@ Python versions
 
 
 
-  <link rel="canonical" href="http://lowett.com/2017/03/31/django-2/"/>
+  <link rel="canonical" href="http://lowett.com/2017/04/03/django-4/"/>
 
 
 
 
 
-  <title> 入门-安装 | 诸葛小布 - 农民程序猿 </title>
+  <title> Django小试牛刀 | 诸葛小布 - 农民程序猿 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -341,7 +296,7 @@ Python versions
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://lowett.com/2017/03/31/django-2/">
+    <link itemprop="mainEntityOfPage" href="http://lowett.com/2017/04/03/django-4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="诸葛小布">
@@ -362,7 +317,7 @@ Python versions
             
             
               
-                入门-安装
+                Django小试牛刀
               
             
           </h2>
@@ -377,8 +332,8 @@ Python versions
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-31T16:01:20+08:00">
-                2017-03-31
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-03T17:21:57+08:00">
+                2017-04-03
               </time>
             
 
@@ -429,7 +384,7 @@ Python versions
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a class="cloud-tie-join-count" href="/2017/03/31/django-2/#comments" itemprop="discussionUrl">
+                <a class="cloud-tie-join-count" href="/2017/04/03/django-4/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count join-count" itemprop="commentCount"></span>
                 </a>
               </span>
@@ -438,7 +393,7 @@ Python versions
 
           
           
-             <span id="/2017/03/31/django-2/" class="leancloud_visitors" data-flag-title="入门-安装">
+             <span id="/2017/04/03/django-4/" class="leancloud_visitors" data-flag-title="Django小试牛刀">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -467,78 +422,40 @@ Python versions
       
 
       
-        <h3 id="安装Python"><a href="#安装Python" class="headerlink" title="安装Python"></a>安装Python</h3><p> Django作为一个Python Web框架，毫无疑问首先必须安装python。Django和python支持版本见下表或<a href="https://docs.djangoproject.com/en/1.10/faq/install/#faq-python-version-support" target="_blank" rel="external">官方说明</a>。</p>
-<p>对应版本：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">Django versions</th>
-<th style="text-align:center">Python versions</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">1.8</td>
-<td style="text-align:center">2.7, 3.2,3.3,3.4,3.5</td>
-</tr>
-<tr>
-<td style="text-align:center">1.9,1.10</td>
-<td style="text-align:center">2.7,3.4,3.5</td>
-</tr>
-<tr>
-<td style="text-align:center">1.11</td>
-<td style="text-align:center">2.7,3.4,3.5,3.6</td>
-</tr>
-<tr>
-<td style="text-align:center">2.0</td>
-<td style="text-align:center">3.5+</td>
-</tr>
-</tbody>
-</table>
-<h4 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h4><p>在<a href="https://www.python.org/download/" target="_blank" rel="external">https://www.python.org/download/</a>下载需要的版本，我的电脑上安装的是python 3.4.3。</p>
-<h4 id="Mac"><a href="#Mac" class="headerlink" title="Mac"></a>Mac</h4><p>mac上安装有多种方式这里提供一种，使用Homebrew安装。</p>
+        <h3 id="编写你的第一个Django应用"><a href="#编写你的第一个Django应用" class="headerlink" title="编写你的第一个Django应用"></a>编写你的第一个Django应用</h3><blockquote>
+<p>上面我们讲解了，如何安装Django，接下来我们就开始编写第一个Django应用。<br>和其他的大多数教程一样我们使用一个Blog的列子来讲解。</p>
+</blockquote>
+<p>它包含两部分：</p>
+<ul>
+<li>一个公开的网站，展示你的博客给其他人看的</li>
+<li>一个后台管理系统，你可以添加、修改和删除博客  </li>
+</ul>
+<p><em>说明：实际上Django的有时也就在于此，前文我们也说过自带后台管理系统是他的一大特色。</em></p>
+<h3 id="一点感想"><a href="#一点感想" class="headerlink" title="一点感想"></a>一点感想</h3><p>我们学习东西的时候经常会遇到，不理解，不明白的地方，这个时候我们没必要寻根问底，<br>毕竟我们不是搞科研的，死钻牛角尖不能给我们带来任何好处，这个时候我们只要记住规则，知道怎么用，<br>随着知识的深入自然而然就会知道了。<br>下面大家先跟着我做一做，后面我会分解讲解各个知识点的。</p>
+<h3 id="创建一个项目"><a href="#创建一个项目" class="headerlink" title="创建一个项目"></a>创建一个项目</h3><p>根据上节我们学习到的命令，先创建一个项目。</p>
 <ol>
-<li>打开终端，利用ruby语句安装Homebrew,Mac系统下默认安装了ruby<br>ruby -e “$(curl -fsSL <a href="https://raw.githubusercontent.com/Homebrew/install/master/install" target="_blank" rel="external">https://raw.githubusercontent.com/Homebrew/install/master/install</a>)”<br>输入brew -v检验是否安装成功，若输出版本信息，则安装成功。</li>
-</ol>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Homebrew <span class="number">1.1</span>.<span class="number">9</span></span><br><span class="line">Homebrew/homebrew-core (git revision f8a<span class="number">0</span>; last commit <span class="number">2017</span>-<span class="number">02</span>-<span class="number">07</span>)</span><br></pre></td></tr></table></figure>
-<ol>
-<li>输入 brew install python3安装完成后，输入python3,此时Python的进入了交互式环境，在提示符&gt;&gt;&gt;后可以输入python语句。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">hus-MacBook-Pro:~ Hyu$ python3</span><br><span class="line">Python 3.4.3 (v3.4.3:9b73f1c3e601, Feb 23 2015, 02:52:03)</span><br><span class="line">[GCC 4.2.1 (Apple Inc. build 5666) (dot 3)] on darwin</span><br><span class="line">Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.</span><br><span class="line">&gt;&gt;&gt;</span><br></pre></td></tr></table></figure>
+<li>打开终端，进入到项目存放目录</li>
+<li>django-admin startproject Demo<br>到此，我们已经创建好一个项目，结构像下面的<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Demo</span><br><span class="line">├── manage.py</span><br><span class="line">└── Demo</span><br><span class="line">    ├── __init__.py</span><br><span class="line">    ├── settings.py</span><br><span class="line">    ├── urls.py</span><br><span class="line">    └── wsgi.py</span><br></pre></td></tr></table></figure>
 </li>
 </ol>
-<p><em>注意： Mac自带了python2.X的执行环境，如果输入python，则进入了python2的交互式环境，两个版本不兼容</em></p>
-<h4 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h4><p>Windows的安装跟其他的软件安装一样，双击下载好的exe文件，然后选择安装路径，next即可。</p>
-<p><strong>注意：如果想要命令行一定要勾择Add Python 3.5 to PATH，通常我们也建议勾选</strong><br>安装完成后，双击桌面的快捷方式，即可启动。</p>
-<p>这里只是给读者提供了基础的安装方式，对于学习Django的读者，如果python都不会安装，那么也就不必往下进行了，python基础是必须要有的。<br>当然如果你非常有兴趣那么建议先学习python的基础语法，这里推荐<a href="http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000" target="_blank" rel="external">廖雪峰的博客</a>，作为入门还是很不错的教程。</p>
-<h3 id="建立一个数据库"><a href="#建立一个数据库" class="headerlink" title="建立一个数据库"></a>建立一个数据库</h3><p>如果你是用大型数据库（Mysql，Oracle等）才必须要这一步，通常Django使用sqlite3。</p>
-<h3 id="安装Django"><a href="#安装Django" class="headerlink" title="安装Django"></a>安装Django</h3><p>说明：python由于升级版本兼容性等原因建议使用virtualenv建立多个python环境，我这里没有使用这种方式。</p>
-<h4 id="利用pip安装"><a href="#利用pip安装" class="headerlink" title="利用pip安装"></a>利用pip安装</h4><ul>
-<li><p>安装pip<br>ubuntu：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install python-pip</span><br></pre></td></tr></table></figure>
-<p> Fedora:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install python-pip</span><br></pre></td></tr></table></figure>
-<p>  全平台(Linux,Mac osx, Windows):<br>使用get-pip.py安装，<a href="https://pip.pypa.io/en/latest/installing/" target="_blank" rel="external">https://pip.pypa.io/en/latest/installing/</a><br>升级pip:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(sudo) pip install --upgrade pip</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>注：Windows 下不需要sudo,其他操作系统需要。</p>
-<ul>
-<li>使用pip安装Django，<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(sudo) pip install Django 或 (sudo) pip install Django==1.8</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>注：我用的是1.10</p>
-<h4 id="下载源码安装"><a href="#下载源码安装" class="headerlink" title="下载源码安装"></a>下载源码安装</h4><p>源码地址：<a href="https://www.djangoproject.com/download/" target="_blank" rel="external">https://www.djangoproject.com/download/</a><br>进入页面右侧有版本选择。<br>比如：django-1.8.17.tar.gz</p>
-<ul>
-<li>解压文件夹<br>Windows:<br>解压软件解压，启动命令行进入到此目录，如：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd E:</span><br><span class="line">cd djago/django-1.8.16</span><br><span class="line">python setup.py install</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>如果提示<strong>‘python’不是内部或外部命令，也不是可运行的程序或批处理文件</strong>，说明你ptyon没有安装或没有配置好.<br>Linux/Mac:<br>启动终端，进入文件放置位置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tar -xvf django-1.8.16.tar.gz</span><br><span class="line">cd django-1.8.16</span><br><span class="line">(sudo) python setup.py install</span><br></pre></td></tr></table></figure></p>
-<h4 id="查看是否安装成功"><a href="#查看是否安装成功" class="headerlink" title="查看是否安装成功"></a>查看是否安装成功</h4><p>  进入终端，输入python，回车，进入python环境</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import django</span><br><span class="line">&gt;&gt;&gt; django.get_version()</span><br><span class="line">&apos;1.10.6&apos;</span><br><span class="line">&gt;&gt;&gt;</span><br></pre></td></tr></table></figure>
-<p>如果得到版本好，那么恭喜你，已经成功一半了（好的开始是成功的一半）。</p>
-<h4 id="升级／卸载"><a href="#升级／卸载" class="headerlink" title="升级／卸载"></a>升级／卸载</h4><ul>
-<li>如果使用pip安装，只要重复安装命令选择新版本即可升级</li>
-<li>使用python setup.py安装，在shell下执行，注意不是python终端，Windows控制面板卸载<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -c &quot;import sys; sys.path = sys.path[1:]; import django; print(django.__path__)&quot;</span><br></pre></td></tr></table></figure></li>
-</ul>
+<p><strong>注意：创建好项目后，以后的所有操作都将在项目文件夹中</strong></p>
+<h3 id="新建一个app"><a href="#新建一个app" class="headerlink" title="新建一个app"></a>新建一个app</h3><p>使用命令，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python manage.py App</span><br></pre></td></tr></table></figure></p>
+<p>Demo文件夹中将会，多出一个App文件夹，结构如下（可能略有不同但是，几个基本的不会少）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">App/</span><br><span class="line">├── __init__.py</span><br><span class="line">├── admin.py</span><br><span class="line">├── models.py</span><br><span class="line">├── tests.py</span><br><span class="line">└── views.py</span><br></pre></td></tr></table></figure></p>
+<p>注：1.8以上会多migrations、和apps.py</p>
+<h3 id="配置setting"><a href="#配置setting" class="headerlink" title="配置setting"></a>配置setting</h3><p>我们进入到项目，同名的文件夹中，本列是Demo，打开settings.py<br>在INSTALLED_APPS这个列表中添加我们的app名字<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">INSTALLED_APPS = [</span><br><span class="line">    &apos;django.contrib.admin&apos;,</span><br><span class="line">    &apos;django.contrib.auth&apos;,</span><br><span class="line">    &apos;django.contrib.contenttypes&apos;,</span><br><span class="line">    &apos;django.contrib.sessions&apos;,</span><br><span class="line">    &apos;django.contrib.messages&apos;,</span><br><span class="line">    &apos;django.contrib.staticfiles&apos;,</span><br><span class="line">	  &apos;App&apos;, # 此处是添加的</span><br><span class="line">]</span><br></pre></td></tr></table></figure></p>
+<h3 id="定义视图"><a href="#定义视图" class="headerlink" title="定义视图"></a>定义视图</h3><p>上一步我们已经告诉Django我们创建了一个app，这一步是配置要展示出来的页面</p>
+<h4 id="添加视图"><a href="#添加视图" class="headerlink" title="添加视图"></a>添加视图</h4><p>打开app下的views.py,默认有一行导包代码，可以不管他，后面在讲解。<br>写我们自己的代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from django.http import HttpResponse</span><br><span class="line"></span><br><span class="line">def index(request):</span><br><span class="line">    return HttpResponse(&apos;&lt;h1&gt;Hello Django, Hello world, Hello 诸葛小布！！！　&lt;/h1&gt;&apos;)</span><br></pre></td></tr></table></figure>
+<p>代码比较简单，就是展示一行信息。</p>
+<h4 id="配置url"><a href="#配置url" class="headerlink" title="配置url"></a>配置url</h4><p>打开项目目录下的urls.py(本列：Demo/urls.py)，修改如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">from django.conf.urls import url</span><br><span class="line">from django.contrib import admin</span><br><span class="line">from App.views import index // 新增</span><br><span class="line">urlpatterns = [</span><br><span class="line">    url(r&apos;^admin/&apos;, admin.site.urls),</span><br><span class="line">    url(r&apos;^$&apos;, index), # 新增</span><br><span class="line">]</span><br></pre></td></tr></table></figure></p>
+<p>到这里我们的第一Django项目已经完成，是不是有点小激动，好了，还没运行呢，跑起来在激动不迟！</p>
+<h3 id="启动服务器"><a href="#启动服务器" class="headerlink" title="启动服务器"></a>启动服务器</h3><p>启动服务器并不是非要到这一步才行，项目创建好就可以启动服务器，之所以到这一步，看着更顺畅而已。<br>好了，命令行进入到项目根目录（/Demo）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python manage.py runserver</span><br></pre></td></tr></table></figure></p>
+<p>如果看到，如果提示端口被占用，使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python manage.py runserver 端口号 #如 python manage.py runserver 80001</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Starting development server at http://127.0.0.1:8000/</span><br><span class="line">Quit the server with CONTROL-C.</span><br></pre></td></tr></table></figure>
+<p>即表示启动成功，其中会有红色的警告信息，暂时不用管他。</p>
+<h3 id="浏览"><a href="#浏览" class="headerlink" title="浏览"></a>浏览</h3><p>我们打开浏览器，输入<a href="http://127.0.0.1:8000/，(端口要和自己的保持一致)将会看到" target="_blank" rel="external">http://127.0.0.1:8000/，(端口要和自己的保持一致)将会看到</a><br><strong>Hello Django, Hello world, Hello 诸葛小布！！！</strong>  </p>
+<p>恭喜你，已经成功进入Django的世界！！！</p>
+<h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3><p>本人也是学了没多久，这是学习整理的笔记(难免有出错地方，还请指教)，学习过程中部分文献参考网上教程，书籍等，如有权限问题请联系本人及时处理，为了尊重作者劳动成果，转载请注明出处。<br>版权所有：www.lowett.com</p>
 
       
     </div>
@@ -599,8 +516,8 @@ Python versions
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/03/31/django-1/" rel="next" title="简介">
-                <i class="fa fa-chevron-left"></i> 简介
+              <a href="/2017/04/02/django-3/" rel="next" title="基本命令讲解">
+                <i class="fa fa-chevron-left"></i> 基本命令讲解
               </a>
             
           </div>
@@ -608,10 +525,6 @@ Python versions
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/04/01/android-hotfix/" rel="prev" title="Android热修复你想知道的一切都在这里了">
-                Android热修复你想知道的一切都在这里了 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -765,7 +678,7 @@ Python versions
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装Python"><span class="nav-number">1.</span> <span class="nav-text">安装Python</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#下载"><span class="nav-number">1.1.</span> <span class="nav-text">下载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Mac"><span class="nav-number">1.2.</span> <span class="nav-text">Mac</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Windows"><span class="nav-number">1.3.</span> <span class="nav-text">Windows</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#建立一个数据库"><span class="nav-number">2.</span> <span class="nav-text">建立一个数据库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装Django"><span class="nav-number">3.</span> <span class="nav-text">安装Django</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#利用pip安装"><span class="nav-number">3.1.</span> <span class="nav-text">利用pip安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#下载源码安装"><span class="nav-number">3.2.</span> <span class="nav-text">下载源码安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查看是否安装成功"><span class="nav-number">3.3.</span> <span class="nav-text">查看是否安装成功</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#升级／卸载"><span class="nav-number">3.4.</span> <span class="nav-text">升级／卸载</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#编写你的第一个Django应用"><span class="nav-number">1.</span> <span class="nav-text">编写你的第一个Django应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一点感想"><span class="nav-number">2.</span> <span class="nav-text">一点感想</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建一个项目"><span class="nav-number">3.</span> <span class="nav-text">创建一个项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#新建一个app"><span class="nav-number">4.</span> <span class="nav-text">新建一个app</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置setting"><span class="nav-number">5.</span> <span class="nav-text">配置setting</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定义视图"><span class="nav-number">6.</span> <span class="nav-text">定义视图</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#添加视图"><span class="nav-number">6.1.</span> <span class="nav-text">添加视图</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置url"><span class="nav-number">6.2.</span> <span class="nav-text">配置url</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动服务器"><span class="nav-number">7.</span> <span class="nav-text">启动服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#浏览"><span class="nav-number">8.</span> <span class="nav-text">浏览</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#说明"><span class="nav-number">9.</span> <span class="nav-text">说明</span></a></li></ol></div>
             
 
           </div>
